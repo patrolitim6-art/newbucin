@@ -34,10 +34,41 @@
   --app-font: 'DM Sans', sans-serif;
   --app-font-size: 14px;
 }
-* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-html, body { height: 100%; overflow: hidden; font-family: var(--app-font); background: var(--bg-main); color: var(--text-main); }
 
-.top-header { position: sticky; top: 0; z-index: 9000; height: var(--header-h); border-bottom: 1px solid var(--header-solid-border); background: var(--header-solid); display: flex; align-items: center; justify-content: space-between; padding: 0 14px; gap: 10px; box-shadow: 0 2px 12px rgba(0, 0, 0, 0.35); }
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+/* ============ ROOT — FULL HEIGHT ============ */
+html, body {
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  font-family: var(--app-font);
+  background: var(--bg-main);
+  color: var(--text-main);
+}
+
+/* Wrapper utama — flex column, header di atas, map isi sisa */
+body {
+  display: flex;
+  flex-direction: column;
+}
+
+/* ============ HEADER ============ */
+.top-header {
+  flex-shrink: 0;
+  height: var(--header-h);
+  border-bottom: 1px solid var(--header-solid-border);
+  background: var(--header-solid);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 14px;
+  gap: 10px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.35);
+  z-index: 9000;
+}
 .header-brand { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
 .brand-text { font-weight: 900; font-family: 'Orbitron', sans-serif; background: var(--tech-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; letter-spacing: 1.5px; font-size: 20px; }
 .brand-sub { color: var(--primary-cyan); font-weight: 700; text-transform: uppercase; letter-spacing: 1.2px; font-family: 'Orbitron', sans-serif; font-size: 9px; }
@@ -48,11 +79,24 @@ html, body { height: 100%; overflow: hidden; font-family: var(--app-font); backg
 .header-btn.primary:hover { background: rgba(16, 185, 129, 0.15); border-color: var(--primary-green); color: var(--primary-green); }
 .header-btn i { width: 15px; height: 15px; }
 
-/* MAP FULL LEBAR, TINGGI DIKURANGI (minus 100px dari viewport) */
-.map-wrap { position: relative; width: 100%; height: calc(100vh - var(--header-h) - 100px); min-height: 300px; }
-#map-container { position: absolute; inset: 0; width: 100%; height: 100%; }
-#map-container canvas { image-rendering: -webkit-optimize-contrast; }
+/* ============ MAP WRAPPER — FULL SISA RUANG ============ */
+.map-wrap {
+  flex: 1 1 auto;
+  position: relative;
+  width: 100%;
+  min-height: 0;
+  overflow: hidden;
+}
 
+#map-container {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+#map-container canvas { image-rendering: -webkit-optimize-contrast; outline: none !important; }
+
+/* ============ LEGEND ============ */
 .map-legend-container {
   position: absolute; top: 12px; left: 12px; z-index: 1000;
   display: flex; flex-direction: column; gap: 8px;
@@ -94,12 +138,12 @@ html, body { height: 100%; overflow: hidden; font-family: var(--app-font); backg
 .ml-item-name { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .ml-item-count { font-family: 'Orbitron', sans-serif; font-weight: 800; color: var(--text-main); font-size: 9px; }
 
+/* ============ MAPLIBRE ============ */
 .maplibregl-popup-content { background: var(--surface-map-legend) !important; color: var(--text-main) !important; border: 1px solid var(--border-glow) !important; border-radius: 8px !important; padding: 8px 10px !important; max-width: 240px !important; font-size: 10px !important; }
 .maplibregl-popup-tip { border-top-color: var(--surface-map-legend) !important; border-bottom-color: var(--surface-map-legend) !important; }
 .maplibregl-popup-close-button { color: var(--primary-cyan) !important; font-size: 14px !important; }
 .maplibregl-ctrl-top-right, .maplibregl-ctrl-top-left, .maplibregl-ctrl-bottom-right { display: none !important; }
 .maplibregl-ctrl-bottom-left { display: block !important; }
-#map-container canvas { outline: none !important; }
 
 .custom-map-controls { position: absolute; top: 12px; right: 12px; z-index: 1000; display: flex; flex-direction: column; gap: 6px; }
 .custom-map-btn { background: var(--surface-map-btn); border: 1px solid var(--border-glow); border-radius: 10px; width: 38px; height: 38px; display: grid; place-items: center; cursor: pointer; color: var(--primary-cyan); transition: all 0.2s; }
@@ -111,14 +155,17 @@ html, body { height: 100%; overflow: hidden; font-family: var(--app-font); backg
 .draw-point.last { background: #EC4899; }
 .draw-cursor-active #map-container, .draw-cursor-active #map-container canvas { cursor: crosshair !important; }
 
+/* ============ MODAL ============ */
 .modal-layer { position: fixed; z-index: 10000; inset: 0; background: rgba(5, 8, 16, 0.85); display: grid; place-items: center; padding: 20px; overflow-y: auto; }
 .modal-card { background: var(--surface-modal); width: 100%; max-width: 560px; border-radius: 20px; max-height: 92vh; overflow-y: auto; padding: 22px; box-shadow: var(--shadow-modal); border: 1px solid var(--border-glow); color: var(--text-main); }
 .hidden { display: none !important; }
 
+/* ============ FORM CONTROL ============ */
 .field-control { width: 100%; min-height: 44px; border: 1px solid var(--border-subtle); border-radius: 10px; background: var(--surface-input); padding: 0 14px; color: var(--text-main); outline: none; font-family: inherit; font-size: 13px; }
 .field-control:focus { border-color: var(--primary-cyan); box-shadow: 0 0 0 3px rgba(0, 217, 255, 0.15); }
 select.field-control option { background: var(--surface-3); color: var(--text-main); }
 
+/* ============ BUTTONS ============ */
 .btn-primary { background: var(--tech-gradient); color: var(--text-on-accent); border: none; border-radius: 20px; font-weight: 800; padding: 10px 22px; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 6px; box-shadow: 0 4px 20px rgba(0, 217, 255, 0.35); min-height: 44px; font-size: 13px; font-family: inherit; }
 .btn-primary:hover { filter: brightness(1.1); }
 .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; filter: none; }
@@ -127,6 +174,7 @@ select.field-control option { background: var(--surface-3); color: var(--text-ma
 .btn-cancel { background: transparent; color: var(--primary-red); border: 1px solid rgba(239, 68, 68, 0.5); border-radius: 20px; font-weight: 600; padding: 10px 20px; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 6px; min-height: 44px; font-size: 13px; font-family: inherit; }
 .btn-cancel:hover { background: rgba(239, 68, 68, 0.15); }
 
+/* ============ FLOATING PANEL ============ */
 .floating-panel { position: absolute; top: 12px; right: 60px; background: rgba(15, 23, 42, 0.98); border: 1px solid rgba(0, 217, 255, 0.5); border-radius: 12px; padding: 14px 16px; z-index: 950; font-size: 12px; color: #E2E8F0; min-width: 300px; max-width: 340px; display: none; box-shadow: 0 8px 24px rgba(0,0,0,0.5); }
 .floating-panel.show { display: block; }
 .floating-panel .panel-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; padding-bottom: 10px; border-bottom: 1px solid rgba(255,255,255,0.1); }
@@ -177,7 +225,6 @@ select.field-control option { background: var(--surface-3); color: var(--text-ma
   .floating-panel { right: 50px; left: 10px; min-width: 0; max-width: none; }
   .map-legend-container { max-width: 240px; }
   .custom-map-btn { width: 34px; height: 34px; }
-  .map-wrap { height: calc(100vh - var(--header-h) - 80px); }
 }
 </style>
 </head>
