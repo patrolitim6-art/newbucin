@@ -3,20 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Maps - BUCIN (OpenLayers + Cesium)</title>
+    <title>Maps - BUCIN (3D)</title>
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ol@9.2.4/ol.css" />
     <script src="https://cdn.jsdelivr.net/npm/ol@9.2.4/dist/ol.js"></script>
 
-    <!-- CesiumJS -->
+    <!-- CesiumJS (untuk 3D globe) -->
     <script src="https://cesium.com/downloads/cesiumjs/releases/1.113/Build/Cesium/Cesium.js"></script>
     <link href="https://cesium.com/downloads/cesiumjs/releases/1.113/Build/Cesium/Widgets/widgets.css" rel="stylesheet">
 
-    <!-- ol-cesium -->
+    <!-- ol-cesium (integrasi OL + Cesium) -->
     <script src="https://cdn.jsdelivr.net/npm/ol-cesium@2.17.0/dist/olcesium.min.js"></script>
 
     <script src="https://unpkg.com/@tmcw/togeojson@5.8.1/dist/togeojson.umd.js"></script>
@@ -24,149 +22,76 @@
 
     <style>
         * { box-sizing: border-box; }
-        html, body {
-            margin: 0; padding: 0;
-            height: 100%;
-            font-family: 'Poppins', sans-serif;
-            background: #0f172a;
-            overflow: hidden;
-        }
-        #map { width: 100%; height: 100%; background: #0f172a; position: relative; }
+        html, body { margin: 0; padding: 0; height: 100%; font-family: 'Poppins', sans-serif; background: #0f172a; overflow: hidden; }
+        #map { width: 100%; height: 100%; background: #0f172a; }
 
-        /* ============ HEADER ============ */
         .maps-header {
-            position: absolute;
-            top: 0; left: 0; right: 0;
-            height: 44px;
-            z-index: 1000;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            padding: 6px 12px;
-            background: rgba(15, 23, 42, 0.92);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+            position: absolute; top: 0; left: 0; right: 0; height: 44px; z-index: 1000;
+            display: flex; align-items: center; gap: 8px; padding: 6px 12px;
+            background: rgba(15, 23, 42, 0.92); border-bottom: 1px solid rgba(255, 255, 255, 0.15);
             backdrop-filter: blur(8px);
         }
-        .maps-header .header-title {
-            font-size: 12px; font-weight: 800; color: #38bdf8;
-            display: flex; align-items: center; gap: 6px;
-            margin-right: 8px; flex-shrink: 0;
-        }
-        .maps-header .header-title i { color: #f43f5e; font-size: 12px; }
+        .maps-header .header-title { font-size: 12px; font-weight: 800; color: #38bdf8; display: flex; align-items: center; gap: 6px; }
+        .maps-header .header-title i { color: #f43f5e; }
         .maps-header .header-title span { color: #e2e8f0; font-weight: 600; font-size: 11px; }
 
         .header-btn {
-            background: transparent;
-            border: 1px solid rgba(255, 255, 255, 0.25);
-            color: #e2e8f0;
-            padding: 5px 10px;
-            border-radius: 6px;
-            font-size: 11px; font-weight: 700;
+            background: transparent; border: 1px solid rgba(255, 255, 255, 0.25); color: #e2e8f0;
+            padding: 5px 10px; border-radius: 6px; font-size: 11px; font-weight: 700;
             cursor: pointer; font-family: 'Poppins', sans-serif;
             display: inline-flex; align-items: center; gap: 5px;
-            white-space: nowrap;
         }
         .header-btn:hover { color: #38bdf8; border-color: #38bdf8; }
         .header-btn.primary { color: #10b981; border-color: rgba(16, 185, 129, 0.6); }
         .header-btn.danger { color: #f43f5e; border-color: rgba(244, 63, 94, 0.6); }
 
         .map-mode-btn {
-            background: rgba(30, 41, 59, 0.8);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            color: #94a3b8;
-            padding: 5px 9px;
-            border-radius: 6px;
-            font-size: 10px; font-weight: 700;
-            cursor: pointer; font-family: 'Poppins', sans-serif;
+            background: rgba(30, 41, 59, 0.8); border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #94a3b8; padding: 5px 9px; border-radius: 6px;
+            font-size: 10px; font-weight: 700; cursor: pointer; font-family: 'Poppins', sans-serif;
             display: inline-flex; align-items: center; gap: 4px;
         }
         .map-mode-btn:hover { color: #38bdf8; border-color: #38bdf8; }
-        .map-mode-btn.active {
-            color: #38bdf8;
-            border-color: #38bdf8;
-            background: rgba(56, 189, 248, 0.15);
-        }
+        .map-mode-btn.active { color: #38bdf8; border-color: #38bdf8; background: rgba(56, 189, 248, 0.15); }
 
-        .header-info {
-            display: none; align-items: center; gap: 6px;
-            padding: 4px 10px;
-            background: rgba(16, 185, 129, 0.12);
-            border: 1px solid rgba(16, 185, 129, 0.4);
-            border-radius: 6px;
-            font-size: 10px; font-weight: 700; color: #10b981;
-            margin-left: auto;
-        }
-        .header-info.show { display: inline-flex; }
-        .header-info .info-name { color: #fff; font-weight: 600; max-width: 180px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .header-info button { background: transparent; border: none; color: #94a3b8; cursor: pointer; font-size: 11px; padding: 0; }
-
-        /* ============ LEGENDA ============ */
         .map-legend {
-            position: absolute;
-            top: 54px; left: 10px;
-            background: rgba(15, 23, 42, 0.88);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            border-radius: 7px;
-            padding: 6px 8px;
-            z-index: 900;
-            font-size: 9.5px; color: #e2e8f0;
-            max-width: 175px;
-            max-height: calc(100vh - 70px);
-            overflow-y: auto;
-            backdrop-filter: blur(6px);
+            position: absolute; top: 54px; left: 10px;
+            background: rgba(15, 23, 42, 0.88); border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 7px; padding: 6px 8px; z-index: 900;
+            font-size: 9.5px; color: #e2e8f0; max-width: 175px;
+            max-height: calc(100vh - 70px); overflow-y: auto;
         }
-        .map-legend h5 { font-size: 9px; color: #38bdf8; margin: 0 0 5px 0; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 800; display: flex; align-items: center; gap: 4px; }
-        .map-legend .section-title { font-size: 8px; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 800; margin: 5px 0 3px 0; padding-top: 4px; border-top: 1px dashed rgba(255,255,255,0.15); }
-        .map-legend .li { display: flex; align-items: center; gap: 5px; color: #e2e8f0; padding: 2px 0; cursor: pointer; user-select: none; line-height: 1.2; }
+        .map-legend h5 { font-size: 9px; color: #38bdf8; margin: 0 0 5px 0; text-transform: uppercase; font-weight: 800; display: flex; align-items: center; gap: 4px; }
+        .map-legend .li { display: flex; align-items: center; gap: 5px; color: #e2e8f0; padding: 2px 0; cursor: pointer; user-select: none; }
         .map-legend .li:hover { opacity: 0.8; }
         .map-legend .li.off { opacity: 0.3; text-decoration: line-through; }
         .map-legend .li i { font-size: 8px; width: 10px; text-align: center; flex-shrink: 0; }
         .map-legend .li span.count { margin-left: auto; font-weight: 700; color: #38bdf8; font-size: 9px; }
         .map-legend .li span.label-text { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex: 1; }
 
-        /* ============ POPUP ============ */
-        .ol-popup {
-            position: absolute;
-            background: rgba(15, 23, 42, 0.98);
-            color: #fff;
-            border: 1px solid #38bdf8;
-            border-radius: 10px;
-            padding: 10px 12px;
-            font-size: 11px;
-            min-width: 180px;
-            max-width: 300px;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.6);
-            bottom: 12px;
-            left: -50%;
-            transform: translateX(-50%);
-            z-index: 950;
+        .custom-zoom {
+            position: absolute; top: 54px; right: 10px; z-index: 900;
+            display: flex; flex-direction: column; gap: 4px;
         }
-        .ol-popup::after {
-            content: '';
-            position: absolute;
-            bottom: -8px;
-            left: 50%;
-            transform: translateX(-50%);
-            border-width: 8px 8px 0 8px;
-            border-style: solid;
-            border-color: rgba(15, 23, 42, 0.98) transparent transparent transparent;
+        .custom-zoom button {
+            width: 32px; height: 32px;
+            background: rgba(15, 23, 42, 0.92); color: #e2e8f0;
+            border: 1px solid rgba(255, 255, 255, 0.25); border-radius: 6px;
+            font-size: 14px; font-weight: 700; cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
         }
-        .ol-popup-closer { position: absolute; top: 4px; right: 6px; font-size: 14px; color: #94a3b8; cursor: pointer; text-decoration: none; font-weight: bold; line-height: 1; }
-        .ol-popup-closer:hover { color: #f43f5e; }
-        .popup-title { font-size: 12px; font-weight: 800; margin-bottom: 5px; display: flex; align-items: center; gap: 5px; }
-        .popup-row { font-size: 11px; color: #cbd5e1; line-height: 1.5; }
-        .popup-row b { color: #fff; }
-        .popup-badge { display: inline-block; padding: 1px 7px; border-radius: 8px; font-size: 9px; font-weight: 700; margin-top: 5px; }
+        .custom-zoom button:hover { background: rgba(30, 41, 59, 1); color: #38bdf8; border-color: #38bdf8; }
 
-        /* ============ TOAST ============ */
+        .ol-zoom { display: none !important; }
+        .ol-attribution { font-size: 10px !important; background: rgba(15, 23, 42, 0.8) !important; border-radius: 4px !important; }
+        .ol-attribution a { color: #38bdf8 !important; }
+        .ol-attribution button { background: rgba(15, 23, 42, 0.9) !important; color: #e2e8f0 !important; border: none !important; }
+
         .kml-toast {
-            position: absolute; bottom: 20px; left: 50%;
-            transform: translateX(-50%) translateY(20px);
-            z-index: 1100;
-            background: rgba(15, 23, 42, 0.95);
-            border: 1px solid rgba(56, 189, 248, 0.5);
-            color: #fff; padding: 8px 16px; border-radius: 8px;
-            font-size: 12px; font-weight: 600;
+            position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(20px);
+            z-index: 1100; background: rgba(15, 23, 42, 0.95);
+            border: 1px solid rgba(56, 189, 248, 0.5); color: #fff;
+            padding: 8px 16px; border-radius: 8px; font-size: 12px; font-weight: 600;
             display: flex; align-items: center; gap: 8px;
             opacity: 0; pointer-events: none; transition: all 0.3s ease;
         }
@@ -174,48 +99,42 @@
         .kml-toast.success { border-color: rgba(16, 185, 129, 0.6); }
         .kml-toast.error { border-color: rgba(244, 63, 94, 0.6); }
 
-        /* ============ TOMBOL ZOOM CUSTOM (HTML fallback) ============ */
-        .custom-zoom {
-            position: absolute;
-            top: 54px; right: 10px;
-            z-index: 900;
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
+        .ol-popup {
+            position: absolute; background: rgba(15, 23, 42, 0.98); color: #fff;
+            border: 1px solid #38bdf8; border-radius: 10px;
+            padding: 10px 12px; font-size: 11px; min-width: 180px; max-width: 300px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.6);
+            bottom: 12px; left: -50%; transform: translateX(-50%); z-index: 950;
         }
-        .custom-zoom button {
-            width: 32px; height: 32px;
-            background: rgba(15, 23, 42, 0.92);
-            color: #e2e8f0;
-            border: 1px solid rgba(255, 255, 255, 0.25);
-            border-radius: 6px;
-            font-size: 16px;
-            font-weight: 700;
-            cursor: pointer;
-            display: flex; align-items: center; justify-content: center;
-            transition: all 0.2s;
+        .ol-popup::after {
+            content: ''; position: absolute; bottom: -8px; left: 50%; transform: translateX(-50%);
+            border-width: 8px 8px 0 8px; border-style: solid;
+            border-color: rgba(15, 23, 42, 0.98) transparent transparent transparent;
         }
-        .custom-zoom button:hover {
-            background: rgba(30, 41, 59, 1);
-            color: #38bdf8;
-            border-color: #38bdf8;
-        }
+        .ol-popup-closer { position: absolute; top: 4px; right: 6px; font-size: 14px; color: #94a3b8; cursor: pointer; text-decoration: none; font-weight: bold; }
+        .ol-popup-closer:hover { color: #f43f5e; }
+        .popup-title { font-size: 12px; font-weight: 800; margin-bottom: 5px; display: flex; align-items: center; gap: 5px; }
+        .popup-row { font-size: 11px; color: #cbd5e1; line-height: 1.5; }
+        .popup-row b { color: #fff; }
+        .popup-badge { display: inline-block; padding: 1px 7px; border-radius: 8px; font-size: 9px; font-weight: 700; margin-top: 5px; }
 
-        /* Sembunyikan zoom control bawaan OL supaya tidak dobel */
-        .ol-zoom { display: none !important; }
-
-        .ol-attribution { font-size: 10px !important; background: rgba(15, 23, 42, 0.8) !important; border-radius: 4px !important; }
-        .ol-attribution a { color: #38bdf8 !important; }
-        .ol-attribution button { background: rgba(15, 23, 42, 0.9) !important; color: #e2e8f0 !important; border: none !important; }
-
-        /* Sembunyikan credit Cesium default */
+        /* Sembunyikan credit Cesium */
         .cesium-widget-credits { display: none !important; }
+        .cesium-viewer-bottom { display: none !important; }
+
+        /* Info bar untuk 3D */
+        .mode3d-info {
+            position: absolute; bottom: 20px; left: 10px;
+            background: rgba(15, 23, 42, 0.9); border: 1px solid rgba(56, 189, 248, 0.4);
+            color: #cbd5e1; padding: 6px 10px; border-radius: 6px;
+            font-size: 10px; font-weight: 600; z-index: 900;
+            display: none;
+        }
+        .mode3d-info.show { display: block; }
+        .mode3d-info b { color: #38bdf8; }
 
         @media (max-width: 640px) {
-            .maps-header { padding: 4px 8px; gap: 5px; height: 40px; }
-            .maps-header .header-title span { display: none; }
-            .header-btn span, .map-mode-btn span { display: none; }
-            .header-info { display: none !important; }
+            .maps-header .header-title span, .header-btn span, .map-mode-btn span { display: none; }
             .map-legend { top: 48px; left: 6px; font-size: 8.5px; max-width: 140px; }
             .custom-zoom { top: 48px; right: 6px; }
         }
@@ -225,42 +144,22 @@
 
     <div id="map"></div>
 
-    <!-- ===== HEADER ===== -->
     <div class="maps-header">
         <div class="header-title">
             <i class="fa-solid fa-map"></i>
             <span>Peta Insiden Jaringan</span>
         </div>
-
-        <button class="map-mode-btn active" onclick="setMapMode('standard')" id="btnModeStandard" title="2D Standard">
-            <i class="fa-solid fa-map"></i> <span>Standard</span>
-        </button>
-        <button class="map-mode-btn" onclick="setMapMode('satellite')" id="btnModeSatellite" title="Satellite">
-            <i class="fa-solid fa-satellite"></i> <span>Satelit</span>
-        </button>
-        <button class="map-mode-btn" onclick="setMapMode('globe3d')" id="btnModeGlobe" title="3D Globe">
-            <i class="fa-solid fa-globe"></i> <span>3D</span>
-        </button>
-
-        <button class="header-btn primary" onclick="uploadKML()" title="Upload KML/KMZ">
-            <i class="fa-solid fa-cloud-arrow-up"></i> <span>Upload</span>
-        </button>
-        <button class="header-btn danger" onclick="clearKML()" title="Clear KML">
-            <i class="fa-solid fa-trash"></i> <span>Clear</span>
-        </button>
-        <div class="header-info" id="headerInfo">
-            <i class="fa-solid fa-file-import"></i>
-            <span class="info-name" id="headerInfoName">-</span>
-            <button onclick="clearKML()" title="Tutup"><i class="fa-solid fa-xmark"></i></button>
-        </div>
+        <button class="map-mode-btn active" onclick="setMapMode('standard')" id="btnModeStandard"><i class="fa-solid fa-map"></i> <span>Standard</span></button>
+        <button class="map-mode-btn" onclick="setMapMode('satellite')" id="btnModeSatellite"><i class="fa-solid fa-satellite"></i> <span>Satelit</span></button>
+        <button class="map-mode-btn" onclick="setMapMode('globe3d')" id="btnModeGlobe"><i class="fa-solid fa-globe"></i> <span>3D</span></button>
+        <button class="header-btn primary" onclick="uploadKML()"><i class="fa-solid fa-cloud-arrow-up"></i> <span>Upload</span></button>
+        <button class="header-btn danger" onclick="clearKML()"><i class="fa-solid fa-trash"></i> <span>Clear</span></button>
     </div>
 
     <input type="file" id="kmlFileInput" accept=".kml,.kmz" style="display:none;">
 
-    <!-- ===== LEGENDA ===== -->
     <div class="map-legend">
         <h5><i class="fa-solid fa-list"></i> Legenda</h5>
-        <div class="section-title">Data Input</div>
         <div class="li" data-toggle="marker" data-kat="focut">
             <i class="fa-solid fa-scissors" style="color:#f43f5e;"></i>
             <span class="label-text">FO Cut</span>
@@ -288,10 +187,13 @@
         </div>
     </div>
 
-    <!-- ===== ZOOM BUTTONS CUSTOM ===== -->
     <div class="custom-zoom">
         <button onclick="zoomIn()" title="Zoom In"><i class="fa-solid fa-plus"></i></button>
         <button onclick="zoomOut()" title="Zoom Out"><i class="fa-solid fa-minus"></i></button>
+    </div>
+
+    <div class="mode3d-info" id="mode3dInfo">
+        <b>3D Aktif</b> — Drag kiri: rotate • Drag kanan: tilt • Scroll: zoom
     </div>
 
     <div class="kml-toast" id="kmlToast"></div>
@@ -301,29 +203,26 @@
         <div id="popup-content"></div>
     </div>
 
-    <script src="lines-data.js"></script>
-
     <script>
         /* ============================================================
-           BUCIN MAP - OpenLayers + Cesium (3 Modes)
+           BUCIN MAP — 3 Mode: Standard, Satelit, 3D Globe
            ============================================================ */
 
-        /* ⚠️ TOKEN CESIUM — ganti dengan token Anda dari https://ion.cesium.com/tokens
-           Jika belum diisi, mode 3D tidak akan aktif. Mode 2D tetap jalan. */
+        /* ⚠️ WAJIB: Ganti token di bawah dengan token dari
+           https://ion.cesium.com/tokens
+           Tanpa token valid, mode 3D tidak bisa aktif. */
         var CESIUM_TOKEN = 'MASUKKAN_TOKEN_ANDA_DISINI';
-        if (CESIUM_TOKEN && CESIUM_TOKEN !== 'MASUKKAN_TOKEN_ANDA_DISINI') {
-            Cesium.Ion.defaultAccessToken = CESIUM_TOKEN;
-        }
+        var TOKEN_VALID = CESIUM_TOKEN && CESIUM_TOKEN !== 'MASUKKAN_TOKEN_ANDA_DISINI';
 
-        function getToGeoJSON() {
-            return window.toGeoJSON || window.togeojson || null;
+        if (TOKEN_VALID) {
+            Cesium.Ion.defaultAccessToken = CESIUM_TOKEN;
         }
 
         var MANADO_CENTER = [124.8421, 1.4748];
         var MANADO_ZOOM   = 11;
 
         /* ============================================================
-           OPENLAYERS MAP
+           VIEW & BASEMAP
            ============================================================ */
         var view = new ol.View({
             center: ol.proj.fromLonLat(MANADO_CENTER),
@@ -332,32 +231,33 @@
             minZoom: 3
         });
 
-        /* ============================================================
-           BASEMAP LAYERS
-           ============================================================ */
-
-        // Mode 1: STANDARD — pakai OSM standar (gratis, tidak kena API key CARTO)
         var baseLayerStandard = new ol.layer.Tile({
             source: new ol.source.OSM({
                 url: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-                attributions: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+                attributions: '© OpenStreetMap contributors',
                 crossOrigin: 'anonymous'
             }),
             visible: true
         });
 
-        // Mode 2 & 3: SATELLITE — Esri World Imagery
         var baseLayerSatellite = new ol.layer.Tile({
             source: new ol.source.XYZ({
                 url: 'https://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
-                attributions: 'Powered by Esri | Source: Esri, Maxar, Earthstar Geographics',
+                attributions: 'Powered by Esri',
                 crossOrigin: 'anonymous',
                 maxZoom: 19
             }),
             visible: false
         });
 
-        // Marker Layer
+        var KATEGORI = {
+            focut:    { warna: '#f43f5e', label: 'FO Cut',    icon: '✂️' },
+            temuan:   { warna: '#10b981', label: 'Temuan',    icon: '🔍' },
+            opm:      { warna: '#38bdf8', label: 'OPM / OLS', icon: '📊' },
+            joint:    { warna: '#f59e0b', label: 'Joint',     icon: '🔗' },
+            handhole: { warna: '#a855f7', label: 'Handhole',  icon: '📦' }
+        };
+
         var markerSource = new ol.source.Vector();
         var markerLayer = new ol.layer.Vector({
             source: markerSource,
@@ -374,23 +274,21 @@
             }
         });
 
-        // KML Layer
         var kmlSource = new ol.source.Vector();
         var kmlLayer = new ol.layer.Vector({
             source: kmlSource,
             style: function(feature) {
-                var geomType = feature.getGeometry().getType();
-                if (geomType === 'LineString' || geomType === 'MultiLineString') {
-                    return new ol.style.Style({ stroke: new ol.style.Stroke({ color: '#38bdf8', width: 3, lineCap: 'round', lineJoin: 'round' }) });
+                var t = feature.getGeometry().getType();
+                if (t === 'LineString' || t === 'MultiLineString') {
+                    return new ol.style.Style({ stroke: new ol.style.Stroke({ color: '#38bdf8', width: 3 }) });
                 }
-                if (geomType === 'Polygon' || geomType === 'MultiPolygon') {
+                if (t === 'Polygon' || t === 'MultiPolygon') {
                     return new ol.style.Style({ stroke: new ol.style.Stroke({ color: '#10b981', width: 2 }), fill: new ol.style.Fill({ color: 'rgba(16, 185, 129, 0.15)' }) });
                 }
                 return new ol.style.Style({ image: new ol.style.Circle({ radius: 6, fill: new ol.style.Fill({ color: '#38bdf8' }), stroke: new ol.style.Stroke({ color: '#fff', width: 2 }) }) });
             }
         });
 
-        // Buat Map
         var map = new ol.Map({
             target: 'map',
             layers: [baseLayerStandard, baseLayerSatellite, markerLayer, kmlLayer],
@@ -402,25 +300,47 @@
         if (attrControl) attrControl.setPosition('bottom-right');
 
         /* ============================================================
-           ZOOM BUTTONS CUSTOM (karena zoom OL default dimatikan)
+           ZOOM BUTTONS CUSTOM
            ============================================================ */
-        function zoomIn()  { var v = map.getView(); v.animate({ zoom: v.getZoom() + 1, duration: 200 }); }
-        function zoomOut() { var v = map.getView(); v.animate({ zoom: v.getZoom() - 1, duration: 200 }); }
+        function zoomIn() {
+            if (is3DEnabled && ol3d) {
+                var cam = ol3d.getCesiumScene().camera;
+                cam.zoomIn(cam.positionCartographic.height * 0.3);
+            } else {
+                var v = map.getView();
+                v.animate({ zoom: v.getZoom() + 1, duration: 200 });
+            }
+        }
+        function zoomOut() {
+            if (is3DEnabled && ol3d) {
+                var cam = ol3d.getCesiumScene().camera;
+                cam.zoomOut(cam.positionCartographic.height * 0.5);
+            } else {
+                var v = map.getView();
+                v.animate({ zoom: v.getZoom() - 1, duration: 200 });
+            }
+        }
 
         /* ============================================================
            OL-CESIUM 3D GLOBE (Lazy Init)
            ============================================================ */
         var ol3d = null;
         var is3DEnabled = false;
-        var cesium3dInitFailed = false;
+        var cesium3dFailed = false;
 
         function initCesium3D() {
             if (ol3d) return true;
-            if (cesium3dInitFailed) return false;
+            if (cesium3dFailed) return false;
 
-            if (CESIUM_TOKEN === 'MASUKKAN_TOKEN_ANDA_DISINI') {
-                showToast('Token Cesium belum diisi. Mode 3D tidak dapat diaktifkan.', 'error');
-                cesium3dInitFailed = true;
+            if (!TOKEN_VALID) {
+                showToast('Token Cesium belum diisi. Buka https://ion.cesium.com/tokens', 'error');
+                cesium3dFailed = true;
+                return false;
+            }
+
+            if (typeof olcs === 'undefined' || typeof Cesium === 'undefined') {
+                showToast('Library 3D gagal dimuat. Periksa koneksi internet.', 'error');
+                cesium3dFailed = true;
                 return false;
             }
 
@@ -436,30 +356,35 @@
             } catch (e) {
                 console.error('Gagal init OL-Cesium:', e);
                 showToast('Gagal inisialisasi 3D: ' + e.message, 'error');
-                cesium3dInitFailed = true;
+                cesium3dFailed = true;
                 return false;
             }
         }
 
         /* ============================================================
-           MAP MODE SWITCHER
+           MODE SWITCHER
            ============================================================ */
         var currentMode = 'standard';
 
         function setMapMode(mode) {
-            currentMode = mode;
+            document.querySelectorAll('.map-mode-btn').forEach(function(b){ b.classList.remove('active'); });
 
-            document.querySelectorAll('.map-mode-btn').forEach(function(btn) { btn.classList.remove('active'); });
+            // Matikan 3D kalau tidak dalam mode globe3d
+            if (mode !== 'globe3d' && ol3d && is3DEnabled) {
+                ol3d.setEnabled(false);
+                is3DEnabled = false;
+                document.getElementById('mode3dInfo').classList.remove('show');
+            }
 
             if (mode === 'standard') {
-                if (ol3d && is3DEnabled) { ol3d.setEnabled(false); is3DEnabled = false; }
+                currentMode = 'standard';
                 baseLayerStandard.setVisible(true);
                 baseLayerSatellite.setVisible(false);
                 document.getElementById('btnModeStandard').classList.add('active');
                 showToast('Mode: Standard 2D', 'info');
             }
             else if (mode === 'satellite') {
-                if (ol3d && is3DEnabled) { ol3d.setEnabled(false); is3DEnabled = false; }
+                currentMode = 'satellite';
                 baseLayerStandard.setVisible(false);
                 baseLayerSatellite.setVisible(true);
                 document.getElementById('btnModeSatellite').classList.add('active');
@@ -468,33 +393,28 @@
             else if (mode === 'globe3d') {
                 var ok = initCesium3D();
                 if (!ok) {
-                    // fallback ke satellite jika 3D gagal
+                    // fallback ke satellite
+                    currentMode = 'satellite';
                     baseLayerStandard.setVisible(false);
                     baseLayerSatellite.setVisible(true);
                     document.getElementById('btnModeSatellite').classList.add('active');
                     return;
                 }
+                currentMode = 'globe3d';
                 baseLayerStandard.setVisible(false);
                 baseLayerSatellite.setVisible(true);
                 ol3d.setEnabled(true);
                 is3DEnabled = true;
                 document.getElementById('btnModeGlobe').classList.add('active');
-                showToast('Mode: Bumi 3D — drag untuk rotate, scroll untuk zoom', 'info');
+                document.getElementById('mode3dInfo').classList.add('show');
+                showToast('Mode: Bumi 3D aktif', 'info');
             }
         }
 
         /* ============================================================
-           KATEGORI & DATA
+           DATA & MARKERS
            ============================================================ */
         var STORAGE_KEY = 'bucin_data';
-        var KATEGORI = {
-            focut:    { warna: '#f43f5e', label: 'FO Cut',    icon: '✂️' },
-            temuan:   { warna: '#10b981', label: 'Temuan',    icon: '🔍' },
-            opm:      { warna: '#38bdf8', label: 'OPM / OLS', icon: '📊' },
-            joint:    { warna: '#f59e0b', label: 'Joint',     icon: '🔗' },
-            handhole: { warna: '#a855f7', label: 'Handhole',  icon: '📦' }
-        };
-
         var markers = [];
         var markersByType = { focut: [], temuan: [], opm: [], joint: [], handhole: [] };
         var markerVisibility = { focut: true, temuan: true, opm: true, joint: true, handhole: true };
@@ -506,7 +426,6 @@
         var popupContainer = document.getElementById('popup');
         var popupContent   = document.getElementById('popup-content');
         var popupCloser    = document.getElementById('popup-closer');
-
         var popupOverlay = new ol.Overlay({
             element: popupContainer,
             autoPan: { animation: { duration: 250 } },
@@ -518,7 +437,6 @@
         popupCloser.onclick = function() {
             popupOverlay.setPosition(undefined);
             popupContainer.style.display = 'none';
-            popupCloser.blur();
             return false;
         };
 
@@ -555,13 +473,11 @@
             var k = KATEGORI[kategori];
             var html = '<div class="popup-title" style="color:' + k.warna + ';">' + k.icon + ' ' + k.label + '</div>';
             var fields = [
-                ['Lokasi', item.lokasi || item.site || item.nama || item.lokasiNama],
+                ['Lokasi', item.lokasi || item.site || item.nama],
                 ['Tanggal', item.tanggal || item.tgl || item.date],
                 ['Penyebab', item.penyebab],
                 ['Jalur', item.jalur],
-                ['Tipe', item.tipe],
                 ['Status', item.status],
-                ['Kondisi', item.kondisi],
                 ['Keterangan', item.keterangan || item.deskripsi || item.catatan]
             ];
             fields.forEach(function(f){ if (f[1]) html += '<div class="popup-row"><b>' + f[0] + ':</b> ' + f[1] + '</div>'; });
@@ -577,8 +493,7 @@
             var counters = { focut: 0, temuan: 0, opm: 0, joint: 0, handhole: 0 };
 
             Object.keys(KATEGORI).forEach(function(kat){
-                var list = data[kat] || [];
-                list.forEach(function(item){
+                (data[kat] || []).forEach(function(item){
                     var koord = getKoordinat(item);
                     if (!koord) return;
                     var feature = new ol.Feature({
@@ -588,9 +503,9 @@
                     feature.set('popupHtml', buatPopup(item, kat));
                     feature.set('data', item);
                     if (markerVisibility[kat]) markerSource.addFeature(feature);
-                    var markerObj = { feature: feature, kategori: kat, data: item };
-                    markers.push(markerObj);
-                    markersByType[kat].push(markerObj);
+                    var obj = { feature: feature, kategori: kat, data: item };
+                    markers.push(obj);
+                    markersByType[kat].push(obj);
                     counters[kat]++;
                 });
             });
@@ -623,15 +538,11 @@
                 var reader = new FileReader();
                 reader.onload = function(ev) {
                     JSZip.loadAsync(ev.target.result).then(function(zip){
-                        var kmlFileName = null;
-                        zip.forEach(function(relativePath){
-                            if (!kmlFileName && relativePath.toLowerCase().endsWith('.kml')) kmlFileName = relativePath;
-                        });
-                        if (!kmlFileName) { showToast('KMZ tidak berisi KML', 'error'); return; }
-                        return zip.file(kmlFileName).async('string');
-                    }).then(function(kmlText){
-                        if (kmlText) renderKMLFromString(kmlText, fileName);
-                    }).catch(function(){ showToast('Gagal baca KMZ', 'error'); });
+                        var kmlName = null;
+                        zip.forEach(function(p){ if (!kmlName && p.toLowerCase().endsWith('.kml')) kmlName = p; });
+                        if (!kmlName) { showToast('KMZ tidak berisi KML', 'error'); return; }
+                        return zip.file(kmlName).async('string');
+                    }).then(function(text){ if (text) renderKMLFromString(text, fileName); });
                 };
                 reader.readAsArrayBuffer(file);
             } else {
@@ -644,36 +555,31 @@
         function renderKMLFromString(kmlText, fileName) {
             try {
                 kmlSource.clear();
-                kmlActiveFile = null;
                 var parser = new DOMParser();
                 var kmlDom = parser.parseFromString(kmlText, 'text/xml');
                 if (kmlDom.querySelector('parsererror')) { showToast('KML tidak valid', 'error'); return; }
-                var toGeoJSONLib = getToGeoJSON();
-                if (!toGeoJSONLib) { showToast('togeojson tidak tersedia', 'error'); return; }
-                var geojson = toGeoJSONLib.kml(kmlDom);
+                var lib = window.toGeoJSON || window.togeojson;
+                if (!lib) { showToast('togeojson tidak tersedia', 'error'); return; }
+                var geojson = lib.kml(kmlDom);
                 if (!geojson || !geojson.features || !geojson.features.length) { showToast('KML kosong', 'error'); return; }
                 var format = new ol.format.GeoJSON();
                 var features = format.readFeatures(geojson, { dataProjection: 'EPSG:4326', featureProjection: 'EPSG:3857' });
                 features.forEach(function(f){
-                    var name = (f.get('name') || 'Unnamed');
-                    var html = '<div class="popup-title" style="color:#38bdf8;"><i class="fa-solid fa-map"></i> KML</div><div class="popup-row"><b>Nama:</b> ' + name + '</div>';
-                    f.set('popupHtml', html);
+                    var name = f.get('name') || 'Unnamed';
+                    f.set('popupHtml', '<div class="popup-title" style="color:#38bdf8;"><i class="fa-solid fa-map"></i> KML</div><div class="popup-row"><b>Nama:</b> ' + name + '</div>');
                 });
                 kmlSource.addFeatures(features);
                 kmlActiveFile = fileName;
-                document.getElementById('headerInfoName').textContent = fileName;
-                document.getElementById('headerInfo').classList.add('show');
-                try { var extent = kmlSource.getExtent(); if (extent && isFinite(extent[0])) view.fit(extent, { padding: [60,60,60,60], duration: 500, maxZoom: 17 }); } catch(e) {}
+                try { var ext = kmlSource.getExtent(); if (ext && isFinite(ext[0])) view.fit(ext, { padding: [60,60,60,60], duration: 500, maxZoom: 17 }); } catch(e) {}
                 showToast('Berhasil upload ' + features.length + ' fitur', 'success');
             } catch(err) { showToast('Gagal parse KML: ' + err.message, 'error'); }
         }
 
         function clearKML() {
-            if (!kmlActiveFile || kmlSource.getFeatures().length === 0) { showToast('Tidak ada KML aktif', 'info'); return; }
+            if (kmlSource.getFeatures().length === 0) { showToast('Tidak ada KML aktif', 'info'); return; }
             if (!confirm('Hapus KML dari peta?')) return;
             kmlSource.clear();
             kmlActiveFile = null;
-            document.getElementById('headerInfo').classList.remove('show');
             showToast('KML dihapus', 'success');
         }
 
@@ -688,25 +594,23 @@
                     if (markerVisibility[kat]) { if (!markerSource.hasFeature(m.feature)) markerSource.addFeature(m.feature); }
                     else { if (markerSource.hasFeature(m.feature)) markerSource.removeFeature(m.feature); }
                 });
-                if (markerVisibility[kat]) li.classList.remove('off');
-                else li.classList.add('off');
+                li.classList.toggle('off', !markerVisibility[kat]);
             });
         });
 
         /* ============================================================
-           KLIK FITUR
+           KLIK FITUR (hanya 2D)
            ============================================================ */
         map.on('singleclick', function(evt){
-            if (is3DEnabled) return; // nonaktifkan popup di mode 3D
+            if (is3DEnabled) return;
             var feature = map.forEachFeatureAtPixel(evt.pixel, function(f){ return f; }, { hitTolerance: 5 });
             if (feature) {
                 var html = feature.get('popupHtml');
                 if (html) {
                     popupContent.innerHTML = html;
                     popupContainer.style.display = 'block';
-                    var geometry = feature.getGeometry();
-                    var coord = geometry.getType() === 'Point' ? geometry.getCoordinates() : evt.coordinate;
-                    popupOverlay.setPosition(coord);
+                    var g = feature.getGeometry();
+                    popupOverlay.setPosition(g.getType() === 'Point' ? g.getCoordinates() : evt.coordinate);
                 }
             } else {
                 popupOverlay.setPosition(undefined);
@@ -716,35 +620,16 @@
 
         map.on('pointermove', function(evt){
             if (is3DEnabled) return;
-            var hit = map.hasFeatureAtPixel(evt.pixel, { hitTolerance: 5 });
-            map.getTargetElement().style.cursor = hit ? 'pointer' : '';
+            map.getTargetElement().style.cursor = map.hasFeatureAtPixel(evt.pixel, { hitTolerance: 5 }) ? 'pointer' : '';
         });
-
-        /* ============================================================
-           LISTENER PESAN
-           ============================================================ */
-        window.addEventListener('message', function (event) {
-            var data = event.data || {};
-            if (data.type === 'theme-change') {
-                if (data.theme === 'light') document.body.classList.add('light-mode');
-                else document.body.classList.remove('light-mode');
-            }
-            else if (data.type === 'refresh-markers') renderMarkers();
-        });
-
-        window.addEventListener('storage', function(e){
-            if (e.key === STORAGE_KEY) renderMarkers();
-        });
-        setInterval(renderMarkers, 5000);
 
         /* ============================================================
            INIT
            ============================================================ */
         renderMarkers();
-
-        setTimeout(function () { map.updateSize(); }, 200);
-        setTimeout(function () { map.updateSize(); }, 800);
-        window.addEventListener('resize', function () { map.updateSize(); });
+        setTimeout(function(){ map.updateSize(); }, 200);
+        setTimeout(function(){ map.updateSize(); }, 800);
+        window.addEventListener('resize', function(){ map.updateSize(); });
     </script>
 </body>
 </html>
