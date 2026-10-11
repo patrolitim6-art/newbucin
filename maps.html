@@ -48,10 +48,11 @@ html, body { height: 100%; overflow: hidden; font-family: var(--app-font); backg
 .header-btn.primary:hover { background: rgba(16, 185, 129, 0.15); border-color: var(--primary-green); color: var(--primary-green); }
 .header-btn i { width: 15px; height: 15px; }
 
-.map-wrap { position: relative; width: 100%; height: calc(100vh - var(--header-h)); }
+/* UKURAN MAP = SETENGAH DARI SEBELUMNYA */
+.map-wrap { position: relative; width: 100%; height: calc((100vh - var(--header-h)) / 2); }
 #map-container { position: absolute; inset: 0; width: 100%; height: 100%; }
+#map-container canvas { image-rendering: -webkit-optimize-contrast; }
 
-/* ============ LEGENDA CONTAINER ============ */
 .map-legend-container {
   position: absolute; top: 12px; left: 12px; z-index: 1000;
   display: flex; flex-direction: column; gap: 8px;
@@ -109,18 +110,6 @@ html, body { height: 100%; overflow: hidden; font-family: var(--app-font); backg
 .draw-point.first { background: #10B981; }
 .draw-point.last { background: #EC4899; }
 .draw-cursor-active #map-container, .draw-cursor-active #map-container canvas { cursor: crosshair !important; }
-
-/* MAP MARKER TITIK */
-.map-marker-dot {
-  width: 14px; height: 14px; border-radius: 50%;
-  border: 2px solid #fff;
-  cursor: pointer;
-  transition: transform 0.15s;
-}
-.map-marker-dot:hover {
-  transform: scale(1.3);
-  z-index: 999 !important;
-}
 
 .modal-layer { position: fixed; z-index: 10000; inset: 0; background: rgba(5, 8, 16, 0.85); display: grid; place-items: center; padding: 20px; overflow-y: auto; }
 .modal-card { background: var(--surface-modal); width: 100%; max-width: 560px; border-radius: 20px; max-height: 92vh; overflow-y: auto; padding: 22px; box-shadow: var(--shadow-modal); border: 1px solid var(--border-glow); color: var(--text-main); }
@@ -211,10 +200,7 @@ select.field-control option { background: var(--surface-3); color: var(--text-ma
 <div class="map-wrap">
   <div id="map-container"></div>
 
-  <!-- ============ LEGENDA CONTAINER ============ -->
   <div class="map-legend-container">
-
-    <!-- LEGENDA LINE -->
     <div class="map-legend-box" id="legend-line-box">
       <div class="ml-title">
         <div class="ml-title-left" onclick="toggleLegendCollapse(event, 'legend-line-box')" title="Klik untuk sembunyikan/tampilkan">
@@ -233,7 +219,6 @@ select.field-control option { background: var(--surface-3); color: var(--text-ma
       </div>
     </div>
 
-    <!-- LEGENDA TITIK (BARU) -->
     <div class="map-legend-box" id="legend-titik-box">
       <div class="ml-title">
         <div class="ml-title-left" onclick="toggleLegendCollapse(event, 'legend-titik-box')" title="Klik untuk sembunyikan/tampilkan">
@@ -246,12 +231,9 @@ select.field-control option { background: var(--surface-3); color: var(--text-ma
         </div>
       </div>
       <div class="ml-grid-wrap">
-        <div class="ml-grid" id="ml-titik-grid">
-          <div style="font-size:9px;color:var(--text-dim);font-style:italic;padding:4px;grid-column:1/-1;">Memuat titik...</div>
-        </div>
+        <div class="ml-grid" id="ml-titik-grid"></div>
       </div>
     </div>
-
   </div>
 
   <div class="custom-map-controls">
@@ -394,13 +376,10 @@ let lineVisibility = {};
 let kmlDataCache = null;
 let customLines = {};
 
-// STATE UNTUK TITIK
-let mapMarkers = {};              // { titikId: { marker, category } }
-let markerVisibility = {};        // { categoryKey: true/false }
-let titikDataCache = null;        // data titik dari Firebase
-let titikVisibleAll = true;       // global toggle
-let markerWatchdog = null;
-let markerWatchdogCount = 0;
+let mapMarkers = {};
+let markerVisibility = {};
+let titikDataCache = null;
+let titikVisibleAll = true;
 
 let drawMode = false;
 let drawPoints = [];
@@ -408,7 +387,6 @@ let drawMarkers = [];
 let drawCurrentLine = null;
 
 /* ============================================================ KATEGORI TITIK ============================================================ */
-// Titik dari 4 sumber: FO Cut (semua penyebab), Temuan, Handhole, Joint
 const TITIK_CATEGORIES = [
   { key: 'ofcut_p3',       label: 'FO Cut P3',        color: '#FF0000', source: 'Data OF Cut', filter: (it) => classifyCause(it) === 'p3' },
   { key: 'ofcut_vandal',   label: 'FO Cut Vandal',    color: '#00FF00', source: 'Data OF Cut', filter: (it) => classifyCause(it) === 'vandal' },
@@ -447,15 +425,73 @@ function showToast(msg, type) {
   setTimeout(() => t.remove(), 3000);
 }
 
-/* ============================================================ MAP STYLES ============================================================ */
+/* ============================================================ MAP STYLES — HD TILES ============================================================ */
 function getSatelliteStyle() {
-  return { version: 8, sources: { satellite: { type: 'raster', tiles: ['https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'], tileSize: 256, minzoom: 0, maxzoom: 19 } }, layers: [{ id: 'satellite-layer', type: 'raster', source: 'satellite' }] };
+  return {
+    version: 8,
+    sources: {
+      satellite: {
+        type: 'raster',
+        tiles: ['https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'],
+        tileSize: 256, minzoom: 0, maxzoom: 19
+      },
+      'satellite-hd': {
+        type: 'raster',
+        tiles: ['https://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'],
+        tileSize: 512, minzoom: 13, maxzoom: 22
+      }
+    },
+    layers: [
+      { id: 'satellite-layer', type: 'raster', source: 'satellite', minzoom: 0, maxzoom: 14 },
+      { id: 'satellite-hd-layer', type: 'raster', source: 'satellite-hd', minzoom: 14, maxzoom: 22 }
+    ]
+  };
 }
 function getStreetStyle() {
-  return { version: 8, sources: { osm: { type: 'raster', tiles: ['https://tile.openstreetmap.org/{z}/{x}/{y}.png'], tileSize: 256, minzoom: 0, maxzoom: 19 } }, layers: [{ id: 'osm-layer', type: 'raster', source: 'osm' }] };
+  return {
+    version: 8,
+    sources: {
+      osm: {
+        type: 'raster',
+        tiles: ['https://tile.openstreetmap.org/{z}/{x}/{y}.png'],
+        tileSize: 256, minzoom: 0, maxzoom: 19
+      },
+      'osm-hd': {
+        type: 'raster',
+        tiles: [
+          'https://a.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png',
+          'https://b.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png',
+          'https://c.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png'
+        ],
+        tileSize: 512, minzoom: 13, maxzoom: 22
+      }
+    },
+    layers: [
+      { id: 'osm-layer', type: 'raster', source: 'osm', minzoom: 0, maxzoom: 13 },
+      { id: 'osm-hd-layer', type: 'raster', source: 'osm-hd', minzoom: 13, maxzoom: 22 }
+    ]
+  };
 }
 function getHybridStyle() {
-  return { version: 8, sources: { hybrid: { type: 'raster', tiles: ['https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}'], tileSize: 256, minzoom: 0, maxzoom: 19 } }, layers: [{ id: 'hybrid-layer', type: 'raster', source: 'hybrid' }] };
+  return {
+    version: 8,
+    sources: {
+      hybrid: {
+        type: 'raster',
+        tiles: ['https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}'],
+        tileSize: 256, minzoom: 0, maxzoom: 19
+      },
+      'hybrid-hd': {
+        type: 'raster',
+        tiles: ['https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}'],
+        tileSize: 512, minzoom: 14, maxzoom: 22
+      }
+    },
+    layers: [
+      { id: 'hybrid-layer', type: 'raster', source: 'hybrid', minzoom: 0, maxzoom: 14 },
+      { id: 'hybrid-hd-layer', type: 'raster', source: 'hybrid-hd', minzoom: 14, maxzoom: 22 }
+    ]
+  };
 }
 
 /* ============================================================ HARVEST HARDCODED LINES ============================================================ */
@@ -494,16 +530,29 @@ function tryForceRender(source) {
   }
 }
 
-/* ============================================================ INIT MAP ============================================================ */
+/* ============================================================ INIT MAP — RENDER HD + OPTIMASI ZOOM ============================================================ */
 function initMap() {
   if (map) return;
   try {
+    // Deteksi DPI layar untuk render HD
+    const dpr = window.devicePixelRatio || 1;
+    console.log('[MAP] pixelRatio:', dpr);
+
     map = new maplibregl.Map({
       container: 'map-container',
       style: getSatelliteStyle(),
       center: [124.8410, 1.4930],
-      zoom: 11, maxZoom: 22, minZoom: 2,
-      attributionControl: false, antialias: true
+      zoom: 11,
+      maxZoom: 22,
+      minZoom: 2,
+      attributionControl: false,
+      antialias: true,
+      pixelRatio: dpr,                 // HD sesuai DPI layar
+      fadeDuration: 100,               // Transisi tile cepat
+      maxTileCacheSize: 100,           // Cache tile besar
+      refreshExpiredTiles: false,
+      renderWorldCopies: false,
+      trackResize: true
     });
 
     map.on('styledata', () => setTimeout(() => tryForceRender('styledata'), 100));
@@ -515,9 +564,36 @@ function initMap() {
       try { map.resize(); } catch(e){}
       tryForceRender('load');
       startWatchdog();
-      // Load titik setelah map ready
-      loadTitikFromFirebase();
+      renderTitikLegend();
     });
+
+    // === OPTIMASI ZOOM: paksa render HD saat zoom tinggi ===
+    map.on('zoom', () => {
+      const canvas = document.querySelector('#map-container canvas');
+      if (canvas) canvas.style.imageRendering = 'high-quality';
+    });
+
+    let zoomDebounce = null;
+    map.on('zoomend', () => {
+      if (zoomDebounce) clearTimeout(zoomDebounce);
+      zoomDebounce = setTimeout(() => {
+        try { map.resize(); } catch(e){}
+        const z = map.getZoom();
+        console.log('[MAP] zoomend:', z.toFixed(2));
+        if (z > 13) {
+          // Paksa redraw untuk kualitas HD
+          try { map.triggerRepaint(); } catch(e) {}
+        }
+      }, 200);
+    });
+
+    // === OPTIMASI RESIZE ===
+    if (typeof ResizeObserver !== 'undefined') {
+      const ro = new ResizeObserver(() => {
+        if (map) setTimeout(() => { try { map.resize(); } catch(e){} }, 100);
+      });
+      ro.observe(document.getElementById('map-container'));
+    }
 
     map.on('error', e => console.error('[MAP ERROR]', e));
     map.on('click', e => { if (drawMode) handleDrawClick(e); });
@@ -541,161 +617,41 @@ function startWatchdog() {
   }, 500);
 }
 
-/* ============================================================ LOAD TITIK DARI FIREBASE ============================================================ */
+/* ============================================================ RENDER MARKER (KOSONG - SIAP KONEK NANTI) ============================================================ */
 function loadTitikFromFirebase() {
-  if (!db) return;
-
-  // Listener realtime
-  db.ref('data').on('value', s => {
-    titikDataCache = s.val() || {};
-    console.log('[TITIK] Data update');
-    renderAllMarkers();
-    renderTitikLegend();
-  });
-
-  // One-time fetch sebagai backup
-  db.ref('data').once('value').then(s => {
-    titikDataCache = s.val() || {};
-    console.log('[TITIK] One-time fetch OK');
-    renderAllMarkers();
-    renderTitikLegend();
-  });
+  // Dinonaktifkan — Firebase belum terhubung
+  // Titik akan kosong sampai data Firebase siap
+  console.log('[TITIK] Load dinonaktifkan — Firebase belum terhubung');
+  titikDataCache = {};
+  renderAllMarkers();
+  renderTitikLegend();
 }
 
-/* ============================================================ RENDER SEMUA MARKER ============================================================ */
 function renderAllMarkers() {
-  if (!map || !mapReady) return;
-
-  // Hapus semua marker lama
-  Object.keys(mapMarkers).forEach(id => {
-    try { mapMarkers[id].marker.remove(); } catch(e) {}
-  });
-  mapMarkers = {};
-
-  const data = titikDataCache || {};
-  let total = 0;
-
-  TITIK_CATEGORIES.forEach(cat => {
-    // Init visibility kalau belum ada
-    if (markerVisibility[cat.key] === undefined) markerVisibility[cat.key] = true;
-
-    const items = data[cat.source] || {};
-    const isVisible = markerVisibility[cat.key] !== false;
-
-    Object.keys(items).forEach(k => {
-      const it = items[k];
-
-      // Kalau ada filter khusus kategori ini, cek
-      if (cat.filter && !cat.filter(it)) return;
-
-      // Ambil koordinat
-      let lat = null, lng = null;
-      if (it.coords) {
-        const parts = String(it.coords).split(',').map(x => x.trim());
-        if (parts.length >= 2) {
-          lat = parseFloat(parts[0]);
-          lng = parseFloat(parts[1]);
-        }
-      }
-      if (isNaN(lat) || isNaN(lng)) {
-        lat = parseFloat(it.lat || it.latitude || '');
-        lng = parseFloat(it.lng || it.lon || it.longitude || '');
-      }
-      if (isNaN(lat) || isNaN(lng) || lat === 0 || lng === 0) return;
-
-      // Buat elemen marker
-      const el = document.createElement('div');
-      el.className = 'map-marker-dot';
-      el.style.background = cat.color;
-      el.style.boxShadow = '0 0 8px ' + cat.color + ', 0 2px 4px rgba(0,0,0,0.4)';
-
-      const popup = new maplibregl.Popup({ offset: 14, closeButton: true, maxWidth: '240px' })
-        .setHTML(buildTitikPopup(it, cat));
-
-      const marker = new maplibregl.Marker({ element: el, anchor: 'center' })
-        .setLngLat([lng, lat])
-        .setPopup(popup);
-
-      if (isVisible && titikVisibleAll) {
-        marker.addTo(map);
-      }
-
-      const markerId = cat.key + '_' + k;
-      mapMarkers[markerId] = { marker, category: cat.key, data: it, visible: isVisible };
-      total++;
-    });
-  });
-
-  console.log('[TITIK] Total', total, 'marker, visible categories:', Object.keys(markerVisibility).filter(k => markerVisibility[k] !== false).length);
-
-  if (typeof lucide !== 'undefined') lucide.createIcons();
+  // Kosong — belum ada data
+  console.log('[TITIK] Tidak ada marker — data masih kosong');
 }
 
-/* ============================================================ POPUP TITIK ============================================================ */
-function buildTitikPopup(item, cat) {
-  const row = (label, val) => (val === undefined || val === null || val === '') ? '' :
-    '<div style="color:#94A3B8;font-weight:700;font-size:9px;">' + label + '</div>' +
-    '<div style="color:#E2E8F0;font-weight:600;word-break:break-word;font-size:10px;margin-bottom:3px;">' + escapeHtml(String(val)) + '</div>';
-
-  let html = '<div style="min-width:160px;max-width:240px;">';
-  html += '<div style="font-weight:800;font-size:11px;color:' + cat.color + ';margin-bottom:6px;padding-bottom:4px;border-bottom:1px solid rgba(148,163,184,0.3);">' +
-          '<span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:' + cat.color + ';margin-right:5px;vertical-align:middle;"></span>' +
-          escapeHtml(cat.label) + '</div>';
-
-  html += row('Tanggal', item.date);
-  html += row('Lokasi', item.location);
-  if (item.penyebab) html += row('Penyebab', item.penyebab);
-  if (item.kondisi) html += row('Kondisi', item.kondisi);
-  if (item.pelaksana) html += row('Pelaksana', item.pelaksana);
-  if (item.keterangan) html += row('Keterangan', item.keterangan);
-  if (item.postBy) html += row('User', item.postBy);
-
-  html += '</div>';
-  return html;
-}
-
-/* ============================================================ LEGENDA TITIK (GRID) ============================================================ */
 function renderTitikLegend() {
   const gridEl = document.getElementById('ml-titik-grid');
   const countEl = document.getElementById('ml-titik-count');
   if (!gridEl) return;
 
-  const data = titikDataCache || {};
-  const counts = {};
-  let totalVisible = 0;
-
+  // Set default visibility untuk semua kategori
   TITIK_CATEGORIES.forEach(cat => {
-    const items = data[cat.source] || {};
-    let count = 0;
-    Object.keys(items).forEach(k => {
-      const it = items[k];
-      if (cat.filter && !cat.filter(it)) return;
-
-      let lat = null, lng = null;
-      if (it.coords) {
-        const parts = String(it.coords).split(',').map(x => x.trim());
-        if (parts.length >= 2) { lat = parseFloat(parts[0]); lng = parseFloat(parts[1]); }
-      }
-      if (isNaN(lat) || isNaN(lng)) {
-        lat = parseFloat(it.lat || '');
-        lng = parseFloat(it.lng || it.lon || '');
-      }
-      if (!isNaN(lat) && !isNaN(lng) && lat !== 0 && lng !== 0) count++;
-    });
-    counts[cat.key] = count;
-    if (markerVisibility[cat.key] !== false) totalVisible += count;
+    if (markerVisibility[cat.key] === undefined) markerVisibility[cat.key] = true;
   });
 
-  if (countEl) countEl.textContent = '(' + totalVisible + ')';
+  if (countEl) countEl.textContent = '(0)';
 
+  // Render kategori (count 0 semua)
   gridEl.innerHTML = TITIK_CATEGORIES.map(cat => {
     const isOn = markerVisibility[cat.key] !== false;
-    const count = counts[cat.key] || 0;
-    return '<div class="ml-item ' + (isOn ? 'on' : 'off') + '" onclick="toggleTitikVisibility(\'' + cat.key + '\')" title="' + escapeHtml(cat.label) + ' (' + count + ' titik)">' +
+    return '<div class="ml-item ' + (isOn ? 'on' : 'off') + '" onclick="toggleTitikVisibility(\'' + cat.key + '\')" title="' + escapeHtml(cat.label) + ' (0 titik)">' +
       '<span class="ml-item-toggle">' + (isOn ? '✓' : '') + '</span>' +
       '<span class="ml-item-dot" style="background:' + cat.color + ';"></span>' +
       '<span class="ml-item-name">' + escapeHtml(cat.label) + '</span>' +
-      '<span class="ml-item-count">' + count + '</span>' +
+      '<span class="ml-item-count">0</span>' +
     '</div>';
   }).join('');
 }
@@ -703,19 +659,6 @@ function renderTitikLegend() {
 window.toggleTitikVisibility = function(catKey) {
   markerVisibility[catKey] = !(markerVisibility[catKey] !== false);
   console.log('[TITIK] Toggle', catKey, '→', markerVisibility[catKey]);
-
-  // Update semua marker kategori ini
-  Object.keys(mapMarkers).forEach(id => {
-    const m = mapMarkers[id];
-    if (m.category === catKey) {
-      if (markerVisibility[catKey] && titikVisibleAll) {
-        try { m.marker.addTo(map); } catch(e) {}
-      } else {
-        try { m.marker.remove(); } catch(e) {}
-      }
-    }
-  });
-
   renderTitikLegend();
 };
 
@@ -723,23 +666,16 @@ window.showAllTitik = function(event) {
   if (event) { event.stopPropagation(); event.preventDefault(); }
   titikVisibleAll = true;
   Object.keys(markerVisibility).forEach(k => markerVisibility[k] = true);
-  Object.keys(mapMarkers).forEach(id => {
-    const m = mapMarkers[id];
-    try { m.marker.addTo(map); } catch(e) {}
-  });
   renderTitikLegend();
-  showToast('Semua titik ditampilkan', 'info');
+  showToast('Semua kategori titik aktif', 'info');
 };
 
 window.hideAllTitik = function(event) {
   if (event) { event.stopPropagation(); event.preventDefault(); }
   titikVisibleAll = false;
   Object.keys(markerVisibility).forEach(k => markerVisibility[k] = false);
-  Object.keys(mapMarkers).forEach(id => {
-    try { mapMarkers[id].marker.remove(); } catch(e) {}
-  });
   renderTitikLegend();
-  showToast('Semua titik disembunyikan', 'info');
+  showToast('Semua kategori titik non-aktif', 'info');
 };
 
 window.toggleLegendCollapse = function(event, boxId) {
@@ -766,7 +702,6 @@ window.toggleMapLayer = function(type, evt) {
     mapReady = true;
     setTimeout(() => {
       tryForceRender('style-change');
-      renderAllMarkers();
       renderTitikLegend();
       startWatchdog();
     }, 150);
@@ -874,17 +809,6 @@ function processKmlAndSave(kmlText, lineName) {
       const allCoordTags = xml.getElementsByTagName('coordinates');
       for (let i = 0; i < allCoordTags.length; i++) {
         allCoords = allCoords.concat(parseCoordString(allCoordTags[i].textContent));
-      }
-    }
-    if (allCoords.length < 2) {
-      const gxCoords = xml.getElementsByTagName('gx:coord');
-      for (let i = 0; i < gxCoords.length; i++) {
-        const parts = (gxCoords[i].textContent || '').trim().split(/\s+/);
-        if (parts.length >= 2) {
-          const lng = parseFloat(parts[0]);
-          const lat = parseFloat(parts[1]);
-          if (!isNaN(lat) && !isNaN(lng)) allCoords.push([lng, lat]);
-        }
       }
     }
     if (allCoords.length < 2) return reject(new Error('Tidak ada koordinat valid'));
@@ -1323,6 +1247,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   initMap();
   loadKmlFromFirebase();
+  loadTitikFromFirebase();
 
   [500, 1500, 3000].forEach(delay => {
     setTimeout(() => tryForceRender('init-' + delay), delay);
