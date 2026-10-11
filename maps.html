@@ -65,20 +65,50 @@ html, body { height: 100%; overflow: hidden; font-family: var(--app-font); backg
 .map-wrap { position: relative; width: 100%; height: calc(100vh - var(--header-h)); }
 #map-container { position: absolute; inset: 0; width: 100%; height: 100%; }
 
+/* LEGENDA LINE */
 .map-legend-top-right {
   position: absolute; top: 12px; left: 12px; z-index: 1000;
   background: var(--surface-map-legend); border: 1px solid var(--border-glow);
-  border-radius: 10px; padding: 8px 10px; max-width: 200px; font-size: 10px;
-  max-height: 400px; overflow-y: auto;
+  border-radius: 10px; padding: 8px 10px; max-width: 230px; font-size: 10px;
+  max-height: 500px; overflow-y: auto;
+  min-width: 200px;
 }
-.map-legend-top-right .ml-title { font-weight: 800; color: var(--primary-cyan); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 5px; font-size: 9px; padding-bottom: 4px; border-bottom: 1px solid var(--border-subtle); }
-.map-legend-top-right .ml-item { display: flex; align-items: center; gap: 5px; margin-bottom: 2px; color: var(--text-muted); font-weight: 600; }
-.map-legend-top-right .ml-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
-.map-legend-top-right .ml-count { margin-left: auto; font-family: 'Orbitron', sans-serif; font-weight: 800; color: var(--text-main); font-size: 9px; }
-.map-legend-top-right .ml-line-section { margin-top: 6px; padding-top: 6px; border-top: 1px solid var(--border-subtle); }
-.map-legend-top-right .ml-line-item { display: flex; align-items: center; gap: 5px; margin-bottom: 3px; color: var(--text-muted); font-weight: 600; }
-.map-legend-top-right .ml-line-bar { width: 14px; height: 3px; border-radius: 2px; flex-shrink: 0; }
-.map-legend-top-right .ml-line-name { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 9px; }
+.map-legend-top-right .ml-title {
+  font-weight: 800; color: var(--primary-cyan); text-transform: uppercase;
+  letter-spacing: 0.8px; margin-bottom: 5px; font-size: 9px;
+  padding-bottom: 4px; border-bottom: 1px solid var(--border-subtle);
+  display: flex; align-items: center; justify-content: space-between; gap: 4px;
+}
+.map-legend-top-right .ml-title-actions {
+  display: flex; gap: 3px;
+}
+.map-legend-top-right .ml-mini-btn {
+  background: rgba(0,217,255,0.1); border: 1px solid var(--border-glow);
+  color: var(--primary-cyan); cursor: pointer; border-radius: 4px;
+  padding: 1px 5px; font-size: 8px; font-weight: 700;
+  font-family: inherit;
+}
+.map-legend-top-right .ml-mini-btn:hover { background: rgba(0,217,255,0.25); }
+
+.ml-line-list { display: flex; flex-direction: column; gap: 3px; }
+.ml-line-item {
+  display: flex; align-items: center; gap: 5px;
+  color: var(--text-muted); font-weight: 600;
+  padding: 3px 4px; border-radius: 5px;
+  cursor: pointer; user-select: none;
+  transition: background 0.15s;
+}
+.ml-line-item:hover { background: rgba(0,217,255,0.08); }
+.ml-line-item.off { opacity: 0.35; text-decoration: line-through; }
+.ml-line-toggle {
+  width: 14px; height: 14px; flex-shrink: 0;
+  border: 1.5px solid currentColor; border-radius: 3px;
+  display: grid; place-items: center; font-size: 9px; line-height: 1;
+  font-weight: 900;
+}
+.ml-line-item.on .ml-line-toggle { background: var(--primary-cyan); color: var(--bg-main); border-color: var(--primary-cyan); }
+.ml-line-bar { width: 14px; height: 3px; border-radius: 2px; flex-shrink: 0; }
+.ml-line-name { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 9px; }
 
 .maplibregl-popup-content { background: var(--surface-map-legend) !important; color: var(--text-main) !important; border: 1px solid var(--border-glow) !important; border-radius: 8px !important; padding: 8px 10px !important; max-width: 240px !important; font-size: 10px !important; }
 .maplibregl-popup-tip { border-top-color: var(--surface-map-legend) !important; border-bottom-color: var(--surface-map-legend) !important; }
@@ -175,7 +205,7 @@ select.field-control option { background: var(--surface-3); color: var(--text-ma
   .header-btn span { display: none; }
   .header-btn { padding: 8px 10px; }
   .floating-panel { right: 50px; left: 10px; min-width: 0; max-width: none; }
-  .map-legend-top-right { max-width: 150px; font-size: 9px; }
+  .map-legend-top-right { max-width: 180px; font-size: 9px; }
   .custom-map-btn { width: 34px; height: 34px; }
 }
 </style>
@@ -202,17 +232,17 @@ select.field-control option { background: var(--surface-3); color: var(--text-ma
 <div class="map-wrap">
   <div id="map-container"></div>
 
-  <!-- LEGENDA -->
+  <!-- LEGENDA LINE (menggantikan legenda titik) -->
   <div class="map-legend-top-right" id="map-legend-container">
-    <div class="ml-title">Keterangan Titik</div>
-    <div class="ml-item"><span class="ml-dot" style="background:#FF0000;"></span>OF Cut<span class="ml-count" id="ml-count-ofcut">0</span></div>
-    <div class="ml-item"><span class="ml-dot" style="background:#00FF00;"></span>Pihak Ke-3<span class="ml-count" id="ml-count-p3">0</span></div>
-    <div class="ml-item"><span class="ml-dot" style="background:#0000FF;"></span>Temuan<span class="ml-count" id="ml-count-temuan">0</span></div>
-    <div class="ml-item"><span class="ml-dot" style="background:#FFFF00;"></span>Joint<span class="ml-count" id="ml-count-joint">0</span></div>
-    <div class="ml-item"><span class="ml-dot" style="background:#FF00FF;"></span>Handhole<span class="ml-count" id="ml-count-handhole">0</span></div>
-    <div class="ml-line-section" id="ml-line-section" style="display:none;">
-      <div class="ml-title" style="margin-top:0;">Keterangan Line</div>
-      <div id="ml-line-list"></div>
+    <div class="ml-title">
+      <span>Line Aktif</span>
+      <div class="ml-title-actions">
+        <button class="ml-mini-btn" onclick="showAllLines(event)" title="Tampilkan Semua">ALL</button>
+        <button class="ml-mini-btn" onclick="hideAllLines(event)" title="Sembunyikan Semua">NONE</button>
+      </div>
+    </div>
+    <div class="ml-line-list" id="ml-line-list">
+      <div style="font-size:9px;color:var(--text-dim);font-style:italic;padding:4px;">Belum ada line</div>
     </div>
   </div>
 
@@ -355,8 +385,8 @@ try { firebase.initializeApp(firebaseConfig); db = firebase.database(); } catch(
 
 /* ============================================================ STATE ============================================================ */
 let map = null;
-let markers = [];
-let kmlLayers = {};
+let kmlLayers = {};         // { lineName: { sourceId, layerId, geojson } }
+let lineVisibility = {};    // { lineName: true/false }
 let kmlDataCache = null;
 let customLines = {};
 let drawMode = false;
@@ -371,20 +401,13 @@ const kmlLineColors = {
 };
 const BUILTIN_LINES = ['OSP LINE 1','OSP LINE 2','OSP LINE 3','IGG LINE 1','IGG LINE 2','DWDM','SEA US LINE 1','SEA US LINE 2'];
 
-const POINT_CATEGORIES = [
-  { key: 'Data OF Cut', label: 'OF Cut', color: '#FF0000' },
-  { key: 'Pekerjaan Pihak Ke-3', label: 'Pihak Ke-3', color: '#00FF00' },
-  { key: 'Temuan Lapangan', label: 'Temuan', color: '#0000FF' },
-  { key: 'Joint', label: 'Joint', color: '#FFFF00' },
-  { key: 'Handhole', label: 'Handhole', color: '#FF00FF' }
-];
-
 /* ============================================================ HELPERS ============================================================ */
 function escapeHtml(s) {
   if (s === null || s === undefined) return '';
   return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 }
 function escapeXml(s) { return String(s).replace(/[<>&'"]/g, c => ({'<':'&lt;','>':'&gt;','&':'&amp;',"'":'&apos;','"':'&quot;'}[c])); }
+function escapeAttr(s) { return String(s).replace(/\\/g, '\\\\').replace(/'/g, "\\'").replace(/"/g, '&quot;'); }
 function showToast(msg, type) {
   type = type || '';
   console.log('[TOAST ' + type.toUpperCase() + ']', msg);
@@ -423,7 +446,7 @@ function initMap() {
     map.on('load', () => {
       console.log('[MAP] Loaded');
       setTimeout(() => { try { map.resize(); } catch(e){} }, 100);
-      loadMarkersFromData();
+      // Marker dihapus — tidak load markers
       if (kmlDataCache) applyLineFilters();
       else if (db) {
         db.ref('kmlData').once('value').then(s => {
@@ -434,74 +457,12 @@ function initMap() {
     });
     map.on('error', e => console.error('[MAP ERROR]', e));
     map.on('click', e => {
-      console.log('[MAP CLICK] drawMode:', drawMode);
       if (drawMode) handleDrawClick(e);
     });
   } catch (e) {
     console.error('Map init:', e);
     showToast('Gagal inisialisasi peta: ' + e.message, 'error');
   }
-}
-
-/* ============================================================ MARKERS ============================================================ */
-function loadMarkersFromData() {
-  if (!map || !db) return;
-  markers.forEach(m => { try { m.remove(); } catch(e){} });
-  markers = [];
-  db.ref('data').once('value').then(snap => {
-    const appData = snap.val() || {};
-    let totalMarkers = 0;
-
-    POINT_CATEGORIES.forEach(cat => {
-      const items = appData[cat.key] || {};
-      Object.keys(items).forEach(k => {
-        const it = items[k];
-        let lat = null, lng = null;
-
-        if (it.coords) {
-          const parts = String(it.coords).split(',').map(x => x.trim());
-          if (parts.length >= 2) {
-            lat = parseFloat(parts[0]);
-            lng = parseFloat(parts[1]);
-          }
-        }
-        if (isNaN(lat) || isNaN(lng)) {
-          lat = parseFloat(it.lat || it.latitude || '');
-          lng = parseFloat(it.lng || it.lon || it.longitude || '');
-        }
-
-        if (lat !== null && lng !== null && !isNaN(lat) && !isNaN(lng) && lat !== 0 && lng !== 0) {
-          const el = document.createElement('div');
-          el.className = 'ml-marker';
-          el.style.cssText = 'width:14px;height:14px;border-radius:50%;border:2px solid #fff;box-shadow:0 0 8px ' + cat.color + ',0 2px 4px rgba(0,0,0,0.4);cursor:pointer;background:' + cat.color + ';';
-          const popup = new maplibregl.Popup({ offset: 14, closeButton: true, maxWidth: '230px' })
-            .setHTML(buildMarkerPopup(cat.key, it, cat.color));
-          const marker = new maplibregl.Marker({ element: el, anchor: 'center' })
-            .setLngLat([lng, lat])
-            .setPopup(popup)
-            .addTo(map);
-          markers.push(marker);
-          totalMarkers++;
-        }
-      });
-    });
-    console.log('[MAP] Total markers:', totalMarkers);
-    updateMapLegendCounts(appData);
-  }).catch(err => console.error('[MAP] markers error:', err));
-}
-function buildMarkerPopup(cat, it, color) {
-  const row = (label, val, c) => (val === undefined || val === null || val === '') ? '' : '<div style="color:#94A3B8;font-weight:700;font-size:9px;">' + label + '</div><div style="color:' + (c || '#E2E8F0') + ';font-weight:600;word-break:break-word;font-size:10px;">' + escapeHtml(String(val)) + '</div>';
-  let rows = row('Kategori', cat, color) + row('Tanggal', it.date) + row('Lokasi', it.location);
-  if (it.keterangan) rows += row('Keterangan', it.keterangan);
-  return '<div style="min-width:150px;max-width:220px;display:grid;grid-template-columns:auto 1fr;gap:2px 8px;font-size:10px;line-height:1.3;">' + rows + '</div>';
-}
-function updateMapLegendCounts(appData) {
-  const count = cat => Object.keys((appData && appData[cat]) || {}).length;
-  document.getElementById('ml-count-ofcut').textContent = count('Data OF Cut');
-  document.getElementById('ml-count-p3').textContent = count('Pekerjaan Pihak Ke-3');
-  document.getElementById('ml-count-temuan').textContent = count('Temuan Lapangan');
-  document.getElementById('ml-count-joint').textContent = count('Joint');
-  document.getElementById('ml-count-handhole').textContent = count('Handhole');
 }
 
 /* ============================================================ MAP LAYER SWITCH ============================================================ */
@@ -511,12 +472,9 @@ window.toggleMapLayer = function(type, evt) {
   if (type === 'street') style = getStreetStyle();
   else if (type === 'hybrid') style = getHybridStyle();
   else style = getSatelliteStyle();
-  markers.forEach(m => { try { m.remove(); } catch(e) {} });
-  markers = [];
   kmlLayers = {};
   map.setStyle(style);
   map.once('idle', () => {
-    loadMarkersFromData();
     setTimeout(() => { if (map && map.isStyleLoaded()) applyLineFilters(); }, 150);
   });
   document.querySelectorAll('.custom-map-btn').forEach(b => b.classList.remove('active'));
@@ -556,16 +514,21 @@ document.getElementById('kml-file').addEventListener('change', function() {
   document.getElementById('kml-info').className = this.files[0] ? 'info-count success' : 'info-count';
 });
 
-/* ============================================================ KML UPLOAD ============================================================ */
+/* ============================================================ KML UPLOAD — DIPERBAIKI ============================================================ */
 window.submitKmlUpload = function() {
+  console.log('[UPLOAD] Mulai proses upload');
   let lineName = document.getElementById('kml-line').value;
   if (lineName === '__custom__') {
     lineName = (document.getElementById('kml-custom-line-name').value || '').trim().toUpperCase();
     if (!lineName) { showToast('Isi nama line baru', 'error'); return; }
   }
   if (!lineName) { showToast('Pilih line', 'error'); return; }
+
   const file = document.getElementById('kml-file').files[0];
   if (!file) { showToast('Pilih file dulu', 'error'); return; }
+
+  console.log('[UPLOAD] Line:', lineName, '| File:', file.name, '| Size:', file.size);
+
   const info = document.getElementById('kml-info');
   info.textContent = 'Memproses...';
   info.className = 'info-count';
@@ -573,20 +536,36 @@ window.submitKmlUpload = function() {
 
   const isKMZ = file.name.toLowerCase().endsWith('.kmz');
   const reader = new FileReader();
-  reader.onerror = () => { showToast('Gagal baca file', 'error'); document.getElementById('btn-kml-submit').disabled = false; };
+
+  reader.onerror = () => {
+    console.error('[UPLOAD] FileReader error');
+    showToast('Gagal baca file', 'error');
+    document.getElementById('btn-kml-submit').disabled = false;
+  };
+
   reader.onload = ev => {
+    console.log('[UPLOAD] File loaded, tipe:', isKMZ ? 'KMZ' : 'KML');
     if (isKMZ) {
       JSZip.loadAsync(ev.target.result).then(zip => {
         let kmlEntry = null;
         zip.forEach((p, e) => { if (!kmlEntry && !e.dir && p.toLowerCase().endsWith('.kml')) kmlEntry = e; });
-        if (!kmlEntry) throw new Error('KMZ tidak berisi KML');
+        if (!kmlEntry) throw new Error('KMZ tidak berisi file KML');
+        console.log('[UPLOAD] KML dalam KMZ:', kmlEntry.name);
         return kmlEntry.async('string');
-      }).then(text => processKmlAndSave(text, lineName))
-        .catch(err => { showToast('Gagal: ' + err.message, 'error'); document.getElementById('btn-kml-submit').disabled = false; });
+      }).then(text => {
+        console.log('[UPLOAD] KML text extracted, length:', text.length);
+        processKmlAndSave(text, lineName);
+      }).catch(err => {
+        console.error('[UPLOAD] KMZ error:', err);
+        showToast('Gagal: ' + err.message, 'error');
+        document.getElementById('btn-kml-submit').disabled = false;
+      });
     } else {
-      processKmlAndSave(ev.target.result, lineName).catch(err => { showToast('Gagal: ' + err.message, 'error'); document.getElementById('btn-kml-submit').disabled = false; });
+      console.log('[UPLOAD] KML text length:', ev.target.result.length);
+      processKmlAndSave(ev.target.result, lineName);
     }
   };
+
   if (isKMZ) reader.readAsArrayBuffer(file);
   else reader.readAsText(file);
 };
@@ -594,62 +573,98 @@ window.submitKmlUpload = function() {
 function processKmlAndSave(kmlText, lineName) {
   return new Promise((resolve, reject) => {
     console.log('[KML] Proses line:', lineName, '| length:', kmlText.length);
-    if (!kmlText || typeof kmlText !== 'string') return reject(new Error('KML tidak valid'));
+    if (!kmlText || typeof kmlText !== 'string') {
+      return reject(new Error('KML tidak valid'));
+    }
 
     const xml = new DOMParser().parseFromString(kmlText, 'text/xml');
-    if (xml.querySelector('parsererror')) return reject(new Error('XML tidak valid'));
+    if (xml.querySelector('parsererror')) {
+      return reject(new Error('XML tidak valid — cek format KML'));
+    }
 
     let allCoords = [];
 
+    // STRATEGI 1: Cari LineString di dalam Placemark
     const pms = xml.getElementsByTagName('Placemark');
     console.log('[KML] Placemark count:', pms.length);
-
     for (let i = 0; i < pms.length; i++) {
       const ls = pms[i].getElementsByTagName('LineString')[0];
       if (!ls) continue;
       const c = ls.getElementsByTagName('coordinates')[0];
       if (!c) continue;
-      const coords = c.textContent.trim().split(/\s+/)
-        .map(x => {
-          const a = x.split(',');
-          return [parseFloat(a[0]), parseFloat(a[1])];
-        })
-        .filter(x => !isNaN(x[0]) && !isNaN(x[1]));
+      const coords = parseCoordString(c.textContent);
       allCoords = allCoords.concat(coords);
     }
 
-    // Fallback: cari semua tag coordinates
+    // STRATEGI 2: Kalau tidak ketemu, cari semua tag <coordinates> langsung
     if (allCoords.length < 2) {
+      console.log('[KML] Fallback: cari semua tag coordinates');
       const allCoordTags = xml.getElementsByTagName('coordinates');
       for (let i = 0; i < allCoordTags.length; i++) {
-        const coords = allCoordTags[i].textContent.trim().split(/\s+/)
-          .map(x => {
-            const a = x.split(',');
-            return [parseFloat(a[0]), parseFloat(a[1])];
-          })
-          .filter(x => !isNaN(x[0]) && !isNaN(x[1]));
+        const coords = parseCoordString(allCoordTags[i].textContent);
         allCoords = allCoords.concat(coords);
       }
     }
 
+    // STRATEGI 3: Kalau tetap tidak ketemu, cari dari tag <gx:coord> (Google Earth extension)
+    if (allCoords.length < 2) {
+      console.log('[KML] Fallback 2: cari tag gx:coord');
+      const gxCoords = xml.getElementsByTagName('gx:coord');
+      for (let i = 0; i < gxCoords.length; i++) {
+        const parts = (gxCoords[i].textContent || '').trim().split(/\s+/);
+        if (parts.length >= 2) {
+          const lng = parseFloat(parts[0]);
+          const lat = parseFloat(parts[1]);
+          if (!isNaN(lat) && !isNaN(lng)) allCoords.push([lng, lat]);
+        }
+      }
+    }
+
     console.log('[KML] Total coords ditemukan:', allCoords.length);
-    if (allCoords.length < 2) return reject(new Error('Koordinat kurang dari 2 titik'));
+
+    if (allCoords.length < 2) {
+      return reject(new Error('Tidak ada koordinat valid dalam file (butuh minimal 2 titik)'));
+    }
 
     const kmlForLine = generateKmlFromCoords(allCoords, lineName, '');
+
     db.ref('kmlData/' + lineName).set(kmlForLine).then(() => {
-      showToast('✅ Line "' + lineName + '" tersimpan', 'success');
-      document.getElementById('kml-info').textContent = '✓ Berhasil disimpan';
+      console.log('[KML] Berhasil simpan ke Firebase:', lineName);
+      showToast('✅ Line "' + lineName + '" tersimpan (' + allCoords.length + ' titik)', 'success');
+      document.getElementById('kml-info').textContent = '✓ Berhasil: ' + allCoords.length + ' titik';
       document.getElementById('kml-info').className = 'info-count success';
+
       setTimeout(() => {
         document.getElementById('upload-panel').classList.remove('show');
         document.getElementById('kml-file').value = '';
         document.getElementById('btn-kml-submit').disabled = true;
         document.getElementById('kml-info').textContent = 'Pilih line & file dulu';
         document.getElementById('kml-info').className = 'info-count';
-      }, 1200);
+      }, 1500);
       resolve();
-    }).catch(reject);
+    }).catch(err => {
+      console.error('[KML] Firebase save error:', err);
+      reject(err);
+    });
+  }).catch(err => {
+    console.error('[KML] Process error:', err);
+    showToast('Gagal: ' + err.message, 'error');
+    document.getElementById('kml-info').textContent = 'Error: ' + err.message;
+    document.getElementById('kml-info').className = 'info-count error';
+    document.getElementById('btn-kml-submit').disabled = false;
   });
+}
+
+function parseCoordString(str) {
+  if (!str) return [];
+  return String(str).trim().split(/\s+/)
+    .map(x => {
+      const a = x.split(',');
+      const lng = parseFloat(a[0]);
+      const lat = parseFloat(a[1]);
+      return [lng, lat];
+    })
+    .filter(x => !isNaN(x[0]) && !isNaN(x[1]));
 }
 
 function generateKmlFromCoords(coords, name, notes) {
@@ -663,6 +678,11 @@ function loadKmlFromFirebase() {
   if (!db) return;
   db.ref('kmlData').on('value', s => {
     kmlDataCache = s.val() || {};
+    console.log('[FIREBASE] kmlData update, total lines:', Object.keys(kmlDataCache).length);
+    // Inisialisasi visibility untuk line baru (default ON)
+    Object.keys(kmlDataCache).forEach(name => {
+      if (lineVisibility[name] === undefined) lineVisibility[name] = true;
+    });
     if (map && map.isStyleLoaded()) applyLineFilters();
     else if (map) map.once('idle', applyLineFilters);
   });
@@ -676,24 +696,50 @@ function loadKmlFromFirebase() {
 function applyLineFilters() {
   if (!map || !map.isStyleLoaded()) { setTimeout(applyLineFilters, 300); return; }
   const d = kmlDataCache || {};
+
+  // Hapus layer yang tidak ada lagi di data
   Object.keys(kmlLayers).forEach(name => {
     if (!d[name]) {
       const l = kmlLayers[name];
       try { if (l.layerId && map.getLayer(l.layerId)) map.removeLayer(l.layerId); } catch(e) {}
       try { if (l.sourceId && map.getSource(l.sourceId)) map.removeSource(l.sourceId); } catch(e) {}
       delete kmlLayers[name];
+      delete lineVisibility[name];
     }
   });
+
+  // Tambah layer baru
   Object.keys(d).forEach(name => {
-    if (kmlLayers[name]) return;
     const kmlText = d[name];
     if (!kmlText || typeof kmlText !== 'string') return;
+
+    // Kalau sudah ada di kmlLayers, cek visibility-nya
+    if (kmlLayers[name]) {
+      const l = kmlLayers[name];
+      const shouldBeVisible = lineVisibility[name] !== false;
+      try {
+        const currentVis = map.getLayoutProperty(l.layerId, 'visibility');
+        const targetVis = shouldBeVisible ? 'visible' : 'none';
+        if (currentVis !== targetVis) {
+          map.setLayoutProperty(l.layerId, 'visibility', targetVis);
+        }
+      } catch(e) {}
+      return;
+    }
+
+    // Buat layer baru
     try {
       const xml = new DOMParser().parseFromString(kmlText, 'text/xml');
       const geojson = parseKmlToGeoJSON(xml);
-      if (geojson.features.length > 0) drawKmlGeoJSON(name, geojson, false);
-    } catch(e) {}
+      if (geojson.features.length > 0) {
+        const shouldBeVisible = lineVisibility[name] !== false;
+        drawKmlGeoJSON(name, geojson, false, shouldBeVisible);
+      }
+    } catch(e) {
+      console.warn('[KML] Draw error for', name, e);
+    }
   });
+
   renderMapLineLegend();
 }
 
@@ -709,21 +755,23 @@ function parseKmlToGeoJSON(xml) {
       if (!ls) continue;
       const c = ls.getElementsByTagName('coordinates')[0];
       if (!c) continue;
-      const coords = c.textContent.trim().split(/\s+/).map(x => { const a = x.split(','); return [parseFloat(a[0]), parseFloat(a[1])]; }).filter(x => !isNaN(x[0]) && !isNaN(x[1]));
-      if (coords.length > 1) features.push({ type: 'Feature', properties: { name }, geometry: { type: 'LineString', coordinates: coords } });
+      const coords = parseCoordString(c.textContent);
+      if (coords.length > 1) {
+        features.push({ type: 'Feature', properties: { name }, geometry: { type: 'LineString', coordinates: coords } });
+      }
     }
   } catch(e) {}
   return { type: 'FeatureCollection', features };
 }
 
-function drawKmlGeoJSON(lineName, geojson, autoZoom) {
+function drawKmlGeoJSON(lineName, geojson, autoZoom, visible) {
   if (!map || !geojson) return;
-  if (!map.isStyleLoaded()) { map.once('styledata', () => drawKmlGeoJSON(lineName, geojson, autoZoom)); return; }
+  if (!map.isStyleLoaded()) { map.once('styledata', () => drawKmlGeoJSON(lineName, geojson, autoZoom, visible)); return; }
   let color = kmlLineColors[lineName] || '#00D9FF';
   if (customLines[lineName] && customLines[lineName].color) color = customLines[lineName].color;
   let width = 4;
   if (customLines[lineName] && customLines[lineName].width) width = customLines[lineName].width;
-  const safe = lineName.replace(/\s+/g, '-').toLowerCase().replace(/[^a-z0-9-]/g, '');
+  const safe = lineName.replace(/\s+/g, '-').toLowerCase().replace(/[^a-z0-9-]/g, '') || ('line-' + Date.now());
   const sourceId = 'kml-src-' + safe;
   const layerId = 'kml-layer-' + safe;
   try { if (map.getLayer(layerId)) map.removeLayer(layerId); } catch(e) {}
@@ -732,11 +780,16 @@ function drawKmlGeoJSON(lineName, geojson, autoZoom) {
     map.addSource(sourceId, { type: 'geojson', data: geojson });
     map.addLayer({
       id: layerId, type: 'line', source: sourceId,
-      layout: { 'line-join': 'round', 'line-cap': 'round' },
+      layout: {
+        'line-join': 'round',
+        'line-cap': 'round',
+        'visibility': visible === false ? 'none' : 'visible'
+      },
       paint: { 'line-color': color, 'line-width': width, 'line-opacity': 0.85 }
     });
-  } catch(e) {}
+  } catch(e) { console.warn('[KML] addLayer error:', e); }
   kmlLayers[lineName] = { sourceId, layerId, geojson };
+
   if (autoZoom !== false && geojson.features && geojson.features.length > 0) {
     try {
       const bounds = new maplibregl.LngLatBounds();
@@ -747,19 +800,59 @@ function drawKmlGeoJSON(lineName, geojson, autoZoom) {
   renderMapLineLegend();
 }
 
+/* ============================================================ LEGENDA LINE (dengan TOGGLE) ============================================================ */
 function renderMapLineLegend() {
-  const section = document.getElementById('ml-line-section');
   const listEl = document.getElementById('ml-line-list');
-  if (!section || !listEl) return;
-  const activeLines = Object.keys(kmlLayers || {});
-  if (activeLines.length === 0) { section.style.display = 'none'; listEl.innerHTML = ''; return; }
-  activeLines.sort();
-  listEl.innerHTML = activeLines.map(name => {
+  if (!listEl) return;
+  const allLines = Object.keys(kmlLayers || {}).sort();
+  if (allLines.length === 0) {
+    listEl.innerHTML = '<div style="font-size:9px;color:var(--text-dim);font-style:italic;padding:4px;">Belum ada line</div>';
+    return;
+  }
+  listEl.innerHTML = allLines.map(name => {
     const color = kmlLineColors[name] || (customLines[name] && customLines[name].color) || '#00D9FF';
-    return '<div class="ml-line-item" title="' + escapeHtml(name) + '"><span class="ml-line-bar" style="background:' + color + ';"></span><span class="ml-line-name">' + escapeHtml(name) + '</span></div>';
+    const isOn = lineVisibility[name] !== false;
+    return '<div class="ml-line-item ' + (isOn ? 'on' : 'off') + '" onclick="toggleLineVisibility(\'' + escapeAttr(name) + '\')" title="' + escapeHtml(name) + '">' +
+      '<span class="ml-line-toggle">' + (isOn ? '✓' : '') + '</span>' +
+      '<span class="ml-line-bar" style="background:' + color + ';"></span>' +
+      '<span class="ml-line-name">' + escapeHtml(name) + '</span>' +
+    '</div>';
   }).join('');
-  section.style.display = 'block';
 }
+
+window.toggleLineVisibility = function(lineName) {
+  if (!map || !kmlLayers[lineName]) return;
+  const entry = kmlLayers[lineName];
+  const newVisible = !(lineVisibility[lineName] !== false);
+  lineVisibility[lineName] = newVisible;
+
+  try {
+    map.setLayoutProperty(entry.layerId, 'visibility', newVisible ? 'visible' : 'none');
+    console.log('[LINE] Toggle', lineName, '→', newVisible);
+  } catch(e) { console.warn('[LINE] toggle error:', e); }
+
+  renderMapLineLegend();
+};
+
+window.showAllLines = function(event) {
+  if (event) event.stopPropagation();
+  Object.keys(kmlLayers).forEach(name => {
+    lineVisibility[name] = true;
+    try { map.setLayoutProperty(kmlLayers[name].layerId, 'visibility', 'visible'); } catch(e) {}
+  });
+  renderMapLineLegend();
+  showToast('Semua line ditampilkan', 'info');
+};
+
+window.hideAllLines = function(event) {
+  if (event) event.stopPropagation();
+  Object.keys(kmlLayers).forEach(name => {
+    lineVisibility[name] = false;
+    try { map.setLayoutProperty(kmlLayers[name].layerId, 'visibility', 'none'); } catch(e) {}
+  });
+  renderMapLineLegend();
+  showToast('Semua line disembunyikan', 'info');
+};
 
 /* ============================================================ DRAW LINE ============================================================ */
 window.startDrawing = function() {
@@ -791,7 +884,6 @@ window.startDrawing = function() {
   document.getElementById('draw-point-count').textContent = '0 titik';
   document.body.classList.add('draw-cursor-active');
 
-  console.log('[DRAW] Mode AKTIF untuk line:', lineName);
   showToast('Mode menggambar aktif — klik di peta', 'success');
 };
 
@@ -799,8 +891,6 @@ function handleDrawClick(e) {
   if (!drawMode) return;
   const lng = e.lngLat.lng, lat = e.lngLat.lat;
   drawPoints.push([lng, lat]);
-  console.log('[DRAW] Titik ditambah:', drawPoints.length);
-
   const el = document.createElement('div');
   el.className = 'draw-point';
   if (drawPoints.length === 1) el.classList.add('first');
@@ -912,9 +1002,9 @@ window.renderKmlManagerList = function() {
       '<div class="kml-list-info"><div class="kml-list-name">' + escapeHtml(name) + (isBuiltin ? '' : ' <span style="font-size:11px;color:var(--primary-cyan);">(kustom)</span>') + '</div>' +
       '<div style="font-size:11px;color:var(--text-muted);">' + pmCount + ' placemark • ' + (kmlText.length / 1024).toFixed(1) + ' KB</div></div>' +
       '<div class="kml-list-actions">' +
-      '<button class="kml-list-btn download" onclick="downloadSingleKml(\'' + escapeHtml(name).replace(/'/g, "\\'") + '\')">KML</button>' +
-      '<button class="kml-list-btn download" onclick="downloadSingleKmz(\'' + escapeHtml(name).replace(/'/g, "\\'") + '\')">KMZ</button>' +
-      '<button class="kml-list-btn delete" onclick="hapusLineKml(\'' + escapeHtml(name).replace(/'/g, "\\'") + '\')">Hapus</button>' +
+      '<button class="kml-list-btn download" onclick="downloadSingleKml(\'' + escapeAttr(name) + '\')">KML</button>' +
+      '<button class="kml-list-btn download" onclick="downloadSingleKmz(\'' + escapeAttr(name) + '\')">KMZ</button>' +
+      '<button class="kml-list-btn delete" onclick="hapusLineKml(\'' + escapeAttr(name) + '\')">Hapus</button>' +
       '</div></div>';
   }).join('');
 };
@@ -945,6 +1035,7 @@ window.hapusLineKml = function(lineName) {
   const chain = isBuiltin ? Promise.resolve() : db.ref('customLines/' + lineName).remove().catch(() => {});
   chain.then(() => db.ref('kmlData/' + lineName).remove()).then(() => {
     delete kmlDataCache[lineName];
+    delete lineVisibility[lineName];
     showToast('Line dihapus', 'success');
     renderKmlManagerList();
   }).catch(err => showToast(err.message, 'error'));
