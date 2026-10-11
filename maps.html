@@ -9,20 +9,17 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    <!-- OpenLayers CSS & JS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ol@9.2.4/ol.css" />
     <script src="https://cdn.jsdelivr.net/npm/ol@9.2.4/dist/ol.js"></script>
 
-    <!-- CesiumJS (untuk 3D globe) -->
+    <!-- CesiumJS -->
     <script src="https://cesium.com/downloads/cesiumjs/releases/1.113/Build/Cesium/Cesium.js"></script>
     <link href="https://cesium.com/downloads/cesiumjs/releases/1.113/Build/Cesium/Widgets/widgets.css" rel="stylesheet">
 
-    <!-- ol-cesium (integrasi OL + Cesium) -->
+    <!-- ol-cesium -->
     <script src="https://cdn.jsdelivr.net/npm/ol-cesium@2.17.0/dist/olcesium.min.js"></script>
 
-    <!-- togeojson UMD -->
     <script src="https://unpkg.com/@tmcw/togeojson@5.8.1/dist/togeojson.umd.js"></script>
-    <!-- JSZip untuk KMZ -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 
     <style>
@@ -41,7 +38,7 @@
             position: absolute;
             top: 0; left: 0; right: 0;
             height: 44px;
-            z-index: 500;
+            z-index: 1000;
             display: flex;
             align-items: center;
             gap: 8px;
@@ -49,7 +46,6 @@
             background: rgba(15, 23, 42, 0.92);
             border-bottom: 1px solid rgba(255, 255, 255, 0.15);
             backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
         }
         .maps-header .header-title {
             font-size: 12px; font-weight: 800; color: #38bdf8;
@@ -68,13 +64,11 @@
             font-size: 11px; font-weight: 700;
             cursor: pointer; font-family: 'Poppins', sans-serif;
             display: inline-flex; align-items: center; gap: 5px;
-            transition: all 0.2s ease; white-space: nowrap;
+            white-space: nowrap;
         }
         .header-btn:hover { color: #38bdf8; border-color: #38bdf8; }
         .header-btn.primary { color: #10b981; border-color: rgba(16, 185, 129, 0.6); }
-        .header-btn.primary:hover { background: rgba(16, 185, 129, 0.15); }
         .header-btn.danger { color: #f43f5e; border-color: rgba(244, 63, 94, 0.6); }
-        .header-btn.danger:hover { background: rgba(244, 63, 94, 0.15); }
 
         .map-mode-btn {
             background: rgba(30, 41, 59, 0.8);
@@ -85,7 +79,6 @@
             font-size: 10px; font-weight: 700;
             cursor: pointer; font-family: 'Poppins', sans-serif;
             display: inline-flex; align-items: center; gap: 4px;
-            transition: all 0.2s ease;
         }
         .map-mode-btn:hover { color: #38bdf8; border-color: #38bdf8; }
         .map-mode-btn.active {
@@ -106,7 +99,6 @@
         .header-info.show { display: inline-flex; }
         .header-info .info-name { color: #fff; font-weight: 600; max-width: 180px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .header-info button { background: transparent; border: none; color: #94a3b8; cursor: pointer; font-size: 11px; padding: 0; }
-        .header-info button:hover { color: #f43f5e; }
 
         /* ============ LEGENDA ============ */
         .map-legend {
@@ -116,7 +108,7 @@
             border: 1px solid rgba(255, 255, 255, 0.3);
             border-radius: 7px;
             padding: 6px 8px;
-            z-index: 450;
+            z-index: 900;
             font-size: 9.5px; color: #e2e8f0;
             max-width: 175px;
             max-height: calc(100vh - 70px);
@@ -125,7 +117,7 @@
         }
         .map-legend h5 { font-size: 9px; color: #38bdf8; margin: 0 0 5px 0; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 800; display: flex; align-items: center; gap: 4px; }
         .map-legend .section-title { font-size: 8px; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 800; margin: 5px 0 3px 0; padding-top: 4px; border-top: 1px dashed rgba(255,255,255,0.15); }
-        .map-legend .li { display: flex; align-items: center; gap: 5px; color: #e2e8f0; padding: 2px 0; cursor: pointer; user-select: none; transition: opacity 0.2s; line-height: 1.2; }
+        .map-legend .li { display: flex; align-items: center; gap: 5px; color: #e2e8f0; padding: 2px 0; cursor: pointer; user-select: none; line-height: 1.2; }
         .map-legend .li:hover { opacity: 0.8; }
         .map-legend .li.off { opacity: 0.3; text-decoration: line-through; }
         .map-legend .li i { font-size: 8px; width: 10px; text-align: center; flex-shrink: 0; }
@@ -147,7 +139,7 @@
             bottom: 12px;
             left: -50%;
             transform: translateX(-50%);
-            z-index: 700;
+            z-index: 950;
         }
         .ol-popup::after {
             content: '';
@@ -170,7 +162,7 @@
         .kml-toast {
             position: absolute; bottom: 20px; left: 50%;
             transform: translateX(-50%) translateY(20px);
-            z-index: 600;
+            z-index: 1100;
             background: rgba(15, 23, 42, 0.95);
             border: 1px solid rgba(56, 189, 248, 0.5);
             color: #fff; padding: 8px 16px; border-radius: 8px;
@@ -182,40 +174,50 @@
         .kml-toast.success { border-color: rgba(16, 185, 129, 0.6); }
         .kml-toast.error { border-color: rgba(244, 63, 94, 0.6); }
 
-        /* ============ OL CONTROL ============ */
-        .ol-zoom { top: 54px !important; right: 10px !important; left: auto !important; }
-        .ol-zoom .ol-zoom-in, .ol-zoom .ol-zoom-out {
-            background: rgba(15, 23, 42, 0.92) !important;
-            color: #e2e8f0 !important;
-            border: 1px solid rgba(255, 255, 255, 0.25) !important;
-            width: 30px !important; height: 30px !important;
-            font-size: 16px !important; line-height: 30px !important;
-            border-radius: 6px !important; margin: 0 0 4px 0 !important;
-            padding: 0 !important; font-weight: 700 !important; cursor: pointer !important;
+        /* ============ TOMBOL ZOOM CUSTOM (HTML fallback) ============ */
+        .custom-zoom {
+            position: absolute;
+            top: 54px; right: 10px;
+            z-index: 900;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
         }
-        .ol-zoom .ol-zoom-in:hover, .ol-zoom .ol-zoom-out:hover {
-            background: rgba(30, 41, 59, 1) !important;
-            color: #38bdf8 !important; border-color: #38bdf8 !important;
+        .custom-zoom button {
+            width: 32px; height: 32px;
+            background: rgba(15, 23, 42, 0.92);
+            color: #e2e8f0;
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            transition: all 0.2s;
         }
+        .custom-zoom button:hover {
+            background: rgba(30, 41, 59, 1);
+            color: #38bdf8;
+            border-color: #38bdf8;
+        }
+
+        /* Sembunyikan zoom control bawaan OL supaya tidak dobel */
+        .ol-zoom { display: none !important; }
+
         .ol-attribution { font-size: 10px !important; background: rgba(15, 23, 42, 0.8) !important; border-radius: 4px !important; }
         .ol-attribution a { color: #38bdf8 !important; }
         .ol-attribution button { background: rgba(15, 23, 42, 0.9) !important; color: #e2e8f0 !important; border: none !important; }
 
-        /* ============ CESIUM 3D ============ */
-        .olcs-cesium-container { z-index: 400; }
-        .olcs-cesium-container .cesium-viewer-bottom { display: none; }
+        /* Sembunyikan credit Cesium default */
         .cesium-widget-credits { display: none !important; }
 
         @media (max-width: 640px) {
             .maps-header { padding: 4px 8px; gap: 5px; height: 40px; }
             .maps-header .header-title span { display: none; }
-            .header-btn { padding: 4px 7px; font-size: 10px; }
-            .header-btn span { display: none; }
-            .map-mode-btn span { display: none; }
-            .map-mode-btn { padding: 4px 6px; }
+            .header-btn span, .map-mode-btn span { display: none; }
             .header-info { display: none !important; }
-            .map-legend { top: 48px; left: 6px; font-size: 8.5px; max-width: 140px; padding: 5px 6px; }
-            .ol-zoom { top: 48px !important; right: 6px !important; }
+            .map-legend { top: 48px; left: 6px; font-size: 8.5px; max-width: 140px; }
+            .custom-zoom { top: 48px; right: 6px; }
         }
     </style>
 </head>
@@ -230,11 +232,10 @@
             <span>Peta Insiden Jaringan</span>
         </div>
 
-        <!-- Mode Buttons -->
         <button class="map-mode-btn active" onclick="setMapMode('standard')" id="btnModeStandard" title="2D Standard">
             <i class="fa-solid fa-map"></i> <span>Standard</span>
         </button>
-        <button class="map-mode-btn" onclick="setMapMode('satellite')" id="btnModeSatellite" title="Satellite Imagery">
+        <button class="map-mode-btn" onclick="setMapMode('satellite')" id="btnModeSatellite" title="Satellite">
             <i class="fa-solid fa-satellite"></i> <span>Satelit</span>
         </button>
         <button class="map-mode-btn" onclick="setMapMode('globe3d')" id="btnModeGlobe" title="3D Globe">
@@ -243,9 +244,6 @@
 
         <button class="header-btn primary" onclick="uploadKML()" title="Upload KML/KMZ">
             <i class="fa-solid fa-cloud-arrow-up"></i> <span>Upload</span>
-        </button>
-        <button class="header-btn" onclick="downloadKML()" title="Download KML">
-            <i class="fa-solid fa-download"></i> <span>Download</span>
         </button>
         <button class="header-btn danger" onclick="clearKML()" title="Clear KML">
             <i class="fa-solid fa-trash"></i> <span>Clear</span>
@@ -259,7 +257,7 @@
 
     <input type="file" id="kmlFileInput" accept=".kml,.kmz" style="display:none;">
 
-    <!-- ===== LEGENDA (tanpa Backbone Lines) ===== -->
+    <!-- ===== LEGENDA ===== -->
     <div class="map-legend">
         <h5><i class="fa-solid fa-list"></i> Legenda</h5>
         <div class="section-title">Data Input</div>
@@ -290,6 +288,12 @@
         </div>
     </div>
 
+    <!-- ===== ZOOM BUTTONS CUSTOM ===== -->
+    <div class="custom-zoom">
+        <button onclick="zoomIn()" title="Zoom In"><i class="fa-solid fa-plus"></i></button>
+        <button onclick="zoomOut()" title="Zoom Out"><i class="fa-solid fa-minus"></i></button>
+    </div>
+
     <div class="kml-toast" id="kmlToast"></div>
 
     <div id="popup" class="ol-popup" style="display:none;">
@@ -304,8 +308,12 @@
            BUCIN MAP - OpenLayers + Cesium (3 Modes)
            ============================================================ */
 
-        /* ⚠️ GANTI TOKEN DI BAWAH INI DENGAN TOKEN DARI https://ion.cesium.com/tokens */
-        Cesium.Ion.defaultAccessToken = 'MASUKKAN_TOKEN_ANDA_DISINI';
+        /* ⚠️ TOKEN CESIUM — ganti dengan token Anda dari https://ion.cesium.com/tokens
+           Jika belum diisi, mode 3D tidak akan aktif. Mode 2D tetap jalan. */
+        var CESIUM_TOKEN = 'MASUKKAN_TOKEN_ANDA_DISINI';
+        if (CESIUM_TOKEN && CESIUM_TOKEN !== 'MASUKKAN_TOKEN_ANDA_DISINI') {
+            Cesium.Ion.defaultAccessToken = CESIUM_TOKEN;
+        }
 
         function getToGeoJSON() {
             return window.toGeoJSON || window.togeojson || null;
@@ -324,20 +332,21 @@
             minZoom: 3
         });
 
-        // === BASEMAP LAYERS ===
+        /* ============================================================
+           BASEMAP LAYERS
+           ============================================================ */
 
-        // Mode 1: Standard (Carto Dark - cocok dark dashboard)
+        // Mode 1: STANDARD — pakai OSM standar (gratis, tidak kena API key CARTO)
         var baseLayerStandard = new ol.layer.Tile({
-            source: new ol.source.XYZ({
-                url: 'https://{a-d}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
-                attributions: '© OpenStreetMap contributors © CARTO',
-                crossOrigin: 'anonymous',
-                maxZoom: 19
+            source: new ol.source.OSM({
+                url: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                attributions: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+                crossOrigin: 'anonymous'
             }),
             visible: true
         });
 
-        // Mode 2: Satellite (Esri World Imagery)
+        // Mode 2 & 3: SATELLITE — Esri World Imagery
         var baseLayerSatellite = new ol.layer.Tile({
             source: new ol.source.XYZ({
                 url: 'https://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
@@ -386,23 +395,35 @@
             target: 'map',
             layers: [baseLayerStandard, baseLayerSatellite, markerLayer, kmlLayer],
             view: view,
-            controls: ol.control.defaults.defaults({ attribution: true, zoom: true, rotate: false })
+            controls: ol.control.defaults.defaults({ attribution: true, zoom: false, rotate: false })
         });
 
-        // Pindahkan kontrol
-        var zoomControl = map.getControls().getArray().find(function(c) { return c instanceof ol.control.Zoom; });
-        if (zoomControl) zoomControl.setPosition('top-right');
         var attrControl = map.getControls().getArray().find(function(c) { return c instanceof ol.control.Attribution; });
         if (attrControl) attrControl.setPosition('bottom-right');
+
+        /* ============================================================
+           ZOOM BUTTONS CUSTOM (karena zoom OL default dimatikan)
+           ============================================================ */
+        function zoomIn()  { var v = map.getView(); v.animate({ zoom: v.getZoom() + 1, duration: 200 }); }
+        function zoomOut() { var v = map.getView(); v.animate({ zoom: v.getZoom() - 1, duration: 200 }); }
 
         /* ============================================================
            OL-CESIUM 3D GLOBE (Lazy Init)
            ============================================================ */
         var ol3d = null;
         var is3DEnabled = false;
+        var cesium3dInitFailed = false;
 
         function initCesium3D() {
-            if (ol3d) return;
+            if (ol3d) return true;
+            if (cesium3dInitFailed) return false;
+
+            if (CESIUM_TOKEN === 'MASUKKAN_TOKEN_ANDA_DISINI') {
+                showToast('Token Cesium belum diisi. Mode 3D tidak dapat diaktifkan.', 'error');
+                cesium3dInitFailed = true;
+                return false;
+            }
+
             try {
                 ol3d = new olcs.OLCesium({
                     map: map,
@@ -411,38 +432,46 @@
                 });
                 ol3d.setEnabled(false);
                 console.log('OL-Cesium initialized');
+                return true;
             } catch (e) {
                 console.error('Gagal init OL-Cesium:', e);
                 showToast('Gagal inisialisasi 3D: ' + e.message, 'error');
+                cesium3dInitFailed = true;
+                return false;
             }
         }
 
+        /* ============================================================
+           MAP MODE SWITCHER
+           ============================================================ */
         var currentMode = 'standard';
 
         function setMapMode(mode) {
             currentMode = mode;
 
-            // Update tombol active
             document.querySelectorAll('.map-mode-btn').forEach(function(btn) { btn.classList.remove('active'); });
 
             if (mode === 'standard') {
+                if (ol3d && is3DEnabled) { ol3d.setEnabled(false); is3DEnabled = false; }
                 baseLayerStandard.setVisible(true);
                 baseLayerSatellite.setVisible(false);
-                if (ol3d && is3DEnabled) { ol3d.setEnabled(false); is3DEnabled = false; }
                 document.getElementById('btnModeStandard').classList.add('active');
                 showToast('Mode: Standard 2D', 'info');
             }
             else if (mode === 'satellite') {
+                if (ol3d && is3DEnabled) { ol3d.setEnabled(false); is3DEnabled = false; }
                 baseLayerStandard.setVisible(false);
                 baseLayerSatellite.setVisible(true);
-                if (ol3d && is3DEnabled) { ol3d.setEnabled(false); is3DEnabled = false; }
                 document.getElementById('btnModeSatellite').classList.add('active');
                 showToast('Mode: Citra Satelit', 'info');
             }
             else if (mode === 'globe3d') {
-                initCesium3D();
-                if (!ol3d) {
-                    showToast('3D tidak tersedia. Periksa token Cesium Anda.', 'error');
+                var ok = initCesium3D();
+                if (!ok) {
+                    // fallback ke satellite jika 3D gagal
+                    baseLayerStandard.setVisible(false);
+                    baseLayerSatellite.setVisible(true);
+                    document.getElementById('btnModeSatellite').classList.add('active');
                     return;
                 }
                 baseLayerStandard.setVisible(false);
@@ -450,7 +479,7 @@
                 ol3d.setEnabled(true);
                 is3DEnabled = true;
                 document.getElementById('btnModeGlobe').classList.add('active');
-                showToast('Mode: Bumi 3D', 'info');
+                showToast('Mode: Bumi 3D — drag untuk rotate, scroll untuk zoom', 'info');
             }
         }
 
@@ -574,7 +603,7 @@
         }
 
         /* ============================================================
-           KML UPLOAD / DOWNLOAD / CLEAR
+           KML UPLOAD / CLEAR
            ============================================================ */
         function uploadKML() { document.getElementById('kmlFileInput').click(); }
 
@@ -648,10 +677,6 @@
             showToast('KML dihapus', 'success');
         }
 
-        function downloadKML() {
-            showToast('Fitur download tetap tersedia', 'info');
-        }
-
         /* ============================================================
            TOGGLE LEGENDA
            ============================================================ */
@@ -672,6 +697,7 @@
            KLIK FITUR
            ============================================================ */
         map.on('singleclick', function(evt){
+            if (is3DEnabled) return; // nonaktifkan popup di mode 3D
             var feature = map.forEachFeatureAtPixel(evt.pixel, function(f){ return f; }, { hitTolerance: 5 });
             if (feature) {
                 var html = feature.get('popupHtml');
@@ -689,6 +715,7 @@
         });
 
         map.on('pointermove', function(evt){
+            if (is3DEnabled) return;
             var hit = map.hasFeatureAtPixel(evt.pixel, { hitTolerance: 5 });
             map.getTargetElement().style.cursor = hit ? 'pointer' : '';
         });
