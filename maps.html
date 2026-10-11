@@ -51,28 +51,47 @@ html, body { height: 100%; overflow: hidden; font-family: var(--app-font); backg
 .map-wrap { position: relative; width: 100%; height: calc(100vh - var(--header-h)); }
 #map-container { position: absolute; inset: 0; width: 100%; height: 100%; }
 
-.map-legend-top-right { position: absolute; top: 12px; left: 12px; z-index: 1000; background: var(--surface-map-legend); border: 1px solid var(--border-glow); border-radius: 10px; padding: 8px 10px; max-width: 420px; width: max-content; max-height: 500px; overflow: hidden; transition: max-width 0.2s ease; }
-.map-legend-top-right.collapsed { max-width: 180px; }
-.map-legend-top-right.collapsed .ml-line-grid-wrap { display: none; }
-.map-legend-top-right .ml-title { font-weight: 800; color: var(--primary-cyan); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 5px; font-size: 10px; padding-bottom: 4px; border-bottom: 1px solid var(--border-subtle); display: flex; align-items: center; justify-content: space-between; gap: 6px; }
-.map-legend-top-right .ml-title-left { display: flex; align-items: center; gap: 5px; cursor: pointer; user-select: none; }
-.map-legend-top-right .ml-title-left:hover { color: var(--primary-cyan); }
-.map-legend-top-right .ml-caret { font-size: 10px; transition: transform 0.2s; display: inline-block; }
-.map-legend-top-right.collapsed .ml-caret { transform: rotate(-90deg); }
-.map-legend-top-right .ml-title-actions { display: flex; gap: 3px; }
-.map-legend-top-right .ml-mini-btn { background: rgba(0,217,255,0.1); border: 1px solid var(--border-glow); color: var(--primary-cyan); cursor: pointer; border-radius: 4px; padding: 2px 6px; font-size: 9px; font-weight: 700; font-family: inherit; }
-.map-legend-top-right .ml-mini-btn:hover { background: rgba(0,217,255,0.25); }
+/* ============ LEGENDA CONTAINER ============ */
+.map-legend-container {
+  position: absolute; top: 12px; left: 12px; z-index: 1000;
+  display: flex; flex-direction: column; gap: 8px;
+  max-width: 440px;
+}
+.map-legend-box {
+  background: var(--surface-map-legend); border: 1px solid var(--border-glow);
+  border-radius: 10px; padding: 8px 10px;
+  max-height: 500px; overflow: hidden;
+  transition: max-width 0.2s ease;
+  min-width: 200px;
+}
+.map-legend-box.collapsed { max-width: 200px; }
+.map-legend-box.collapsed .ml-grid-wrap { display: none; }
+.map-legend-box .ml-title {
+  font-weight: 800; color: var(--primary-cyan); text-transform: uppercase;
+  letter-spacing: 0.8px; margin-bottom: 5px; font-size: 10px;
+  padding-bottom: 4px; border-bottom: 1px solid var(--border-subtle);
+  display: flex; align-items: center; justify-content: space-between; gap: 6px;
+}
+.map-legend-box .ml-title-left { display: flex; align-items: center; gap: 5px; cursor: pointer; user-select: none; }
+.map-legend-box .ml-title-left:hover { color: var(--primary-cyan); }
+.map-legend-box .ml-caret { font-size: 10px; transition: transform 0.2s; display: inline-block; }
+.map-legend-box.collapsed .ml-caret { transform: rotate(-90deg); }
+.map-legend-box .ml-title-actions { display: flex; gap: 3px; }
+.map-legend-box .ml-mini-btn { background: rgba(0,217,255,0.1); border: 1px solid var(--border-glow); color: var(--primary-cyan); cursor: pointer; border-radius: 4px; padding: 2px 6px; font-size: 9px; font-weight: 700; font-family: inherit; }
+.map-legend-box .ml-mini-btn:hover { background: rgba(0,217,255,0.25); }
 
-.ml-line-grid-wrap { max-height: 420px; overflow-y: auto; padding-right: 2px; }
-.ml-line-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 3px 8px; }
-@media (max-width: 640px) { .ml-line-grid { grid-template-columns: 1fr; } }
-.ml-line-item { display: flex; align-items: center; gap: 5px; color: var(--text-muted); font-weight: 600; padding: 4px 5px; border-radius: 5px; cursor: pointer; user-select: none; transition: background 0.15s; font-size: 10px; min-width: 0; }
-.ml-line-item:hover { background: rgba(0,217,255,0.08); }
-.ml-line-item.off { opacity: 0.35; text-decoration: line-through; }
-.ml-line-toggle { width: 14px; height: 14px; flex-shrink: 0; border: 1.5px solid currentColor; border-radius: 3px; display: grid; place-items: center; font-size: 9px; line-height: 1; font-weight: 900; }
-.ml-line-item.on .ml-line-toggle { background: var(--primary-cyan); color: var(--bg-main); border-color: var(--primary-cyan); }
-.ml-line-bar { width: 14px; height: 3px; border-radius: 2px; flex-shrink: 0; }
-.ml-line-name { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ml-grid-wrap { max-height: 420px; overflow-y: auto; padding-right: 2px; }
+.ml-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 3px 8px; }
+@media (max-width: 640px) { .ml-grid { grid-template-columns: 1fr; } }
+.ml-item { display: flex; align-items: center; gap: 5px; color: var(--text-muted); font-weight: 600; padding: 4px 5px; border-radius: 5px; cursor: pointer; user-select: none; transition: background 0.15s; font-size: 10px; min-width: 0; }
+.ml-item:hover { background: rgba(0,217,255,0.08); }
+.ml-item.off { opacity: 0.35; text-decoration: line-through; }
+.ml-item-toggle { width: 14px; height: 14px; flex-shrink: 0; border: 1.5px solid currentColor; border-radius: 3px; display: grid; place-items: center; font-size: 9px; line-height: 1; font-weight: 900; }
+.ml-item.on .ml-item-toggle { background: var(--primary-cyan); color: var(--bg-main); border-color: var(--primary-cyan); }
+.ml-item-bar { width: 14px; height: 3px; border-radius: 2px; flex-shrink: 0; }
+.ml-item-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; border: 1.5px solid rgba(255,255,255,0.8); }
+.ml-item-name { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ml-item-count { font-family: 'Orbitron', sans-serif; font-weight: 800; color: var(--text-main); font-size: 9px; }
 
 .maplibregl-popup-content { background: var(--surface-map-legend) !important; color: var(--text-main) !important; border: 1px solid var(--border-glow) !important; border-radius: 8px !important; padding: 8px 10px !important; max-width: 240px !important; font-size: 10px !important; }
 .maplibregl-popup-tip { border-top-color: var(--surface-map-legend) !important; border-bottom-color: var(--surface-map-legend) !important; }
@@ -90,6 +109,18 @@ html, body { height: 100%; overflow: hidden; font-family: var(--app-font); backg
 .draw-point.first { background: #10B981; }
 .draw-point.last { background: #EC4899; }
 .draw-cursor-active #map-container, .draw-cursor-active #map-container canvas { cursor: crosshair !important; }
+
+/* MAP MARKER TITIK */
+.map-marker-dot {
+  width: 14px; height: 14px; border-radius: 50%;
+  border: 2px solid #fff;
+  cursor: pointer;
+  transition: transform 0.15s;
+}
+.map-marker-dot:hover {
+  transform: scale(1.3);
+  z-index: 999 !important;
+}
 
 .modal-layer { position: fixed; z-index: 10000; inset: 0; background: rgba(5, 8, 16, 0.85); display: grid; place-items: center; padding: 20px; overflow-y: auto; }
 .modal-card { background: var(--surface-modal); width: 100%; max-width: 560px; border-radius: 20px; max-height: 92vh; overflow-y: auto; padding: 22px; box-shadow: var(--shadow-modal); border: 1px solid var(--border-glow); color: var(--text-main); }
@@ -155,7 +186,7 @@ select.field-control option { background: var(--surface-3); color: var(--text-ma
   .header-btn span { display: none; }
   .header-btn { padding: 8px 10px; }
   .floating-panel { right: 50px; left: 10px; min-width: 0; max-width: none; }
-  .map-legend-top-right { max-width: 220px; }
+  .map-legend-container { max-width: 240px; }
   .custom-map-btn { width: 34px; height: 34px; }
 }
 </style>
@@ -180,22 +211,47 @@ select.field-control option { background: var(--surface-3); color: var(--text-ma
 <div class="map-wrap">
   <div id="map-container"></div>
 
-  <div class="map-legend-top-right" id="map-legend-container">
-    <div class="ml-title">
-      <div class="ml-title-left" onclick="toggleLegendCollapse(event)" title="Klik untuk sembunyikan/tampilkan legenda">
-        <span class="ml-caret">▼</span>
-        <span>Line Aktif <span id="ml-line-count" style="color:var(--text-dim);font-weight:600;font-size:9px;">(0)</span></span>
+  <!-- ============ LEGENDA CONTAINER ============ -->
+  <div class="map-legend-container">
+
+    <!-- LEGENDA LINE -->
+    <div class="map-legend-box" id="legend-line-box">
+      <div class="ml-title">
+        <div class="ml-title-left" onclick="toggleLegendCollapse(event, 'legend-line-box')" title="Klik untuk sembunyikan/tampilkan">
+          <span class="ml-caret">▼</span>
+          <span>Line Aktif <span id="ml-line-count" style="color:var(--text-dim);font-weight:600;font-size:9px;">(0)</span></span>
+        </div>
+        <div class="ml-title-actions">
+          <button class="ml-mini-btn" onclick="showAllLines(event)" title="Tampilkan Semua">ALL</button>
+          <button class="ml-mini-btn" onclick="hideAllLines(event)" title="Sembunyikan Semua">NONE</button>
+        </div>
       </div>
-      <div class="ml-title-actions">
-        <button class="ml-mini-btn" onclick="showAllLines(event)" title="Tampilkan Semua">ALL</button>
-        <button class="ml-mini-btn" onclick="hideAllLines(event)" title="Sembunyikan Semua">NONE</button>
+      <div class="ml-grid-wrap">
+        <div class="ml-grid" id="ml-line-grid">
+          <div style="font-size:9px;color:var(--text-dim);font-style:italic;padding:4px;grid-column:1/-1;">Memuat line...</div>
+        </div>
       </div>
     </div>
-    <div class="ml-line-grid-wrap">
-      <div class="ml-line-grid" id="ml-line-grid">
-        <div style="font-size:9px;color:var(--text-dim);font-style:italic;padding:4px;grid-column:1/-1;">Memuat line...</div>
+
+    <!-- LEGENDA TITIK (BARU) -->
+    <div class="map-legend-box" id="legend-titik-box">
+      <div class="ml-title">
+        <div class="ml-title-left" onclick="toggleLegendCollapse(event, 'legend-titik-box')" title="Klik untuk sembunyikan/tampilkan">
+          <span class="ml-caret">▼</span>
+          <span>Titik Aktif <span id="ml-titik-count" style="color:var(--text-dim);font-weight:600;font-size:9px;">(0)</span></span>
+        </div>
+        <div class="ml-title-actions">
+          <button class="ml-mini-btn" onclick="showAllTitik(event)" title="Tampilkan Semua">ALL</button>
+          <button class="ml-mini-btn" onclick="hideAllTitik(event)" title="Sembunyikan Semua">NONE</button>
+        </div>
+      </div>
+      <div class="ml-grid-wrap">
+        <div class="ml-grid" id="ml-titik-grid">
+          <div style="font-size:9px;color:var(--text-dim);font-style:italic;padding:4px;grid-column:1/-1;">Memuat titik...</div>
+        </div>
       </div>
     </div>
+
   </div>
 
   <div class="custom-map-controls">
@@ -337,20 +393,39 @@ let kmlLayers = {};
 let lineVisibility = {};
 let kmlDataCache = null;
 let customLines = {};
+
+// STATE UNTUK TITIK
+let mapMarkers = {};              // { titikId: { marker, category } }
+let markerVisibility = {};        // { categoryKey: true/false }
+let titikDataCache = null;        // data titik dari Firebase
+let titikVisibleAll = true;       // global toggle
+let markerWatchdog = null;
+let markerWatchdogCount = 0;
+
 let drawMode = false;
 let drawPoints = [];
 let drawMarkers = [];
 let drawCurrentLine = null;
-let legendCollapsed = false;
-let watchdogInterval = null;
-let watchdogCount = 0;
 
-const kmlLineColors = {
-  'OSP LINE 1': '#FF0000', 'OSP LINE 2': '#00FF00', 'OSP LINE 3': '#0000FF',
-  'IGG LINE 1': '#FFA500', 'IGG LINE 2': '#800080', 'DWDM': '#FF00FF',
-  'SEA US LINE 1': '#00FFFF', 'SEA US LINE 2': '#FFD700'
-};
-const BUILTIN_LINES = ['OSP LINE 1','OSP LINE 2','OSP LINE 3','IGG LINE 1','IGG LINE 2','DWDM','SEA US LINE 1','SEA US LINE 2'];
+/* ============================================================ KATEGORI TITIK ============================================================ */
+// Titik dari 4 sumber: FO Cut (semua penyebab), Temuan, Handhole, Joint
+const TITIK_CATEGORIES = [
+  { key: 'ofcut_p3',       label: 'FO Cut P3',        color: '#FF0000', source: 'Data OF Cut', filter: (it) => classifyCause(it) === 'p3' },
+  { key: 'ofcut_vandal',   label: 'FO Cut Vandal',    color: '#00FF00', source: 'Data OF Cut', filter: (it) => classifyCause(it) === 'vandal' },
+  { key: 'ofcut_bencana',  label: 'FO Cut Bencana',   color: '#0000FF', source: 'Data OF Cut', filter: (it) => classifyCause(it) === 'bencana' },
+  { key: 'ofcut_lainnya',  label: 'FO Cut Lainnya',   color: '#FF00FF', source: 'Data OF Cut', filter: (it) => classifyCause(it) === 'lainnya' },
+  { key: 'temuan',         label: 'Temuan',           color: '#F59E0B', source: 'Temuan Lapangan' },
+  { key: 'handhole',       label: 'Handhole',         color: '#A855F7', source: 'Handhole' },
+  { key: 'joint',          label: 'Joint',            color: '#00D9FF', source: 'Joint' }
+];
+
+function classifyCause(item) {
+  const p = String(item.penyebab || '').toLowerCase().trim();
+  if (p.includes('pihak') || p.includes('ke3') || p.includes('ke-3') || p.includes('p3')) return 'p3';
+  if (p.includes('vandal')) return 'vandal';
+  if (p.includes('bencana')) return 'bencana';
+  return 'lainnya';
+}
 
 /* ============================================================ HELPERS ============================================================ */
 function escapeHtml(s) {
@@ -387,69 +462,36 @@ function getHybridStyle() {
 function harvestHardcodedLines() {
   if (!kmlDataCache) kmlDataCache = {};
   let found = 0;
-
-  // Cek semua variable global yang namanya mengandung 'line' atau 'kml'
   try {
     const keys = Object.keys(window).filter(k => /line|kml/i.test(k));
     keys.forEach(varName => {
       try {
         const val = window[varName];
         if (!val) return;
-
-        // Format 1: Array koordinat [[lng,lat],...]
         if (Array.isArray(val) && val.length > 1 && Array.isArray(val[0]) && typeof val[0][0] === 'number') {
           const name = varName.replace(/^LINE_/, '').replace(/_/g, ' ').toUpperCase();
           if (!kmlDataCache[name]) {
             kmlDataCache[name] = { type: 'coords', coords: val, name: name };
             found++;
-            console.log('[HARVEST]', varName, '→', name, '(' + val.length + ' titik)');
-          }
-        }
-
-        // Format 2: Object dengan property coords/lines/data
-        if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-          if (val.coords && Array.isArray(val.coords)) {
-            const name = (val.name || varName).replace(/^LINE_/, '').replace(/_/g, ' ').toUpperCase();
-            if (!kmlDataCache[name]) {
-              kmlDataCache[name] = { type: 'coords', coords: val.coords, name: name, color: val.color };
-              found++;
-              console.log('[HARVEST]', varName, '→', name);
-            }
-          }
-          if (val.features && val.type === 'FeatureCollection') {
-            const name = (val.name || varName).toUpperCase();
-            if (!kmlDataCache[name]) {
-              kmlDataCache[name] = { type: 'geojson', geojson: val, name: name };
-              found++;
-            }
           }
         }
       } catch(e) {}
     });
   } catch(e) {}
-
-  if (found > 0) console.log('[HARVEST] Total', found, 'line hardcoded ditemukan');
+  if (found > 0) console.log('[HARVEST] Total', found, 'line');
   return found;
 }
 
 /* ============================================================ TRY FORCE RENDER ============================================================ */
 function tryForceRender(source) {
-  if (!map || !mapReady || !map.isStyleLoaded()) {
-    return;
-  }
-
-  // Harvest dulu (kalau ada yang belum ke-ambil)
+  if (!map || !mapReady || !map.isStyleLoaded()) return;
   harvestHardcodedLines();
-
   const d = kmlDataCache || {};
   const names = Object.keys(d);
-  if (names.length === 0) return;
-
-  names.forEach(name => {
-    if (lineVisibility[name] === undefined) lineVisibility[name] = true;
-  });
-
-  applyLineFilters();
+  if (names.length > 0) {
+    names.forEach(name => { if (lineVisibility[name] === undefined) lineVisibility[name] = true; });
+    applyLineFilters();
+  }
 }
 
 /* ============================================================ INIT MAP ============================================================ */
@@ -464,13 +506,8 @@ function initMap() {
       attributionControl: false, antialias: true
     });
 
-    map.on('styledata', () => {
-      setTimeout(() => tryForceRender('styledata'), 100);
-    });
-
-    map.on('idle', () => {
-      tryForceRender('idle');
-    });
+    map.on('styledata', () => setTimeout(() => tryForceRender('styledata'), 100));
+    map.on('idle', () => tryForceRender('idle'));
 
     map.on('load', () => {
       mapReady = true;
@@ -478,63 +515,239 @@ function initMap() {
       try { map.resize(); } catch(e){}
       tryForceRender('load');
       startWatchdog();
+      // Load titik setelah map ready
+      loadTitikFromFirebase();
     });
 
     map.on('error', e => console.error('[MAP ERROR]', e));
     map.on('click', e => { if (drawMode) handleDrawClick(e); });
-
   } catch (e) {
     console.error('Map init:', e);
     showToast('Gagal init peta: ' + e.message, 'error');
   }
 }
 
-/* ============================================================ WATCHDOG ============================================================ */
+/* ============================================================ WATCHDOG LINE ============================================================ */
 function startWatchdog() {
-  if (watchdogInterval) clearInterval(watchdogInterval);
-  watchdogCount = 0;
-  console.log('[WATCHDOG] Start');
-
-  watchdogInterval = setInterval(() => {
-    watchdogCount++;
-    if (watchdogCount > 40) {
-      clearInterval(watchdogInterval);
-      watchdogInterval = null;
-      console.log('[WATCHDOG] Max attempts reached, stop');
-      return;
-    }
+  let watchdogInterval = setInterval(() => {
     if (!mapReady || !map || !map.isStyleLoaded()) return;
-
     const total = kmlDataCache ? Object.keys(kmlDataCache).length : 0;
     const drawn = Object.keys(kmlLayers).length;
-
-    if (total === 0) return;
-
-    if (drawn < total) {
-      console.log('[WATCHDOG] ' + watchdogCount + ': ' + drawn + '/' + total + ' — retry');
-      tryForceRender('watchdog-' + watchdogCount);
+    if (total === 0 || drawn >= total) {
+      clearInterval(watchdogInterval);
       return;
     }
-
-    // Semua drawn — cek visibility
-    let allVisible = true;
-    Object.keys(kmlLayers).forEach(name => {
-      if (lineVisibility[name] !== false) {
-        const l = kmlLayers[name];
-        try {
-          const vis = map.getLayoutProperty(l.layerId, 'visibility');
-          if (vis !== 'visible') allVisible = false;
-        } catch(e) { allVisible = false; }
-      }
-    });
-
-    if (allVisible && watchdogCount > 2) {
-      clearInterval(watchdogInterval);
-      watchdogInterval = null;
-      console.log('[WATCHDOG] Selesai — semua ' + drawn + ' line tampil.');
-    }
+    tryForceRender('watchdog');
   }, 500);
 }
+
+/* ============================================================ LOAD TITIK DARI FIREBASE ============================================================ */
+function loadTitikFromFirebase() {
+  if (!db) return;
+
+  // Listener realtime
+  db.ref('data').on('value', s => {
+    titikDataCache = s.val() || {};
+    console.log('[TITIK] Data update');
+    renderAllMarkers();
+    renderTitikLegend();
+  });
+
+  // One-time fetch sebagai backup
+  db.ref('data').once('value').then(s => {
+    titikDataCache = s.val() || {};
+    console.log('[TITIK] One-time fetch OK');
+    renderAllMarkers();
+    renderTitikLegend();
+  });
+}
+
+/* ============================================================ RENDER SEMUA MARKER ============================================================ */
+function renderAllMarkers() {
+  if (!map || !mapReady) return;
+
+  // Hapus semua marker lama
+  Object.keys(mapMarkers).forEach(id => {
+    try { mapMarkers[id].marker.remove(); } catch(e) {}
+  });
+  mapMarkers = {};
+
+  const data = titikDataCache || {};
+  let total = 0;
+
+  TITIK_CATEGORIES.forEach(cat => {
+    // Init visibility kalau belum ada
+    if (markerVisibility[cat.key] === undefined) markerVisibility[cat.key] = true;
+
+    const items = data[cat.source] || {};
+    const isVisible = markerVisibility[cat.key] !== false;
+
+    Object.keys(items).forEach(k => {
+      const it = items[k];
+
+      // Kalau ada filter khusus kategori ini, cek
+      if (cat.filter && !cat.filter(it)) return;
+
+      // Ambil koordinat
+      let lat = null, lng = null;
+      if (it.coords) {
+        const parts = String(it.coords).split(',').map(x => x.trim());
+        if (parts.length >= 2) {
+          lat = parseFloat(parts[0]);
+          lng = parseFloat(parts[1]);
+        }
+      }
+      if (isNaN(lat) || isNaN(lng)) {
+        lat = parseFloat(it.lat || it.latitude || '');
+        lng = parseFloat(it.lng || it.lon || it.longitude || '');
+      }
+      if (isNaN(lat) || isNaN(lng) || lat === 0 || lng === 0) return;
+
+      // Buat elemen marker
+      const el = document.createElement('div');
+      el.className = 'map-marker-dot';
+      el.style.background = cat.color;
+      el.style.boxShadow = '0 0 8px ' + cat.color + ', 0 2px 4px rgba(0,0,0,0.4)';
+
+      const popup = new maplibregl.Popup({ offset: 14, closeButton: true, maxWidth: '240px' })
+        .setHTML(buildTitikPopup(it, cat));
+
+      const marker = new maplibregl.Marker({ element: el, anchor: 'center' })
+        .setLngLat([lng, lat])
+        .setPopup(popup);
+
+      if (isVisible && titikVisibleAll) {
+        marker.addTo(map);
+      }
+
+      const markerId = cat.key + '_' + k;
+      mapMarkers[markerId] = { marker, category: cat.key, data: it, visible: isVisible };
+      total++;
+    });
+  });
+
+  console.log('[TITIK] Total', total, 'marker, visible categories:', Object.keys(markerVisibility).filter(k => markerVisibility[k] !== false).length);
+
+  if (typeof lucide !== 'undefined') lucide.createIcons();
+}
+
+/* ============================================================ POPUP TITIK ============================================================ */
+function buildTitikPopup(item, cat) {
+  const row = (label, val) => (val === undefined || val === null || val === '') ? '' :
+    '<div style="color:#94A3B8;font-weight:700;font-size:9px;">' + label + '</div>' +
+    '<div style="color:#E2E8F0;font-weight:600;word-break:break-word;font-size:10px;margin-bottom:3px;">' + escapeHtml(String(val)) + '</div>';
+
+  let html = '<div style="min-width:160px;max-width:240px;">';
+  html += '<div style="font-weight:800;font-size:11px;color:' + cat.color + ';margin-bottom:6px;padding-bottom:4px;border-bottom:1px solid rgba(148,163,184,0.3);">' +
+          '<span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:' + cat.color + ';margin-right:5px;vertical-align:middle;"></span>' +
+          escapeHtml(cat.label) + '</div>';
+
+  html += row('Tanggal', item.date);
+  html += row('Lokasi', item.location);
+  if (item.penyebab) html += row('Penyebab', item.penyebab);
+  if (item.kondisi) html += row('Kondisi', item.kondisi);
+  if (item.pelaksana) html += row('Pelaksana', item.pelaksana);
+  if (item.keterangan) html += row('Keterangan', item.keterangan);
+  if (item.postBy) html += row('User', item.postBy);
+
+  html += '</div>';
+  return html;
+}
+
+/* ============================================================ LEGENDA TITIK (GRID) ============================================================ */
+function renderTitikLegend() {
+  const gridEl = document.getElementById('ml-titik-grid');
+  const countEl = document.getElementById('ml-titik-count');
+  if (!gridEl) return;
+
+  const data = titikDataCache || {};
+  const counts = {};
+  let totalVisible = 0;
+
+  TITIK_CATEGORIES.forEach(cat => {
+    const items = data[cat.source] || {};
+    let count = 0;
+    Object.keys(items).forEach(k => {
+      const it = items[k];
+      if (cat.filter && !cat.filter(it)) return;
+
+      let lat = null, lng = null;
+      if (it.coords) {
+        const parts = String(it.coords).split(',').map(x => x.trim());
+        if (parts.length >= 2) { lat = parseFloat(parts[0]); lng = parseFloat(parts[1]); }
+      }
+      if (isNaN(lat) || isNaN(lng)) {
+        lat = parseFloat(it.lat || '');
+        lng = parseFloat(it.lng || it.lon || '');
+      }
+      if (!isNaN(lat) && !isNaN(lng) && lat !== 0 && lng !== 0) count++;
+    });
+    counts[cat.key] = count;
+    if (markerVisibility[cat.key] !== false) totalVisible += count;
+  });
+
+  if (countEl) countEl.textContent = '(' + totalVisible + ')';
+
+  gridEl.innerHTML = TITIK_CATEGORIES.map(cat => {
+    const isOn = markerVisibility[cat.key] !== false;
+    const count = counts[cat.key] || 0;
+    return '<div class="ml-item ' + (isOn ? 'on' : 'off') + '" onclick="toggleTitikVisibility(\'' + cat.key + '\')" title="' + escapeHtml(cat.label) + ' (' + count + ' titik)">' +
+      '<span class="ml-item-toggle">' + (isOn ? '✓' : '') + '</span>' +
+      '<span class="ml-item-dot" style="background:' + cat.color + ';"></span>' +
+      '<span class="ml-item-name">' + escapeHtml(cat.label) + '</span>' +
+      '<span class="ml-item-count">' + count + '</span>' +
+    '</div>';
+  }).join('');
+}
+
+window.toggleTitikVisibility = function(catKey) {
+  markerVisibility[catKey] = !(markerVisibility[catKey] !== false);
+  console.log('[TITIK] Toggle', catKey, '→', markerVisibility[catKey]);
+
+  // Update semua marker kategori ini
+  Object.keys(mapMarkers).forEach(id => {
+    const m = mapMarkers[id];
+    if (m.category === catKey) {
+      if (markerVisibility[catKey] && titikVisibleAll) {
+        try { m.marker.addTo(map); } catch(e) {}
+      } else {
+        try { m.marker.remove(); } catch(e) {}
+      }
+    }
+  });
+
+  renderTitikLegend();
+};
+
+window.showAllTitik = function(event) {
+  if (event) { event.stopPropagation(); event.preventDefault(); }
+  titikVisibleAll = true;
+  Object.keys(markerVisibility).forEach(k => markerVisibility[k] = true);
+  Object.keys(mapMarkers).forEach(id => {
+    const m = mapMarkers[id];
+    try { m.marker.addTo(map); } catch(e) {}
+  });
+  renderTitikLegend();
+  showToast('Semua titik ditampilkan', 'info');
+};
+
+window.hideAllTitik = function(event) {
+  if (event) { event.stopPropagation(); event.preventDefault(); }
+  titikVisibleAll = false;
+  Object.keys(markerVisibility).forEach(k => markerVisibility[k] = false);
+  Object.keys(mapMarkers).forEach(id => {
+    try { mapMarkers[id].marker.remove(); } catch(e) {}
+  });
+  renderTitikLegend();
+  showToast('Semua titik disembunyikan', 'info');
+};
+
+window.toggleLegendCollapse = function(event, boxId) {
+  if (event) { event.stopPropagation(); event.preventDefault(); }
+  const box = document.getElementById(boxId);
+  if (!box) return;
+  box.classList.toggle('collapsed');
+};
 
 /* ============================================================ MAP LAYER SWITCH ============================================================ */
 window.toggleMapLayer = function(type, evt) {
@@ -545,13 +758,18 @@ window.toggleMapLayer = function(type, evt) {
   else style = getSatelliteStyle();
 
   kmlLayers = {};
+  mapMarkers = {};
   mapReady = false;
   map.setStyle(style);
 
   map.once('idle', () => {
     mapReady = true;
-    console.log('[MAP] Style changed');
-    setTimeout(() => { tryForceRender('style-change'); startWatchdog(); }, 150);
+    setTimeout(() => {
+      tryForceRender('style-change');
+      renderAllMarkers();
+      renderTitikLegend();
+      startWatchdog();
+    }, 150);
   });
 
   document.querySelectorAll('.custom-map-btn').forEach(b => b.classList.remove('active'));
@@ -640,7 +858,6 @@ window.submitKmlUpload = function() {
 function processKmlAndSave(kmlText, lineName) {
   return new Promise((resolve, reject) => {
     if (!kmlText || typeof kmlText !== 'string') return reject(new Error('KML tidak valid'));
-
     const xml = new DOMParser().parseFromString(kmlText, 'text/xml');
     if (xml.querySelector('parsererror')) return reject(new Error('XML tidak valid'));
 
@@ -670,7 +887,7 @@ function processKmlAndSave(kmlText, lineName) {
         }
       }
     }
-    if (allCoords.length < 2) return reject(new Error('Tidak ada koordinat valid (butuh min 2 titik)'));
+    if (allCoords.length < 2) return reject(new Error('Tidak ada koordinat valid'));
 
     const kmlForLine = generateKmlFromCoords(allCoords, lineName, '');
     lineVisibility[lineName] = true;
@@ -718,31 +935,23 @@ function loadKmlFromFirebase() {
 
   db.ref('kmlData').on('value', s => {
     const firebaseData = s.val() || {};
-    console.log('[FIREBASE] update, lines:', Object.keys(firebaseData).length);
-
     if (!kmlDataCache) kmlDataCache = {};
     Object.keys(firebaseData).forEach(name => {
       kmlDataCache[name] = firebaseData[name];
       if (lineVisibility[name] === undefined) lineVisibility[name] = true;
     });
-
     tryForceRender('firebase-on');
-    setTimeout(() => tryForceRender('firebase-1'), 300);
-    setTimeout(() => tryForceRender('firebase-2'), 800);
-    setTimeout(() => tryForceRender('firebase-3'), 1500);
   });
 
   db.ref('kmlData').once('value').then(s => {
     const data = s.val() || {};
-    if (Object.keys(data).length === 0) return;
     if (!kmlDataCache) kmlDataCache = {};
     Object.keys(data).forEach(name => {
       kmlDataCache[name] = data[name];
       if (lineVisibility[name] === undefined) lineVisibility[name] = true;
     });
-    console.log('[FIREBASE] once, total lines:', Object.keys(kmlDataCache).length);
     tryForceRender('firebase-once');
-  }).catch(err => console.warn('[FIREBASE] err:', err));
+  });
 
   db.ref('customLines').on('value', s => {
     customLines = s.val() || {};
@@ -755,12 +964,10 @@ function loadKmlFromFirebase() {
 /* ============================================================ APPLY LINE FILTERS ============================================================ */
 function applyLineFilters() {
   if (!map || !mapReady || !map.isStyleLoaded()) return;
-
   const d = kmlDataCache || {};
   const names = Object.keys(d);
-  if (names.length === 0) { renderMapLineLegend(); return; }
+  if (names.length === 0) { renderLineLegend(); return; }
 
-  // Hapus layer yang tidak ada di data
   Object.keys(kmlLayers).forEach(name => {
     if (!d[name]) {
       const l = kmlLayers[name];
@@ -771,7 +978,6 @@ function applyLineFilters() {
     }
   });
 
-  // Draw semua line
   names.forEach(name => {
     const item = d[name];
     const shouldBeVisible = lineVisibility[name] !== false;
@@ -782,57 +988,32 @@ function applyLineFilters() {
         const vis = map.getLayoutProperty(l.layerId, 'visibility');
         const target = shouldBeVisible ? 'visible' : 'none';
         if (vis !== target) map.setLayoutProperty(l.layerId, 'visibility', target);
-      } catch(e) {
-        try { if (l.layerId && map.getLayer(l.layerId)) map.removeLayer(l.layerId); } catch(e2) {}
-        try { if (l.sourceId && map.getSource(l.sourceId)) map.removeSource(l.sourceId); } catch(e2) {}
-        delete kmlLayers[name];
-      }
-      if (kmlLayers[name]) return;
+      } catch(e) {}
+      return;
     }
 
-    // Buat layer baru
     try {
-      let geojson = null;
-      let kmlText = null;
-
-      // Deteksi format item
-      if (typeof item === 'string') {
-        kmlText = item;
-      } else if (typeof item === 'object' && item !== null) {
+      let geojson = null, kmlText = null;
+      if (typeof item === 'string') kmlText = item;
+      else if (typeof item === 'object' && item !== null) {
         if (item.type === 'coords' && Array.isArray(item.coords)) {
-          geojson = {
-            type: 'FeatureCollection',
-            features: [{
-              type: 'Feature',
-              properties: { name: item.name || name },
-              geometry: { type: 'LineString', coordinates: item.coords }
-            }]
-          };
+          geojson = { type: 'FeatureCollection', features: [{ type: 'Feature', properties: { name: item.name || name }, geometry: { type: 'LineString', coordinates: item.coords } }] };
         } else if (item.type === 'geojson' && item.geojson) {
           geojson = item.geojson;
-        } else if (item.kml) {
-          kmlText = item.kml;
-        } else if (typeof item === 'string') {
-          kmlText = item;
-        }
+        } else if (item.kml) kmlText = item.kml;
       }
-
       if (!geojson && kmlText) {
         const xml = new DOMParser().parseFromString(kmlText, 'text/xml');
         geojson = parseKmlToGeoJSON(xml);
       }
-
       if (geojson && geojson.features.length > 0) {
         drawKmlGeoJSON(name, geojson, false, shouldBeVisible);
-        console.log('[KML] Drew:', name, '(' + geojson.features.length + ' features)');
       }
-    } catch(e) {
-      console.warn('[KML] Error draw:', name, e);
-    }
+    } catch(e) {}
   });
 
   try { map.triggerRepaint(); } catch(e) {}
-  renderMapLineLegend();
+  renderLineLegend();
 }
 
 function parseKmlToGeoJSON(xml) {
@@ -841,16 +1022,12 @@ function parseKmlToGeoJSON(xml) {
     const pms = xml.getElementsByTagName('Placemark');
     for (let i = 0; i < pms.length; i++) {
       const pm = pms[i];
-      const nameEl = pm.getElementsByTagName('name')[0];
-      const name = nameEl && nameEl.textContent ? nameEl.textContent : '';
       const ls = pm.getElementsByTagName('LineString')[0];
       if (!ls) continue;
       const c = ls.getElementsByTagName('coordinates')[0];
       if (!c) continue;
       const coords = parseCoordString(c.textContent);
-      if (coords.length > 1) {
-        features.push({ type: 'Feature', properties: { name }, geometry: { type: 'LineString', coordinates: coords } });
-      }
+      if (coords.length > 1) features.push({ type: 'Feature', properties: {}, geometry: { type: 'LineString', coordinates: coords } });
     }
   } catch(e) {}
   return { type: 'FeatureCollection', features };
@@ -872,29 +1049,23 @@ function drawKmlGeoJSON(lineName, geojson, autoZoom, visible) {
     map.addSource(sourceId, { type: 'geojson', data: geojson });
     map.addLayer({
       id: layerId, type: 'line', source: sourceId,
-      layout: {
-        'line-join': 'round',
-        'line-cap': 'round',
-        'visibility': visible === false ? 'none' : 'visible'
-      },
+      layout: { 'line-join': 'round', 'line-cap': 'round', 'visibility': visible === false ? 'none' : 'visible' },
       paint: { 'line-color': color, 'line-width': width, 'line-opacity': 0.85 }
     });
-    try { map.moveLayer(layerId); } catch(e) {}
-  } catch(e) { console.warn('[KML] addLayer err:', e); }
+  } catch(e) {}
   kmlLayers[lineName] = { sourceId, layerId, geojson };
-
-  if (autoZoom !== false && geojson.features && geojson.features.length > 0) {
-    try {
-      const bounds = new maplibregl.LngLatBounds();
-      geojson.features.forEach(f => f.geometry.coordinates.forEach(c => bounds.extend(c)));
-      if (!bounds.isEmpty()) map.fitBounds(bounds, { padding: 40, maxZoom: 16 });
-    } catch(e) {}
-  }
-  renderMapLineLegend();
+  renderLineLegend();
 }
 
+const kmlLineColors = {
+  'OSP LINE 1': '#FF0000', 'OSP LINE 2': '#00FF00', 'OSP LINE 3': '#0000FF',
+  'IGG LINE 1': '#FFA500', 'IGG LINE 2': '#800080', 'DWDM': '#FF00FF',
+  'SEA US LINE 1': '#00FFFF', 'SEA US LINE 2': '#FFD700'
+};
+const BUILTIN_LINES = ['OSP LINE 1','OSP LINE 2','OSP LINE 3','IGG LINE 1','IGG LINE 2','DWDM','SEA US LINE 1','SEA US LINE 2'];
+
 /* ============================================================ LEGENDA LINE ============================================================ */
-function renderMapLineLegend() {
+function renderLineLegend() {
   const gridEl = document.getElementById('ml-line-grid');
   const countEl = document.getElementById('ml-line-count');
   if (!gridEl) return;
@@ -909,10 +1080,10 @@ function renderMapLineLegend() {
   gridEl.innerHTML = allLines.map(name => {
     const color = kmlLineColors[name] || (customLines[name] && customLines[name].color) || '#00D9FF';
     const isOn = lineVisibility[name] !== false;
-    return '<div class="ml-line-item ' + (isOn ? 'on' : 'off') + '" onclick="toggleLineVisibility(\'' + escapeAttr(name) + '\')" title="' + escapeHtml(name) + '">' +
-      '<span class="ml-line-toggle">' + (isOn ? '✓' : '') + '</span>' +
-      '<span class="ml-line-bar" style="background:' + color + ';"></span>' +
-      '<span class="ml-line-name">' + escapeHtml(name) + '</span>' +
+    return '<div class="ml-item ' + (isOn ? 'on' : 'off') + '" onclick="toggleLineVisibility(\'' + escapeAttr(name) + '\')" title="' + escapeHtml(name) + '">' +
+      '<span class="ml-item-toggle">' + (isOn ? '✓' : '') + '</span>' +
+      '<span class="ml-item-bar" style="background:' + color + ';"></span>' +
+      '<span class="ml-item-name">' + escapeHtml(name) + '</span>' +
     '</div>';
   }).join('');
 }
@@ -922,10 +1093,8 @@ window.toggleLineVisibility = function(lineName) {
   const entry = kmlLayers[lineName];
   const newVisible = !(lineVisibility[lineName] !== false);
   lineVisibility[lineName] = newVisible;
-  try {
-    map.setLayoutProperty(entry.layerId, 'visibility', newVisible ? 'visible' : 'none');
-  } catch(e) {}
-  renderMapLineLegend();
+  try { map.setLayoutProperty(entry.layerId, 'visibility', newVisible ? 'visible' : 'none'); } catch(e) {}
+  renderLineLegend();
 };
 
 window.showAllLines = function(event) {
@@ -934,7 +1103,7 @@ window.showAllLines = function(event) {
     lineVisibility[name] = true;
     try { map.setLayoutProperty(kmlLayers[name].layerId, 'visibility', 'visible'); } catch(e) {}
   });
-  renderMapLineLegend();
+  renderLineLegend();
   showToast('Semua line ditampilkan', 'info');
 };
 
@@ -944,16 +1113,8 @@ window.hideAllLines = function(event) {
     lineVisibility[name] = false;
     try { map.setLayoutProperty(kmlLayers[name].layerId, 'visibility', 'none'); } catch(e) {}
   });
-  renderMapLineLegend();
+  renderLineLegend();
   showToast('Semua line disembunyikan', 'info');
-};
-
-window.toggleLegendCollapse = function(event) {
-  if (event) { event.stopPropagation(); event.preventDefault(); }
-  const panel = document.getElementById('map-legend-container');
-  if (!panel) return;
-  legendCollapsed = !legendCollapsed;
-  panel.classList.toggle('collapsed', legendCollapsed);
 };
 
 /* ============================================================ DRAW LINE ============================================================ */
@@ -970,10 +1131,7 @@ window.startDrawing = function() {
   const width = parseInt(document.getElementById('draw-line-width').value) || 4;
   const notes = (document.getElementById('draw-line-notes').value || '').trim().toUpperCase();
 
-  drawCurrentLine = {
-    name: lineName, color, width, notes,
-    isCustom: document.getElementById('draw-line-name').value === '__custom__'
-  };
+  drawCurrentLine = { name: lineName, color, width, notes };
   drawMode = true;
   drawPoints = [];
   drawMarkers.forEach(m => { try { m.remove(); } catch(e){} });
@@ -983,7 +1141,7 @@ window.startDrawing = function() {
   document.getElementById('draw-controls').classList.add('show');
   document.getElementById('draw-point-count').textContent = '0 titik';
   document.body.classList.add('draw-cursor-active');
-  showToast('Mode menggambar aktif — klik di peta', 'success');
+  showToast('Mode menggambar aktif', 'success');
 };
 
 function handleDrawClick(e) {
@@ -998,9 +1156,7 @@ function handleDrawClick(e) {
     if (prev) prev.getElement().classList.remove('last');
     el.classList.add('last');
   }
-  const marker = new maplibregl.Marker({ element: el, anchor: 'center' })
-    .setLngLat([lng, lat])
-    .addTo(map);
+  const marker = new maplibregl.Marker({ element: el, anchor: 'center' }).setLngLat([lng, lat]).addTo(map);
   drawMarkers.push(marker);
   updateDrawPreview();
   document.getElementById('draw-point-count').textContent = drawPoints.length + ' titik';
@@ -1021,12 +1177,6 @@ window.undoLastPoint = function() {
   drawPoints.pop();
   const m = drawMarkers.pop();
   if (m) m.remove();
-  drawMarkers.forEach((mk, i) => {
-    const el = mk.getElement();
-    el.classList.remove('first', 'last');
-    if (i === 0) el.classList.add('first');
-    if (i === drawMarkers.length - 1 && drawMarkers.length > 1) el.classList.add('last');
-  });
   if (drawPoints.length < 2) {
     try { if (map.getLayer('draw-preview-lay')) map.removeLayer('draw-preview-lay'); } catch(e) {}
     try { if (map.getSource('draw-preview-src')) map.removeSource('draw-preview-src'); } catch(e) {}
@@ -1037,7 +1187,6 @@ window.undoLastPoint = function() {
 window.cancelDrawLine = function() {
   if (drawPoints.length > 0 && !confirm('Batalkan gambar?')) return;
   cleanupDrawing();
-  showToast('Dibatalkan', 'info');
 };
 
 function cleanupDrawing() {
@@ -1054,20 +1203,13 @@ function cleanupDrawing() {
 
 window.finishDrawLine = function() {
   if (drawPoints.length < 2) { showToast('Minimal 2 titik', 'error'); return; }
-  const { name, color, width, notes, isCustom } = drawCurrentLine;
-  const customSavePromise = (isCustom && !customLines[name])
-    ? db.ref('customLines/' + name).set({ color, width, createdAt: Date.now(), notes })
-    : Promise.resolve();
+  const { name, color, width, notes } = drawCurrentLine;
   const kmlText = generateKmlFromCoords(drawPoints, name, notes);
   lineVisibility[name] = true;
-
-  customSavePromise
-    .then(() => db.ref('kmlData/' + name).set(kmlText))
-    .then(() => {
-      showToast('Line "' + name + '" tersimpan!', 'success');
-      cleanupDrawing();
-    })
-    .catch(err => showToast('Gagal: ' + err.message, 'error'));
+  db.ref('kmlData/' + name).set(kmlText).then(() => {
+    showToast('Line "' + name + '" tersimpan!', 'success');
+    cleanupDrawing();
+  }).catch(err => showToast('Gagal: ' + err.message, 'error'));
 };
 
 /* ============================================================ KML MANAGER ============================================================ */
@@ -1076,9 +1218,8 @@ window.openKmlManager = function() {
   document.getElementById('kml-list-search').value = '';
   renderKmlManagerList();
 };
-window.closeKmlManager = function() {
-  document.getElementById('kml-manager-modal').classList.add('hidden');
-};
+window.closeKmlManager = function() { document.getElementById('kml-manager-modal').classList.add('hidden'); };
+
 window.renderKmlManagerList = function() {
   const container = document.getElementById('kml-list-container');
   const countBadge = document.getElementById('kml-count-badge');
@@ -1089,23 +1230,21 @@ window.renderKmlManagerList = function() {
   if (countBadge) countBadge.textContent = names.length;
   if (search) names = names.filter(n => n.toLowerCase().includes(search));
   if (names.length === 0) {
-    container.innerHTML = '<div style="padding:30px;text-align:center;color:var(--text-muted);">' + (search ? 'Tidak ada line cocok' : 'Belum ada line tersimpan') + '</div>';
+    container.innerHTML = '<div style="padding:30px;text-align:center;color:var(--text-muted);">' + (search ? 'Tidak ada' : 'Belum ada line') + '</div>';
     return;
   }
   container.innerHTML = names.map(name => {
     const item = data[name] || '';
-    let kmlText = typeof item === 'string' ? item : (item.kml || '');
+    const kmlText = typeof item === 'string' ? item : (item.kml || '');
     let pmCount = 0;
     try { const xml = new DOMParser().parseFromString(kmlText, 'text/xml'); pmCount = xml.getElementsByTagName('Placemark').length; } catch(e) {}
-    const isBuiltin = BUILTIN_LINES.indexOf(name) !== -1;
     const color = kmlLineColors[name] || (customLines[name] && customLines[name].color) || '#00D9FF';
     return '<div class="kml-list-item">' +
       '<div style="width:40px;height:40px;border-radius:10px;background:' + color + '20;border:1px solid ' + color + '80;display:grid;place-items:center;flex-shrink:0;">▬</div>' +
-      '<div class="kml-list-info"><div class="kml-list-name">' + escapeHtml(name) + (isBuiltin ? '' : ' <span style="font-size:11px;color:var(--primary-cyan);">(kustom)</span>') + '</div>' +
-      '<div style="font-size:11px;color:var(--text-muted);">' + pmCount + ' placemark • ' + ((kmlText.length || 0) / 1024).toFixed(1) + ' KB</div></div>' +
+      '<div class="kml-list-info"><div class="kml-list-name">' + escapeHtml(name) + '</div>' +
+      '<div style="font-size:11px;color:var(--text-muted);">' + pmCount + ' placemark</div></div>' +
       '<div class="kml-list-actions">' +
       '<button class="kml-list-btn download" onclick="downloadSingleKml(\'' + escapeAttr(name) + '\')">KML</button>' +
-      '<button class="kml-list-btn download" onclick="downloadSingleKmz(\'' + escapeAttr(name) + '\')">KMZ</button>' +
       '<button class="kml-list-btn delete" onclick="hapusLineKml(\'' + escapeAttr(name) + '\')">Hapus</button>' +
       '</div></div>';
   }).join('');
@@ -1113,38 +1252,20 @@ window.renderKmlManagerList = function() {
 
 window.downloadSingleKml = function(lineName) {
   const item = (kmlDataCache || {})[lineName];
-  if (!item) { showToast('Tidak ada', 'error'); return; }
+  if (!item) return;
   const kmlText = typeof item === 'string' ? item : (item.kml || '');
-  if (!kmlText) { showToast('Tidak ada KML text', 'error'); return; }
   downloadTextAsFile(kmlText, lineName + '.kml', 'application/vnd.google-earth.kml+xml');
   showToast('KML diunduh', 'success');
 };
-window.downloadSingleKmz = function(lineName) {
-  const item = (kmlDataCache || {})[lineName];
-  if (!item) { showToast('Tidak ada', 'error'); return; }
-  const kmlText = typeof item === 'string' ? item : (item.kml || '');
-  if (!kmlText) { showToast('Tidak ada KML text', 'error'); return; }
-  const zip = new JSZip();
-  zip.file('doc.kml', kmlText);
-  zip.generateAsync({ type: 'blob' }).then(blob => {
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url; a.download = lineName + '.kmz';
-    document.body.appendChild(a); a.click();
-    document.body.removeChild(a); URL.revokeObjectURL(url);
-    showToast('KMZ diunduh', 'success');
-  });
-};
+
 window.hapusLineKml = function(lineName) {
   if (!confirm('HAPUS line "' + lineName + '"?')) return;
-  const isBuiltin = BUILTIN_LINES.indexOf(lineName) !== -1;
-  const chain = isBuiltin ? Promise.resolve() : db.ref('customLines/' + lineName).remove().catch(() => {});
-  chain.then(() => db.ref('kmlData/' + lineName).remove()).then(() => {
+  db.ref('kmlData/' + lineName).remove().then(() => {
     delete kmlDataCache[lineName];
     delete lineVisibility[lineName];
     showToast('Line dihapus', 'success');
     renderKmlManagerList();
-  }).catch(err => showToast(err.message, 'error'));
+  });
 };
 
 function downloadTextAsFile(text, filename, mimeType) {
@@ -1165,7 +1286,7 @@ function updateKmlCustomLineOptions() {
   Object.keys(customLines).forEach(key => {
     if (!sel.querySelector('option[value="' + key + '"]')) {
       const opt = document.createElement('option');
-      opt.value = key; opt.textContent = key + ' (kustom)';
+      opt.value = key; opt.textContent = key;
       sel.insertBefore(opt, customOpt);
     }
   });
@@ -1178,72 +1299,17 @@ function updateDrawCustomLineOptions() {
   Object.keys(customLines).forEach(key => {
     if (!sel.querySelector('option[value="' + key + '"]')) {
       const opt = document.createElement('option');
-      opt.value = key; opt.textContent = key + ' (kustom)';
+      opt.value = key; opt.textContent = key;
       sel.insertBefore(opt, customOpt);
     }
   });
 }
-
-/* ============================================================ POSTMESSAGE FROM PARENT ============================================================ */
-window.addEventListener('message', function(event) {
-  const data = event.data || {};
-  console.log('[POSTMESSAGE]', data.type);
-
-  if (data.type === 'add-line' || data.type === 'add-lines') {
-    const lines = data.type === 'add-line' ? [data] : (data.lines || []);
-    if (!kmlDataCache) kmlDataCache = {};
-
-    lines.forEach(line => {
-      if (!line.name) return;
-      const name = line.name.toUpperCase().trim();
-
-      // Format coords
-      if (line.coords && Array.isArray(line.coords)) {
-        kmlDataCache[name] = { type: 'coords', coords: line.coords, name: name };
-        if (!customLines[name]) customLines[name] = { color: line.color || '#00D9FF', width: line.width || 4, source: 'parent' };
-      }
-      // Format KML
-      else if (line.kml && typeof line.kml === 'string') {
-        kmlDataCache[name] = line.kml;
-      }
-      // Format GeoJSON
-      else if (line.geojson && line.geojson.features) {
-        kmlDataCache[name] = { type: 'geojson', geojson: line.geojson, name: name };
-      }
-
-      lineVisibility[name] = true;
-      console.log('[PARENT] Add line:', name);
-    });
-
-    tryForceRender('postmessage');
-    setTimeout(() => tryForceRender('postmessage-1'), 300);
-    setTimeout(() => tryForceRender('postmessage-2'), 1000);
-  }
-
-  else if (data.type === 'remove-line' && data.name) {
-    const name = data.name.toUpperCase().trim();
-    if (kmlLayers[name]) {
-      const l = kmlLayers[name];
-      try { if (l.layerId && map.getLayer(l.layerId)) map.removeLayer(l.layerId); } catch(e) {}
-      try { if (l.sourceId && map.getSource(l.sourceId)) map.removeSource(l.sourceId); } catch(e) {}
-      delete kmlLayers[name];
-      delete lineVisibility[name];
-      if (kmlDataCache) delete kmlDataCache[name];
-      renderMapLineLegend();
-    }
-  }
-
-  else if (data.type === 'refresh') {
-    tryForceRender('parent-refresh');
-  }
-});
 
 /* ============================================================ INIT ============================================================ */
 document.addEventListener('DOMContentLoaded', () => {
   console.log('[BUCIN] DOMContentLoaded');
   if (typeof lucide !== 'undefined') lucide.createIcons();
 
-  // HARVEST line hardcoded SEBELUM map dibuat
   harvestHardcodedLines();
 
   const btnDraw = document.getElementById('btn-draw-line');
@@ -1258,12 +1324,8 @@ document.addEventListener('DOMContentLoaded', () => {
   initMap();
   loadKmlFromFirebase();
 
-  // Retry dengan backoff — 5 titik waktu
-  [500, 1500, 3000, 5000, 8000].forEach(delay => {
-    setTimeout(() => {
-      console.log('[INIT-TIMEOUT] +' + delay + 'ms');
-      tryForceRender('init-timeout-' + delay);
-    }, delay);
+  [500, 1500, 3000].forEach(delay => {
+    setTimeout(() => tryForceRender('init-' + delay), delay);
   });
 
   window.addEventListener('resize', () => { if (map) map.resize(); });
