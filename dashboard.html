@@ -133,19 +133,29 @@
             min-height: 0;
         }
 
+        /* ====== STAT COL — BORDER + BACKGROUND ====== */
         .stat-col {
             display: grid;
             grid-template-rows: repeat(4, 1fr);
             gap: 10px;
             height: 100%;
             min-height: 0;
+            padding: 8px;
+            border: 1.5px solid var(--theme-border);
+            border-radius: 12px;
+            background: rgba(15, 23, 42, 0.35);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+        }
+        body.light-mode .stat-col {
+            background: rgba(255, 255, 255, 0.35);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
         }
 
-        /* ===== STAT BOX SEBAGAI SHORTCUT ===== */
+        /* ====== STAT BOX — BORDER + BACKGROUND ====== */
         .stat-box {
-            background: transparent;
-            border: 1px solid var(--theme-border);
-            border-left: 3px solid #38bdf8;
+            background: rgba(15, 23, 42, 0.35);
+            border: 1.5px solid var(--theme-border);
+            border-left: 4px solid #38bdf8;
             border-radius: 10px;
             padding: 10px 14px;
             display: flex;
@@ -160,11 +170,14 @@
             color: inherit;
             position: relative;
         }
+        body.light-mode .stat-box {
+            background: rgba(255, 255, 255, 0.35);
+        }
+
         .stat-box:hover {
             transform: translateX(4px);
             border-color: var(--theme-border-hover);
-            background: rgba(56, 189, 248, 0.06);
-            box-shadow: 0 0 0 1px var(--theme-border-hover);
+            box-shadow: 0 0 0 1px var(--theme-border-hover), 0 4px 12px rgba(0, 0, 0, 0.2);
         }
         .stat-box:active {
             transform: translateX(2px) scale(0.98);
@@ -194,10 +207,10 @@
         .stat-box.s3 { border-left-color: #38bdf8; }
         .stat-box.s4 { border-left-color: #a855f7; }
 
-        .stat-box.s1:hover { background: rgba(244, 63, 94, 0.08); }
-        .stat-box.s2:hover { background: rgba(16, 185, 129, 0.08); }
-        .stat-box.s3:hover { background: rgba(56, 189, 248, 0.08); }
-        .stat-box.s4:hover { background: rgba(168, 85, 247, 0.08); }
+        .stat-box.s1:hover { background: rgba(244, 63, 94, 0.15); }
+        .stat-box.s2:hover { background: rgba(16, 185, 129, 0.15); }
+        .stat-box.s3:hover { background: rgba(56, 189, 248, 0.15); }
+        .stat-box.s4:hover { background: rgba(168, 85, 247, 0.15); }
 
         .stat-box .lbl {
             font-size: 10px;
@@ -249,9 +262,10 @@
             transition: width 0.4s ease;
         }
 
+        /* ====== MAP WRAP — BORDER + BACKGROUND ====== */
         .map-wrap {
-            background: transparent;
-            border: 1px solid var(--theme-border);
+            background: rgba(15, 23, 42, 0.35);
+            border: 1.5px solid var(--theme-border);
             border-radius: 12px;
             overflow: hidden;
             display: grid;
@@ -259,17 +273,28 @@
             height: 100%;
             min-height: 0;
             min-width: 0;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+        }
+        body.light-mode .map-wrap {
+            background: rgba(255, 255, 255, 0.35);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
         }
 
+        /* ====== MAP TOOLBAR — BORDER BAWAH ====== */
         .map-toolbar {
             padding: 8px 12px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             gap: 6px;
-            border-bottom: 1px solid var(--theme-border-soft);
+            border-bottom: 1.5px solid var(--theme-border);
+            background: rgba(15, 23, 42, 0.4);
             flex-wrap: wrap;
         }
+        body.light-mode .map-toolbar {
+            background: rgba(255, 255, 255, 0.4);
+        }
+
         .map-btns {
             display: flex;
             gap: 5px;
@@ -292,10 +317,12 @@
         .btn-map:hover {
             color: #38bdf8;
             border-color: #38bdf8;
+            background: rgba(56, 189, 248, 0.1);
         }
         .btn-map.active {
             color: #38bdf8;
             border-color: #38bdf8;
+            background: rgba(56, 189, 248, 0.15);
         }
 
         .map-container {
@@ -368,31 +395,26 @@
     <div class="page">
         <div class="top-row">
 
-            <!-- ============ 4 STAT BOX = SHORTCUT MENU ============ -->
             <div class="stat-col">
 
-                <!-- Shortcut 1: Pihak Ke3 → FO Cut -->
                 <a href="input-focut.html" class="stat-box s1" title="Klik untuk input FO Cut (Pihak Ke3)">
                     <div class="lbl"><i class="fa-solid fa-user-group"></i> Pihak Ke3</div>
                     <div class="val" id="statFiberCut">0 <small>kasus</small></div>
                     <div class="stat-bar"><div id="barFiberCut" style="width:0%; background:#f43f5e;"></div></div>
                 </a>
 
-                <!-- Shortcut 2: Vandalisme → Temuan -->
                 <a href="input-temuan.html" class="stat-box s2" title="Klik untuk input Temuan (Vandalisme)">
                     <div class="lbl"><i class="fa-solid fa-user-secret"></i> Vandalisme</div>
                     <div class="val" id="statVandal">0 <small>kasus</small></div>
                     <div class="stat-bar"><div id="barVandal" style="width:0%; background:#10b981;"></div></div>
                 </a>
 
-                <!-- Shortcut 3: Bencana → OPM/OLS -->
                 <a href="input-opm.html" class="stat-box s3" title="Klik untuk input OPM/OLS (Bencana)">
                     <div class="lbl"><i class="fa-solid fa-cloud-bolt"></i> Bencana</div>
                     <div class="val" id="statBencana">0 <small>kasus</small></div>
                     <div class="stat-bar"><div id="barBencana" style="width:0%; background:#38bdf8;"></div></div>
                 </a>
 
-                <!-- Shortcut 4: Lainnya → Handhole -->
                 <a href="input-handhole.html" class="stat-box s4" title="Klik untuk input Handhole (Lainnya)">
                     <div class="lbl"><i class="fa-solid fa-ellipsis"></i> Lainnya</div>
                     <div class="val" id="statLainnya">0 <small>kasus</small></div>
