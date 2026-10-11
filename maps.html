@@ -65,7 +65,6 @@ html, body { height: 100%; overflow: hidden; font-family: var(--app-font); backg
 .map-wrap { position: relative; width: 100%; height: calc(100vh - var(--header-h)); }
 #map-container { position: absolute; inset: 0; width: 100%; height: 100%; }
 
-/* ============ LEGENDA LINE (GRID + COLLAPSIBLE) ============ */
 .map-legend-top-right {
   position: absolute; top: 12px; left: 12px; z-index: 1000;
   background: var(--surface-map-legend); border: 1px solid var(--border-glow);
@@ -74,9 +73,7 @@ html, body { height: 100%; overflow: hidden; font-family: var(--app-font); backg
   max-height: 500px; overflow: hidden;
   transition: max-width 0.2s ease;
 }
-.map-legend-top-right.collapsed {
-  max-width: 180px;
-}
+.map-legend-top-right.collapsed { max-width: 180px; }
 .map-legend-top-right.collapsed .ml-line-grid-wrap { display: none; }
 .map-legend-top-right .ml-title {
   font-weight: 800; color: var(--primary-cyan); text-transform: uppercase;
@@ -84,21 +81,11 @@ html, body { height: 100%; overflow: hidden; font-family: var(--app-font); backg
   padding-bottom: 4px; border-bottom: 1px solid var(--border-subtle);
   display: flex; align-items: center; justify-content: space-between; gap: 6px;
 }
-.map-legend-top-right .ml-title-left {
-  display: flex; align-items: center; gap: 5px;
-  cursor: pointer; user-select: none;
-}
+.map-legend-top-right .ml-title-left { display: flex; align-items: center; gap: 5px; cursor: pointer; user-select: none; }
 .map-legend-top-right .ml-title-left:hover { color: var(--primary-cyan); }
-.map-legend-top-right .ml-caret {
-  font-size: 10px; transition: transform 0.2s;
-  display: inline-block;
-}
-.map-legend-top-right.collapsed .ml-caret {
-  transform: rotate(-90deg);
-}
-.map-legend-top-right .ml-title-actions {
-  display: flex; gap: 3px;
-}
+.map-legend-top-right .ml-caret { font-size: 10px; transition: transform 0.2s; display: inline-block; }
+.map-legend-top-right.collapsed .ml-caret { transform: rotate(-90deg); }
+.map-legend-top-right .ml-title-actions { display: flex; gap: 3px; }
 .map-legend-top-right .ml-mini-btn {
   background: rgba(0,217,255,0.1); border: 1px solid var(--border-glow);
   color: var(--primary-cyan); cursor: pointer; border-radius: 4px;
@@ -107,19 +94,9 @@ html, body { height: 100%; overflow: hidden; font-family: var(--app-font); backg
 }
 .map-legend-top-right .ml-mini-btn:hover { background: rgba(0,217,255,0.25); }
 
-/* Grid layout untuk list line */
-.ml-line-grid-wrap {
-  max-height: 420px; overflow-y: auto;
-  padding-right: 2px;
-}
-.ml-line-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 3px 8px;
-}
-@media (max-width: 640px) {
-  .ml-line-grid { grid-template-columns: 1fr; }
-}
+.ml-line-grid-wrap { max-height: 420px; overflow-y: auto; padding-right: 2px; }
+.ml-line-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 3px 8px; }
+@media (max-width: 640px) { .ml-line-grid { grid-template-columns: 1fr; } }
 .ml-line-item {
   display: flex; align-items: center; gap: 5px;
   color: var(--text-muted); font-weight: 600;
@@ -267,7 +244,7 @@ select.field-control option { background: var(--surface-3); color: var(--text-ma
 <div class="map-wrap">
   <div id="map-container"></div>
 
-  <!-- LEGENDA LINE (grid + collapsible) -->
+  <!-- LEGENDA LINE -->
   <div class="map-legend-top-right" id="map-legend-container">
     <div class="ml-title">
       <div class="ml-title-left" onclick="toggleLegendCollapse(event)" title="Klik untuk sembunyikan/tampilkan legenda">
@@ -425,6 +402,7 @@ try { firebase.initializeApp(firebaseConfig); db = firebase.database(); } catch(
 
 /* ============================================================ STATE ============================================================ */
 let map = null;
+let mapReady = false;              // ← KUNCI PERBAIKAN
 let kmlLayers = {};
 let lineVisibility = {};
 let kmlDataCache = null;
@@ -484,14 +462,19 @@ function initMap() {
       zoom: 11, maxZoom: 22, minZoom: 2,
       attributionControl: false, antialias: true
     });
+
     map.on('load', () => {
-      console.log('[MAP] Loaded');
+      mapReady = true;
+      console.log('[MAP] Loaded, mapReady = true');
       setTimeout(() => { try { map.resize(); } catch(e){} }, 100);
-      if (kmlDataCache) applyLineFilters();
-      else if (db) {
+
+      // Kalau data sudah ada di cache, apply langsung
+      if (kmlDataCache) {
+        console.log('[MAP] kmlDataCache sudah ada, apply langsung');
+        applyLineFilters();
+      } else if (db) {
         db.ref('kmlData').once('value').then(s => {
           kmlDataCache = s.val() || {};
-          // FORCE: semua line baru default ON
           Object.keys(kmlDataCache).forEach(name => {
             if (lineVisibility[name] === undefined) lineVisibility[name] = true;
           });
@@ -499,6 +482,7 @@ function initMap() {
         }).catch(err => console.warn('[KML] load error:', err));
       }
     });
+
     map.on('error', e => console.error('[MAP ERROR]', e));
     map.on('click', e => {
       if (drawMode) handleDrawClick(e);
@@ -516,11 +500,17 @@ window.toggleMapLayer = function(type, evt) {
   if (type === 'street') style = getStreetStyle();
   else if (type === 'hybrid') style = getHybridStyle();
   else style = getSatelliteStyle();
+
   kmlLayers = {};
+  mapReady = false;
   map.setStyle(style);
+
   map.once('idle', () => {
+    mapReady = true;
+    console.log('[MAP] Style changed, mapReady = true');
     setTimeout(() => { if (map && map.isStyleLoaded()) applyLineFilters(); }, 150);
   });
+
   document.querySelectorAll('.custom-map-btn').forEach(b => b.classList.remove('active'));
   if (evt && evt.currentTarget) evt.currentTarget.classList.add('active');
 };
@@ -645,7 +635,7 @@ function processKmlAndSave(kmlText, lineName) {
 
     const kmlForLine = generateKmlFromCoords(allCoords, lineName, '');
 
-    // FORCE: set visibility ON untuk line baru
+    // FORCE ON: line baru otomatis visible
     lineVisibility[lineName] = true;
 
     db.ref('kmlData/' + lineName).set(kmlForLine).then(() => {
@@ -688,21 +678,35 @@ function generateKmlFromCoords(coords, name, notes) {
 /* ============================================================ KML LOAD & DRAW ============================================================ */
 function loadKmlFromFirebase() {
   if (!db) return;
+
   db.ref('kmlData').on('value', s => {
     kmlDataCache = s.val() || {};
     console.log('[FIREBASE] kmlData update, lines:', Object.keys(kmlDataCache).length);
 
-    // FORCE ON: setiap line baru otomatis visible
+    // FORCE ON: semua line baru default visible
     Object.keys(kmlDataCache).forEach(name => {
       if (lineVisibility[name] === undefined) {
         lineVisibility[name] = true;
-        console.log('[FORCE ON] Line baru terdeteksi, default visible:', name);
+        console.log('[FORCE ON]', name);
       }
     });
 
-    if (map && map.isStyleLoaded()) applyLineFilters();
-    else if (map) map.once('idle', applyLineFilters);
+    // Retry mechanism sampai map siap
+    const tryApply = (attempts) => {
+      if (attempts <= 0) {
+        console.warn('[KML] Gagal apply setelah 30 percobaan');
+        return;
+      }
+      if (map && mapReady && map.isStyleLoaded()) {
+        console.log('[KML] Map siap, apply line filters');
+        applyLineFilters();
+      } else {
+        setTimeout(() => tryApply(attempts - 1), 200);
+      }
+    };
+    tryApply(30);
   });
+
   db.ref('customLines').on('value', s => {
     customLines = s.val() || {};
     updateKmlCustomLineOptions();
@@ -711,9 +715,16 @@ function loadKmlFromFirebase() {
 }
 
 function applyLineFilters() {
-  if (!map || !map.isStyleLoaded()) { setTimeout(applyLineFilters, 300); return; }
-  const d = kmlDataCache || {};
+  if (!map || !mapReady || !map.isStyleLoaded()) {
+    console.log('[KML] Map belum ready, retry...');
+    setTimeout(applyLineFilters, 300);
+    return;
+  }
 
+  const d = kmlDataCache || {};
+  console.log('[KML] Apply line filters, total lines:', Object.keys(d).length);
+
+  // Hapus layer yang tidak ada di data
   Object.keys(kmlLayers).forEach(name => {
     if (!d[name]) {
       const l = kmlLayers[name];
@@ -724,28 +735,37 @@ function applyLineFilters() {
     }
   });
 
+  // Draw semua line
   Object.keys(d).forEach(name => {
     const kmlText = d[name];
     if (!kmlText || typeof kmlText !== 'string') return;
 
     if (kmlLayers[name]) {
+      // Sudah ada — cek visibility
       const l = kmlLayers[name];
       const shouldBeVisible = lineVisibility[name] !== false;
       try {
-        map.setLayoutProperty(l.layerId, 'visibility', shouldBeVisible ? 'visible' : 'none');
+        const currentVis = map.getLayoutProperty(l.layerId, 'visibility');
+        const targetVis = shouldBeVisible ? 'visible' : 'none';
+        if (currentVis !== targetVis) {
+          map.setLayoutProperty(l.layerId, 'visibility', targetVis);
+        }
       } catch(e) {}
       return;
     }
 
+    // Belum ada — buat baru
     try {
       const xml = new DOMParser().parseFromString(kmlText, 'text/xml');
       const geojson = parseKmlToGeoJSON(xml);
       if (geojson.features.length > 0) {
-        // FORCE ON: default visible
         const shouldBeVisible = lineVisibility[name] !== false;
         drawKmlGeoJSON(name, geojson, false, shouldBeVisible);
+        console.log('[KML] Drew line:', name, '| visible:', shouldBeVisible);
       }
-    } catch(e) {}
+    } catch(e) {
+      console.warn('[KML] Draw error for', name, e);
+    }
   });
 
   renderMapLineLegend();
@@ -808,7 +828,7 @@ function drawKmlGeoJSON(lineName, geojson, autoZoom, visible) {
   renderMapLineLegend();
 }
 
-/* ============================================================ LEGENDA LINE (GRID + COLLAPSE) ============================================================ */
+/* ============================================================ LEGENDA LINE ============================================================ */
 function renderMapLineLegend() {
   const gridEl = document.getElementById('ml-line-grid');
   const countEl = document.getElementById('ml-line-count');
@@ -975,7 +995,7 @@ window.finishDrawLine = function() {
     : Promise.resolve();
   const kmlText = generateKmlFromCoords(drawPoints, name, notes);
 
-  // FORCE ON: line baru dari gambar langsung terlihat
+  // FORCE ON untuk line baru
   lineVisibility[name] = true;
 
   customSavePromise
