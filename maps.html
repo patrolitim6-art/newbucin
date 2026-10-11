@@ -48,8 +48,8 @@ html, body { height: 100%; overflow: hidden; font-family: var(--app-font); backg
 .header-btn.primary:hover { background: rgba(16, 185, 129, 0.15); border-color: var(--primary-green); color: var(--primary-green); }
 .header-btn i { width: 15px; height: 15px; }
 
-/* UKURAN MAP = SETENGAH DARI SEBELUMNYA */
-.map-wrap { position: relative; width: 100%; height: calc((100vh - var(--header-h)) / 2); }
+/* UKURAN MAP = 85% DARI TINGGI LAYAR (tidak menyisakan ruang kosong) */
+.map-wrap { position: relative; width: 100%; height: calc((100vh - var(--header-h)) * 0.85); }
 #map-container { position: absolute; inset: 0; width: 100%; height: 100%; }
 #map-container canvas { image-rendering: -webkit-optimize-contrast; }
 
@@ -386,7 +386,6 @@ let drawPoints = [];
 let drawMarkers = [];
 let drawCurrentLine = null;
 
-/* ============================================================ KATEGORI TITIK ============================================================ */
 const TITIK_CATEGORIES = [
   { key: 'ofcut_p3',       label: 'FO Cut P3',        color: '#FF0000', source: 'Data OF Cut', filter: (it) => classifyCause(it) === 'p3' },
   { key: 'ofcut_vandal',   label: 'FO Cut Vandal',    color: '#00FF00', source: 'Data OF Cut', filter: (it) => classifyCause(it) === 'vandal' },
@@ -405,7 +404,6 @@ function classifyCause(item) {
   return 'lainnya';
 }
 
-/* ============================================================ HELPERS ============================================================ */
 function escapeHtml(s) {
   if (s === null || s === undefined) return '';
   return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -425,7 +423,6 @@ function showToast(msg, type) {
   setTimeout(() => t.remove(), 3000);
 }
 
-/* ============================================================ MAP STYLES — HD TILES ============================================================ */
 function getSatelliteStyle() {
   return {
     version: 8,
@@ -494,7 +491,6 @@ function getHybridStyle() {
   };
 }
 
-/* ============================================================ HARVEST HARDCODED LINES ============================================================ */
 function harvestHardcodedLines() {
   if (!kmlDataCache) kmlDataCache = {};
   let found = 0;
@@ -518,7 +514,6 @@ function harvestHardcodedLines() {
   return found;
 }
 
-/* ============================================================ TRY FORCE RENDER ============================================================ */
 function tryForceRender(source) {
   if (!map || !mapReady || !map.isStyleLoaded()) return;
   harvestHardcodedLines();
@@ -530,11 +525,9 @@ function tryForceRender(source) {
   }
 }
 
-/* ============================================================ INIT MAP — RENDER HD + OPTIMASI ZOOM ============================================================ */
 function initMap() {
   if (map) return;
   try {
-    // Deteksi DPI layar untuk render HD
     const dpr = window.devicePixelRatio || 1;
     console.log('[MAP] pixelRatio:', dpr);
 
@@ -547,9 +540,9 @@ function initMap() {
       minZoom: 2,
       attributionControl: false,
       antialias: true,
-      pixelRatio: dpr,                 // HD sesuai DPI layar
-      fadeDuration: 100,               // Transisi tile cepat
-      maxTileCacheSize: 100,           // Cache tile besar
+      pixelRatio: dpr,
+      fadeDuration: 100,
+      maxTileCacheSize: 100,
       refreshExpiredTiles: false,
       renderWorldCopies: false,
       trackResize: true
@@ -567,7 +560,6 @@ function initMap() {
       renderTitikLegend();
     });
 
-    // === OPTIMASI ZOOM: paksa render HD saat zoom tinggi ===
     map.on('zoom', () => {
       const canvas = document.querySelector('#map-container canvas');
       if (canvas) canvas.style.imageRendering = 'high-quality';
@@ -579,15 +571,12 @@ function initMap() {
       zoomDebounce = setTimeout(() => {
         try { map.resize(); } catch(e){}
         const z = map.getZoom();
-        console.log('[MAP] zoomend:', z.toFixed(2));
         if (z > 13) {
-          // Paksa redraw untuk kualitas HD
           try { map.triggerRepaint(); } catch(e) {}
         }
       }, 200);
     });
 
-    // === OPTIMASI RESIZE ===
     if (typeof ResizeObserver !== 'undefined') {
       const ro = new ResizeObserver(() => {
         if (map) setTimeout(() => { try { map.resize(); } catch(e){} }, 100);
@@ -603,7 +592,6 @@ function initMap() {
   }
 }
 
-/* ============================================================ WATCHDOG LINE ============================================================ */
 function startWatchdog() {
   let watchdogInterval = setInterval(() => {
     if (!mapReady || !map || !map.isStyleLoaded()) return;
@@ -617,19 +605,10 @@ function startWatchdog() {
   }, 500);
 }
 
-/* ============================================================ RENDER MARKER (KOSONG - SIAP KONEK NANTI) ============================================================ */
 function loadTitikFromFirebase() {
-  // Dinonaktifkan — Firebase belum terhubung
-  // Titik akan kosong sampai data Firebase siap
   console.log('[TITIK] Load dinonaktifkan — Firebase belum terhubung');
   titikDataCache = {};
-  renderAllMarkers();
   renderTitikLegend();
-}
-
-function renderAllMarkers() {
-  // Kosong — belum ada data
-  console.log('[TITIK] Tidak ada marker — data masih kosong');
 }
 
 function renderTitikLegend() {
@@ -637,14 +616,12 @@ function renderTitikLegend() {
   const countEl = document.getElementById('ml-titik-count');
   if (!gridEl) return;
 
-  // Set default visibility untuk semua kategori
   TITIK_CATEGORIES.forEach(cat => {
     if (markerVisibility[cat.key] === undefined) markerVisibility[cat.key] = true;
   });
 
   if (countEl) countEl.textContent = '(0)';
 
-  // Render kategori (count 0 semua)
   gridEl.innerHTML = TITIK_CATEGORIES.map(cat => {
     const isOn = markerVisibility[cat.key] !== false;
     return '<div class="ml-item ' + (isOn ? 'on' : 'off') + '" onclick="toggleTitikVisibility(\'' + cat.key + '\')" title="' + escapeHtml(cat.label) + ' (0 titik)">' +
@@ -685,7 +662,6 @@ window.toggleLegendCollapse = function(event, boxId) {
   box.classList.toggle('collapsed');
 };
 
-/* ============================================================ MAP LAYER SWITCH ============================================================ */
 window.toggleMapLayer = function(type, evt) {
   if (!map) return;
   let style;
@@ -711,7 +687,6 @@ window.toggleMapLayer = function(type, evt) {
   if (evt && evt.currentTarget) evt.currentTarget.classList.add('active');
 };
 
-/* ============================================================ PANELS ============================================================ */
 window.toggleUploadPanel = function() {
   const p = document.getElementById('upload-panel');
   const dp = document.getElementById('draw-panel');
@@ -744,7 +719,6 @@ document.getElementById('kml-file').addEventListener('change', function() {
   document.getElementById('kml-info').className = this.files[0] ? 'info-count success' : 'info-count';
 });
 
-/* ============================================================ KML UPLOAD ============================================================ */
 window.submitKmlUpload = function() {
   let lineName = document.getElementById('kml-line').value;
   if (lineName === '__custom__') {
@@ -853,7 +827,6 @@ function generateKmlFromCoords(coords, name, notes) {
   return '<?xml version="1.0" encoding="UTF-8"?>\n<kml xmlns="http://www.opengis.net/kml/2.2">\n<Document>\n<name>' + escapeXml(name) + '</name>\n<Placemark>\n<name>' + escapeXml(name) + '</name>\n' + desc + '<LineString><tessellate>1</tessellate><coordinates>' + coordsStr + '</coordinates></LineString>\n</Placemark>\n</Document>\n</kml>';
 }
 
-/* ============================================================ KML LOAD FROM FIREBASE ============================================================ */
 function loadKmlFromFirebase() {
   if (!db) return;
 
@@ -885,7 +858,6 @@ function loadKmlFromFirebase() {
   });
 }
 
-/* ============================================================ APPLY LINE FILTERS ============================================================ */
 function applyLineFilters() {
   if (!map || !mapReady || !map.isStyleLoaded()) return;
   const d = kmlDataCache || {};
@@ -988,7 +960,6 @@ const kmlLineColors = {
 };
 const BUILTIN_LINES = ['OSP LINE 1','OSP LINE 2','OSP LINE 3','IGG LINE 1','IGG LINE 2','DWDM','SEA US LINE 1','SEA US LINE 2'];
 
-/* ============================================================ LEGENDA LINE ============================================================ */
 function renderLineLegend() {
   const gridEl = document.getElementById('ml-line-grid');
   const countEl = document.getElementById('ml-line-count');
@@ -1041,7 +1012,6 @@ window.hideAllLines = function(event) {
   showToast('Semua line disembunyikan', 'info');
 };
 
-/* ============================================================ DRAW LINE ============================================================ */
 window.startDrawing = function() {
   if (!map) { showToast('Peta belum siap', 'error'); return; }
   let lineName = document.getElementById('draw-line-name').value;
@@ -1136,7 +1106,6 @@ window.finishDrawLine = function() {
   }).catch(err => showToast('Gagal: ' + err.message, 'error'));
 };
 
-/* ============================================================ KML MANAGER ============================================================ */
 window.openKmlManager = function() {
   document.getElementById('kml-manager-modal').classList.remove('hidden');
   document.getElementById('kml-list-search').value = '';
@@ -1201,7 +1170,6 @@ function downloadTextAsFile(text, filename, mimeType) {
   document.body.removeChild(a); URL.revokeObjectURL(url);
 }
 
-/* ============================================================ CUSTOM LINE OPTIONS ============================================================ */
 function updateKmlCustomLineOptions() {
   const sel = document.getElementById('kml-line');
   if (!sel) return;
@@ -1229,7 +1197,6 @@ function updateDrawCustomLineOptions() {
   });
 }
 
-/* ============================================================ INIT ============================================================ */
 document.addEventListener('DOMContentLoaded', () => {
   console.log('[BUCIN] DOMContentLoaded');
   if (typeof lucide !== 'undefined') lucide.createIcons();
