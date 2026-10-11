@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - BUCIN (Barisan Utama Cegah Insiden Network)</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link rel="stylesheet" href="css/style.css">
+
+    <style>
+        * { box-sizing: border-box; }
+
+        :root {
+            --theme-bg-image: url('gedung_telin2.jpeg');
+            --theme-page-bg: #0f172a;
+            --theme-text: #ffffff;
+            --theme-text-sub: #e2e8f0;
+            --theme-text-shadow: 0 1px 3px rgba(0, 0, 0, 0.9);
+            --theme-border: rgba(255, 255, 255, 0.35);
+            --theme-border-soft: rgba(255, 255, 255, 0.25);
+            --theme-border-hover: rgba(255, 255, 255, 0.65);
+            --theme-nav-link: #cbd5e1;
+            --theme-nav-link-hover: #ffffff;
+            --theme-nav-link-active: #38bdf8;
+        }
+
+        body.light-mode {
+            --theme-bg-image: url('gedung_telin1.jpeg');
+            --theme-page-bg: #e2e8f0;
+            --theme-text: #0f172a;
+            --theme-text-sub: #1e293b;
+            --theme-text-shadow: 0 1px 2px rgba(255, 255, 255, 0.9), 0 1px 3px rgba(0, 0, 0, 0.15);
+            --theme-border: rgba(15, 23, 42, 0.5);
+            --theme-border-soft: rgba(15, 23, 42, 0.3);
+            --theme-border-hover: rgba(15, 23, 42, 0.75);
+            --theme-nav-link: #334155;
+            --theme-nav-link-hover: #0f172a;
+            --theme-nav-link-active: #0284c7;
+        }
+
+        html, body {
+            height: 100%;
+            width: 100%;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+
+        body {
+            background-image: var(--theme-bg-image);
+            background-size: cover;
+            background-position: center center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            background-color: var(--theme-page-bg);
+            color: var(--theme-text);
+            transition: background-image 0.5s ease, background-color 0.5s ease;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .bg-layer, .bg-overlay { display: none !important; }
+
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 60px;
+            z-index: 1000;
+            border-bottom: none !important;
+            box-shadow: none !important;
+            background: transparent !important;
+            padding: 0 20px;
+        }
+
+        .theme-toggle {
+            background: transparent;
+            border: 1px solid var(--theme-border);
+            color: var(--theme-text);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.85rem;
+            transition: all 0.3s ease;
+            flex-shrink: 0;
+            position: relative;
+            text-shadow: var(--theme-text-shadow);
+            margin-left: 14px;
+        }
+        .theme-toggle:hover {
+            transform: scale(1.1) rotate(15deg);
+            border-color: var(--theme-nav-link-active);
+            color: var(--theme-nav-link-active);
+        }
+        .theme-toggle .icon-sun,
+        .theme-toggle .icon-moon {
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            position: absolute;
+        }
+        .theme-toggle .icon-sun { opacity: 0; transform: rotate(-90deg); }
+        .theme-toggle .icon-moon { opacity: 1; transform: rotate(0deg); }
+        body.light-mode .theme-toggle .icon-sun { opacity: 1; transform: rotate(0deg); }
+        body.light-mode .theme-toggle .icon-moon { opacity: 0; transform: rotate(90deg); }
+
+        .page {
+            position: absolute;
+            top: 60px;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            padding: 12px 16px 16px;
+            max-width: 1600px;
+            margin: 0 auto;
+            box-sizing: border-box;
+            display: flex;
+        }
+
+        .top-row {
+            display: grid;
+            grid-template-columns: 220px 1fr;
+            gap: 12px;
+            width: 100%;
+            height: 100%;
+            min-height: 0;
+        }
+
+        .stat-col {
+            display: grid;
+            grid-template-rows: repeat(4, 1fr);
+            gap: 10px;
+            height: 100%;
+            min-height: 0;
+        }
+
+        /* ===== STAT BOX SEBAGAI SHORTCUT ===== */
+        .stat-box {
+            background: transparent;
+            border: 1px solid var(--theme-border);
+            border-left: 3px solid #38bdf8;
+            border-radius: 10px;
+            padding: 10px 14px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            min-height: 0;
+            overflow: hidden;
+            transition: transform 0.2s ease, border-color 0.2s ease,
+                        background 0.2s ease, box-shadow 0.2s ease;
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+            position: relative;
+        }
+        .stat-box:hover {
+            transform: translateX(4px);
+            border-color: var(--theme-border-hover);
+            background: rgba(56, 189, 248, 0.06);
+            box-shadow: 0 0 0 1px var(--theme-border-hover);
+        }
+        .stat-box:active {
+            transform: translateX(2px) scale(0.98);
+        }
+
+        /* Panah shortcut di kanan */
+        .stat-box::after {
+            content: '\f054';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 11px;
+            color: var(--theme-text-sub);
+            opacity: 0;
+            transition: opacity 0.25s ease, right 0.25s ease;
+        }
+        .stat-box:hover::after {
+            opacity: 1;
+            right: 8px;
+        }
+
+        .stat-box.s1 { border-left-color: #f43f5e; }
+        .stat-box.s2 { border-left-color: #10b981; }
+        .stat-box.s3 { border-left-color: #38bdf8; }
+        .stat-box.s4 { border-left-color: #a855f7; }
+
+        .stat-box.s1:hover { background: rgba(244, 63, 94, 0.08); }
+        .stat-box.s2:hover { background: rgba(16, 185, 129, 0.08); }
+        .stat-box.s3:hover { background: rgba(56, 189, 248, 0.08); }
+        .stat-box.s4:hover { background: rgba(168, 85, 247, 0.08); }
+
+        .stat-box .lbl {
+            font-size: 10px;
+            color: var(--theme-text-sub);
+            text-transform: uppercase;
+            font-weight: 700;
+            letter-spacing: 0.4px;
+            margin-bottom: 4px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            text-shadow: var(--theme-text-shadow);
+        }
+        .stat-box .lbl i { font-size: 10px; }
+
+        .stat-box .val {
+            font-size: 22px;
+            font-weight: 800;
+            line-height: 1;
+            display: flex;
+            align-items: baseline;
+            gap: 4px;
+            text-shadow: var(--theme-text-shadow);
+        }
+        .stat-box .val small {
+            font-size: 10px;
+            color: var(--theme-text-sub);
+            font-weight: 600;
+        }
+        .stat-box.s1 .val { color: #f43f5e; }
+        .stat-box.s2 .val { color: #10b981; }
+        .stat-box.s3 .val { color: #38bdf8; }
+        .stat-box.s4 .val { color: #a855f7; }
+
+        .stat-bar {
+            width: 100%;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 3px;
+            overflow: hidden;
+            margin-top: 8px;
+        }
+        .stat-bar > div {
+            height: 100%;
+            border-radius: 3px;
+            transition: width 0.4s ease;
+        }
+
+        .map-wrap {
+            background: transparent;
+            border: 1px solid var(--theme-border);
+            border-radius: 12px;
+            overflow: hidden;
+            display: grid;
+            grid-template-rows: auto 1fr;
+            height: 100%;
+            min-height: 0;
+            min-width: 0;
+        }
+
+        .map-toolbar {
+            padding: 8px 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 6px;
+            border-bottom: 1px solid var(--theme-border-soft);
+            flex-wrap: wrap;
+        }
+        .map-btns {
+            display: flex;
+            gap: 5px;
+            flex-wrap: wrap;
+        }
+
+        .btn-map {
+            background: transparent;
+            border: 1px solid var(--theme-border);
+            color: var(--theme-text-sub);
+            padding: 5px 11px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: 'Poppins', sans-serif;
+            transition: all 0.2s;
+            text-shadow: var(--theme-text-shadow);
+        }
+        .btn-map:hover {
+            color: #38bdf8;
+            border-color: #38bdf8;
+        }
+        .btn-map.active {
+            color: #38bdf8;
+            border-color: #38bdf8;
+        }
+
+        .map-container {
+            position: relative;
+            min-height: 0;
+            overflow: hidden;
+        }
+
+        #mapFrame {
+            width: 100%;
+            height: 100%;
+            border: 0;
+            display: block;
+            background: transparent;
+        }
+
+        @media (max-width: 900px) {
+            html, body { overflow: auto; }
+            .page {
+                position: relative;
+                top: 0;
+                bottom: auto;
+                min-height: 100vh;
+                padding-top: 72px;
+                height: auto;
+            }
+            .top-row {
+                grid-template-columns: 1fr;
+                grid-template-rows: auto 500px;
+                height: auto;
+            }
+            .stat-col {
+                grid-template-columns: repeat(2, 1fr);
+                grid-template-rows: repeat(2, 110px);
+                height: auto;
+            }
+        }
+
+        @media (max-width: 500px) {
+            .stat-col {
+                grid-template-columns: 1fr;
+                grid-template-rows: repeat(4, 100px);
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div class="logo">
+            <i class="fa-solid fa-chart-simple"></i>
+            <span>BUCIN</span>
+        </div>
+        <ul class="nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="dashboard.html" class="active">Dashboard</a></li>
+            <li><a href="analytics.html">Analytics</a></li>
+            <li><a href="input-data.html">Input Data</a></li>
+            <li><a href="manajemen-stok.html">Stok</a></li>
+            <li><a href="reports.html">Reports</a></li>
+            <li><a href="contact.html">Contact</a></li>
+        </ul>
+
+        <button class="theme-toggle" id="themeToggle" title="Ganti Tema" aria-label="Ganti Tema">
+            <i class="fa-solid fa-moon icon-moon"></i>
+            <i class="fa-solid fa-sun icon-sun"></i>
+        </button>
+    </nav>
+
+    <div class="page">
+        <div class="top-row">
+
+            <!-- ============ 4 STAT BOX = SHORTCUT MENU ============ -->
+            <div class="stat-col">
+
+                <!-- Shortcut 1: Pihak Ke3 → FO Cut -->
+                <a href="input-focut.html" class="stat-box s1" title="Klik untuk input FO Cut (Pihak Ke3)">
+                    <div class="lbl"><i class="fa-solid fa-user-group"></i> Pihak Ke3</div>
+                    <div class="val" id="statFiberCut">0 <small>kasus</small></div>
+                    <div class="stat-bar"><div id="barFiberCut" style="width:0%; background:#f43f5e;"></div></div>
+                </a>
+
+                <!-- Shortcut 2: Vandalisme → Temuan -->
+                <a href="input-temuan.html" class="stat-box s2" title="Klik untuk input Temuan (Vandalisme)">
+                    <div class="lbl"><i class="fa-solid fa-user-secret"></i> Vandalisme</div>
+                    <div class="val" id="statVandal">0 <small>kasus</small></div>
+                    <div class="stat-bar"><div id="barVandal" style="width:0%; background:#10b981;"></div></div>
+                </a>
+
+                <!-- Shortcut 3: Bencana → OPM/OLS -->
+                <a href="input-opm.html" class="stat-box s3" title="Klik untuk input OPM/OLS (Bencana)">
+                    <div class="lbl"><i class="fa-solid fa-cloud-bolt"></i> Bencana</div>
+                    <div class="val" id="statBencana">0 <small>kasus</small></div>
+                    <div class="stat-bar"><div id="barBencana" style="width:0%; background:#38bdf8;"></div></div>
+                </a>
+
+                <!-- Shortcut 4: Lainnya → Handhole -->
+                <a href="input-handhole.html" class="stat-box s4" title="Klik untuk input Handhole (Lainnya)">
+                    <div class="lbl"><i class="fa-solid fa-ellipsis"></i> Lainnya</div>
+                    <div class="val" id="statLainnya">0 <small>kasus</small></div>
+                    <div class="stat-bar"><div id="barLainnya" style="width:0%; background:#a855f7;"></div></div>
+                </a>
+
+            </div>
+
+            <div class="map-wrap">
+                <div class="map-toolbar">
+                    <div class="map-btns">
+                        <button class="btn-map active" data-filter="all"><i class="fa-solid fa-globe"></i> Semua</button>
+                        <button class="btn-map" data-filter="p1"><i class="fa-solid fa-triangle-exclamation"></i> P1</button>
+                        <button class="btn-map" data-filter="fibercut"><i class="fa-solid fa-scissors"></i> Fiber Cut</button>
+                        <button class="btn-map" data-filter="restored"><i class="fa-solid fa-circle-check"></i> Terpulihkan</button>
+                    </div>
+                    <button class="btn-map" id="btnResetMap"><i class="fa-solid fa-rotate"></i> Reset</button>
+                </div>
+
+                <div class="map-container">
+                    <iframe
+                        id="mapFrame"
+                        src="maps.html"
+                        title="Peta Insiden Jaringan"
+                        loading="lazy"
+                        allow="fullscreen"></iframe>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div id="toastContainer"></div>
+
+    <script src="js/shared.js"></script>
+    <script>
+        /* ============ THEME TOGGLE ============ */
+        (function initThemeToggle(){
+            const toggle = document.getElementById('themeToggle');
+            if (!toggle) return;
+
+            const THEME_KEY = 'bucin_theme';
+            const savedTheme = localStorage.getItem(THEME_KEY);
+            if (savedTheme === 'light'){
+                document.body.classList.add('light-mode');
+            }
+
+            toggle.addEventListener('click', () => {
+                document.body.classList.toggle('light-mode');
+                const isLight = document.body.classList.contains('light-mode');
+                localStorage.setItem(THEME_KEY, isLight ? 'light' : 'dark');
+
+                toggle.style.transform = 'scale(0.9) rotate(180deg)';
+                setTimeout(() => { toggle.style.transform = ''; }, 300);
+
+                const frame = document.getElementById('mapFrame');
+                if (frame && frame.contentWindow){
+                    frame.contentWindow.postMessage({
+                        type: 'theme-change',
+                        theme: isLight ? 'light' : 'dark'
+                    }, '*');
+                }
+            });
+        })();
+
+        /* ============ DATA FO CUT ============ */
+        const STORAGE_KEY = 'bucin_data';
+        const MAKS_PER_TAHUN = 5 * 12;
+
+        function getFOCut(){
+            try {
+                const raw = localStorage.getItem(STORAGE_KEY);
+                if(!raw) return [];
+                const data = JSON.parse(raw);
+                return data.focut || [];
+            } catch(e) { return []; }
+        }
+
+        function isPihakKe3(p){ p = String(p||'').toLowerCase(); return p.includes('pihak')||p.includes('ke3')||p.includes('ke-3')||p.includes('ketiga'); }
+        function isVandalisme(p){ p = String(p||'').toLowerCase(); return p.includes('vandal'); }
+        function isBencana(p){ p = String(p||'').toLowerCase(); return p.includes('bencana'); }
+        function isLainnya(p){ p = String(p||'').toLowerCase(); return p.includes('lain'); }
+
+        function updateStatBoxes(){
+            const focut = getFOCut();
+            const tahunIni = new Date().getFullYear();
+            const foTahunIni = focut.filter(item => {
+                const tgl = item.tanggal || item.tgl || '';
+                return tgl.startsWith(tahunIni + '-');
+            });
+
+            let cPihak3=0, cVandal=0, cBencana=0, cLainnya=0;
+            foTahunIni.forEach(item => {
+                const p = item.penyebab || '';
+                if(isPihakKe3(p)) cPihak3++;
+                else if(isVandalisme(p)) cVandal++;
+                else if(isBencana(p)) cBencana++;
+                else if(isLainnya(p)) cLainnya++;
+            });
+
+            const setStat = (valId, barId, count, maxVal) => {
+                const valEl = document.getElementById(valId);
+                const barEl = document.getElementById(barId);
+                if(!valEl) return;
+                valEl.innerHTML = count + ' <small>kasus</small>';
+                if(barEl) barEl.style.width = Math.min((count/maxVal)*100,100) + '%';
+            };
+
+            setStat('statFiberCut','barFiberCut',cPihak3, MAKS_PER_TAHUN);
+            setStat('statVandal','barVandal',cVandal, MAKS_PER_TAHUN);
+            setStat('statBencana','barBencana',cBencana, MAKS_PER_TAHUN);
+            setStat('statLainnya','barLainnya',cLainnya, MAKS_PER_TAHUN);
+        }
+
+        /* ============ KIRIM FILTER KE IFRAME ============ */
+        function kirimFilterKeMap(filter){
+            const frame = document.getElementById('mapFrame');
+            if (frame && frame.contentWindow){
+                frame.contentWindow.postMessage({ type: 'filter-map', filter: filter }, '*');
+            }
+        }
+        function kirimResetKeMap(){
+            const frame = document.getElementById('mapFrame');
+            if (frame && frame.contentWindow){
+                frame.contentWindow.postMessage({ type: 'reset-map' }, '*');
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            updateStatBoxes();
+            setInterval(updateStatBoxes, 3000);
+
+            window.addEventListener('storage', function(e){
+                if(e.key === STORAGE_KEY){ updateStatBoxes(); }
+            });
+
+            document.querySelectorAll('.btn-map[data-filter]').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('.btn-map').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    kirimFilterKeMap(btn.dataset.filter);
+                });
+            });
+
+            const btnReset = document.getElementById('btnResetMap');
+            if (btnReset){
+                btnReset.addEventListener('click', () => {
+                    document.querySelectorAll('.btn-map').forEach(b => b.classList.remove('active'));
+                    const first = document.querySelector('.btn-map[data-filter="all"]');
+                    if (first) first.classList.add('active');
+                    kirimResetKeMap();
+                });
+            }
+
+            const frame = document.getElementById('mapFrame');
+            if (frame){
+                frame.addEventListener('load', () => {
+                    const isLight = document.body.classList.contains('light-mode');
+                    if (frame.contentWindow){
+                        frame.contentWindow.postMessage({
+                            type: 'theme-change',
+                            theme: isLight ? 'light' : 'dark'
+                        }, '*');
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>

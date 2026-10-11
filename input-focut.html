@@ -1,0 +1,1784 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FO Cut - BUCIN</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- ===== LEAFLET CSS (WAJIB) ===== -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
+    <link rel="stylesheet" href="css/style.css">
+
+    <style>
+        * { box-sizing: border-box; }
+
+        /* ============ BASIS FONT ============ */
+        html { font-size: 13px; scroll-behavior: smooth; }
+
+        /* ============ VARIABEL TEMA (SAMA DENGAN DASHBOARD) ============ */
+        :root {
+            --theme-bg-image: url('gedung_telin2.jpeg');
+            --theme-page-bg: #0f172a;
+            --theme-text: #ffffff;
+            --theme-text-sub: #e2e8f0;
+            --theme-text-shadow: 0 1px 3px rgba(0, 0, 0, 0.9);
+            --theme-border: rgba(255, 255, 255, 0.35);
+            --theme-border-soft: rgba(255, 255, 255, 0.25);
+            --theme-border-hover: rgba(255, 255, 255, 0.65);
+            --theme-nav-link: #cbd5e1;
+            --theme-nav-link-hover: #ffffff;
+            --theme-nav-link-active: #38bdf8;
+
+            /* Warna aksen */
+            --accent-rose: #f43f5e;
+            --accent-emerald: #10b981;
+            --accent-sky: #38bdf8;
+            --accent-cyan: #06b6d4;
+            --accent-amber: #f59e0b;
+
+            /* Panel */
+            --panel-border: rgba(255, 255, 255, 0.35);
+            --panel-bg: transparent;
+        }
+
+        body.light-mode {
+            --theme-bg-image: url('gedung_telin1.jpeg');
+            --theme-page-bg: #e2e8f0;
+            --theme-text: #0f172a;
+            --theme-text-sub: #1e293b;
+            --theme-text-shadow: 0 1px 2px rgba(255, 255, 255, 0.9), 0 1px 3px rgba(0, 0, 0, 0.15);
+            --theme-border: rgba(15, 23, 42, 0.5);
+            --theme-border-soft: rgba(15, 23, 42, 0.3);
+            --theme-border-hover: rgba(15, 23, 42, 0.75);
+            --theme-nav-link: #334155;
+            --theme-nav-link-hover: #0f172a;
+            --theme-nav-link-active: #0284c7;
+            --panel-border: rgba(15, 23, 42, 0.5);
+        }
+
+        html, body {
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            background-image: var(--theme-bg-image);
+            background-size: cover;
+            background-position: center center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            background-color: var(--theme-page-bg);
+            color: var(--theme-text);
+            font-family: 'Poppins', sans-serif;
+            transition: background-image 0.5s ease, background-color 0.5s ease;
+        }
+
+        .bg-layer, .bg-overlay { display: none !important; }
+
+        /* ============ NAV (SAMA DENGAN DASHBOARD) ============ */
+        nav {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            height: 60px;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+            background: transparent;
+            border-bottom: none;
+            box-shadow: none;
+            gap: 1rem;
+        }
+        nav .logo {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-weight: 800;
+            letter-spacing: 1px;
+            color: #38bdf8;
+            text-shadow: var(--theme-text-shadow);
+            font-size: 1.25rem;
+            flex-shrink: 0;
+        }
+        nav .logo i { font-size: 1.1rem; color: #f43f5e; }
+        nav .logo span { font-size: 0.95rem; color: var(--theme-text); }
+
+        .nav-links {
+            display: flex;
+            gap: 14px;
+            list-style: none;
+            margin: 0 0 0 auto;
+            padding: 0;
+            align-items: center;
+        }
+        .nav-links a {
+            color: var(--theme-nav-link);
+            text-decoration: none;
+            font-size: 0.75rem;
+            font-weight: 500;
+            padding: 0.2rem 0.3rem;
+            transition: color 0.3s ease, transform 0.3s ease;
+            text-shadow: var(--theme-text-shadow);
+            position: relative;
+            white-space: nowrap;
+            display: inline-block;
+        }
+        .nav-links a:hover {
+            color: var(--theme-nav-link-hover);
+            transform: translateY(-2px);
+        }
+        .nav-links a.active { color: var(--theme-nav-link-active); }
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -4px; left: 50%;
+            width: 0; height: 2px;
+            background: var(--theme-nav-link-active);
+            transition: width 0.3s ease, left 0.3s ease;
+            border-radius: 2px;
+        }
+        .nav-links a:hover::after,
+        .nav-links a.active::after {
+            width: 100%; left: 0;
+        }
+
+        /* ============ TOMBOL TEMA ============ */
+        .theme-toggle {
+            background: transparent;
+            border: 1px solid var(--theme-border);
+            color: var(--theme-text);
+            width: 36px; height: 36px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.85rem;
+            transition: all 0.3s ease;
+            flex-shrink: 0;
+            position: relative;
+            text-shadow: var(--theme-text-shadow);
+            margin-left: 14px;
+        }
+        .theme-toggle:hover {
+            transform: scale(1.1) rotate(15deg);
+            border-color: var(--theme-nav-link-active);
+            color: var(--theme-nav-link-active);
+        }
+        .theme-toggle .icon-sun,
+        .theme-toggle .icon-moon {
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            position: absolute;
+        }
+        .theme-toggle .icon-sun { opacity: 0; transform: rotate(-90deg); }
+        .theme-toggle .icon-moon { opacity: 1; transform: rotate(0deg); }
+        body.light-mode .theme-toggle .icon-sun { opacity: 1; transform: rotate(0deg); }
+        body.light-mode .theme-toggle .icon-moon { opacity: 0; transform: rotate(90deg); }
+
+        /* ============ RESPONSIVE NAV ============ */
+        @media (max-width: 1100px) {
+            .nav-links { gap: 0.7rem; }
+            .nav-links a { font-size: 0.7rem; }
+        }
+        @media (max-width: 820px) {
+            nav {
+                flex-direction: column;
+                height: auto;
+                padding: 0.6rem 0.9rem;
+                gap: 0.4rem;
+            }
+            .nav-links {
+                gap: 0.5rem;
+                justify-content: center;
+                width: 100%;
+                flex-wrap: wrap;
+            }
+            .nav-links a { font-size: 0.66rem; padding: 0.15rem 0.3rem; }
+            .input-page { padding-top: 110px !important; }
+        }
+        @media (max-width: 500px) {
+            .nav-links a { font-size: 0.6rem; }
+            nav .logo { font-size: 1.05rem; }
+        }
+
+        /* ============ PAGE ============ */
+        .input-page {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 90px 1.2rem 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        /* ===== BACK BUTTON ===== */
+        .top-back-wrap { display: flex; justify-content: flex-start; }
+        .back-btn {
+            background: transparent;
+            border: 1px solid var(--theme-border);
+            color: var(--theme-text-sub);
+            padding: .5rem 1rem;
+            border-radius: 8px;
+            font-size: .7rem;
+            font-weight: 700;
+            cursor: pointer;
+            font-family: 'Poppins', sans-serif;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: .4rem;
+            transition: all .2s;
+            text-shadow: var(--theme-text-shadow);
+        }
+        .back-btn:hover {
+            border-color: #38bdf8;
+            color: #38bdf8;
+            transform: translateX(-3px);
+        }
+
+        /* ===== PAGE HEAD ===== */
+        .page-head {
+            background: transparent;
+            border: 1px solid var(--theme-border);
+            border-radius: 12px;
+            padding: 1rem 1.3rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: .8rem;
+        }
+        .page-head h1 {
+            font-size: 1.05rem;
+            font-weight: 800;
+            color: var(--theme-text);
+            display: flex;
+            align-items: center;
+            gap: .5rem;
+            margin: 0 0 .15rem 0;
+            text-shadow: var(--theme-text-shadow);
+        }
+        .page-head h1 i { color: #f43f5e; }
+        .page-head p {
+            font-size: .68rem;
+            color: var(--theme-text-sub);
+            margin: 0;
+            text-shadow: var(--theme-text-shadow);
+        }
+
+        .head-actions {
+            display: flex;
+            gap: .5rem;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        .user-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: .45rem;
+            background: transparent;
+            border: 1px solid rgba(16, 185, 129, 0.5);
+            border-radius: 99px;
+            padding: .4rem .9rem .4rem .4rem;
+            font-size: .68rem;
+            font-weight: 700;
+            color: #6ee7b7;
+            text-shadow: var(--theme-text-shadow);
+        }
+        .user-badge .user-avatar {
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            background: transparent;
+            border: 1px solid rgba(16, 185, 129, 0.6);
+            color: #6ee7b7;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: .7rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            flex-shrink: 0;
+        }
+        .user-badge .user-name { color: var(--theme-text); font-weight: 800; }
+
+        .add-btn {
+            background: transparent;
+            border: 1px solid rgba(244, 63, 94, 0.7);
+            color: #f43f5e;
+            padding: .5rem 1.1rem;
+            border-radius: 8px;
+            font-size: .7rem;
+            font-weight: 700;
+            cursor: pointer;
+            font-family: 'Poppins', sans-serif;
+            display: inline-flex;
+            align-items: center;
+            gap: .4rem;
+            transition: all .25s ease;
+            text-shadow: var(--theme-text-shadow);
+        }
+        .add-btn:hover {
+            background: rgba(244, 63, 94, 0.15);
+            transform: translateY(-2px);
+        }
+        .excel-btn {
+            background: transparent;
+            border: 1px solid rgba(16, 185, 129, 0.7);
+            color: #10b981;
+            padding: .5rem 1.1rem;
+            border-radius: 8px;
+            font-size: .7rem;
+            font-weight: 700;
+            cursor: pointer;
+            font-family: 'Poppins', sans-serif;
+            display: inline-flex;
+            align-items: center;
+            gap: .4rem;
+            transition: all .25s ease;
+            text-shadow: var(--theme-text-shadow);
+        }
+        .excel-btn:hover {
+            background: rgba(16, 185, 129, 0.15);
+            transform: translateY(-2px);
+        }
+
+        /* ===== PANEL ===== */
+        .panel {
+            background: transparent;
+            border: 1px solid var(--theme-border);
+            border-radius: 12px;
+            padding: 1.2rem 1.4rem;
+        }
+
+        /* ===== TABEL ===== */
+        .table-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: .8rem;
+            margin-bottom: .9rem;
+            padding-bottom: .5rem;
+            border-bottom: 1px solid var(--theme-border-soft);
+            flex-wrap: wrap;
+        }
+        .table-head .th-title {
+            font-size: .75rem;
+            font-weight: 700;
+            color: #38bdf8;
+            text-transform: uppercase;
+            letter-spacing: .5px;
+            display: flex;
+            align-items: center;
+            gap: .4rem;
+            text-shadow: var(--theme-text-shadow);
+        }
+        .table-head .th-tools {
+            display: flex;
+            align-items: center;
+            gap: .5rem;
+            flex-wrap: wrap;
+        }
+        .search-box {
+            background: transparent;
+            border: 1px solid var(--theme-border);
+            border-radius: 8px;
+            padding: .45rem .8rem;
+            color: var(--theme-text);
+            font-size: .7rem;
+            font-family: 'Poppins', sans-serif;
+            width: 200px;
+            transition: all .2s;
+        }
+        .search-box:focus {
+            outline: none;
+            border-color: #38bdf8;
+            box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.12);
+        }
+        .search-box::placeholder {
+            color: var(--theme-text-sub);
+            opacity: 0.6;
+        }
+
+        .sort-select {
+            background: transparent;
+            border: 1px solid var(--theme-border);
+            border-radius: 8px;
+            padding: .45rem 1.8rem .45rem .8rem;
+            color: var(--theme-text);
+            font-size: .7rem;
+            font-family: 'Poppins', sans-serif;
+            cursor: pointer;
+            transition: all .2s;
+            appearance: none;
+            -webkit-appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right .5rem center;
+            background-size: .8rem;
+        }
+        .sort-select:focus {
+            outline: none;
+            border-color: #38bdf8;
+            box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.12);
+        }
+        .sort-select option {
+            background: #1e293b;
+            color: #f8fafc;
+        }
+
+        .table-count {
+            font-size: .65rem;
+            color: var(--theme-text-sub);
+            background: transparent;
+            padding: .3rem .7rem;
+            border-radius: 6px;
+            border: 1px solid var(--theme-border);
+            text-shadow: var(--theme-text-shadow);
+        }
+        .table-count strong { color: #06b6d4; }
+
+        .table-wrap {
+            overflow-x: auto;
+            border-radius: 8px;
+            border: 1px solid var(--theme-border-soft);
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: .7rem;
+            min-width: 1200px;
+        }
+        thead th {
+            text-align: left;
+            font-size: .58rem;
+            color: var(--theme-text-sub);
+            text-transform: uppercase;
+            font-weight: 700;
+            letter-spacing: .4px;
+            padding: .7rem .8rem;
+            background: transparent;
+            border-bottom: 1px solid var(--theme-border-soft);
+            white-space: nowrap;
+            text-shadow: var(--theme-text-shadow);
+        }
+        tbody td {
+            padding: .7rem .8rem;
+            color: var(--theme-text-sub);
+            border-bottom: 1px solid var(--theme-border-soft);
+            font-weight: 500;
+            vertical-align: middle;
+            text-shadow: var(--theme-text-shadow);
+        }
+        tbody tr { transition: background .15s; }
+        tbody tr:hover { background: rgba(56, 189, 248, 0.05); }
+
+        .cell-truncate {
+            display: block;
+            max-width: 180px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            cursor: help;
+        }
+        .cell-truncate.loc { max-width: 160px; }
+        .cell-truncate.ket { max-width: 240px; }
+
+        .col-tgl {
+            font-family: 'Courier New', monospace;
+            font-size: .68rem;
+            white-space: nowrap;
+            color: var(--theme-text);
+        }
+
+        thead th.col-aksi,
+        tbody td.col-aksi {
+            width: 1%;
+            white-space: nowrap;
+            padding-left: .4rem;
+            padding-right: .4rem;
+            text-align: center;
+        }
+
+        .action-btns {
+            display: inline-flex;
+            gap: .25rem;
+        }
+        .icon-btn {
+            background: transparent;
+            border: 1px solid var(--theme-border);
+            color: var(--theme-text-sub);
+            width: 24px;
+            height: 24px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: .6rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: all .2s ease;
+            padding: 0;
+        }
+        .icon-btn:hover {
+            color: #38bdf8;
+            border-color: #38bdf8;
+        }
+        .icon-btn.danger:hover {
+            color: #f43f5e;
+            border-color: #f43f5e;
+        }
+
+        .badge-cause {
+            font-size: .58rem;
+            font-weight: 700;
+            padding: .22rem .55rem;
+            border-radius: 5px;
+            display: inline-block;
+            background: transparent;
+            color: #38bdf8;
+            border: 1px solid rgba(56, 189, 248, 0.5);
+            text-shadow: var(--theme-text-shadow);
+        }
+
+        .user-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: .35rem;
+            background: transparent;
+            border: 1px solid rgba(16, 185, 129, 0.4);
+            border-radius: 99px;
+            padding: .18rem .6rem .18rem .18rem;
+            font-size: .62rem;
+            font-weight: 700;
+            color: #6ee7b7;
+            white-space: nowrap;
+            text-shadow: var(--theme-text-shadow);
+        }
+        .user-chip .uc-avatar {
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: transparent;
+            border: 1px solid rgba(16, 185, 129, 0.5);
+            color: #6ee7b7;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: .55rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            flex-shrink: 0;
+        }
+        .user-chip .uc-name { color: var(--theme-text); font-weight: 700; }
+
+        .empty-state {
+            text-align: center;
+            padding: 2.5rem 1rem;
+            color: var(--theme-text-sub);
+            font-size: .72rem;
+            text-shadow: var(--theme-text-shadow);
+        }
+        .empty-state i {
+            font-size: 2.2rem;
+            color: var(--theme-text-sub);
+            opacity: 0.5;
+            margin-bottom: .7rem;
+            display: block;
+        }
+
+        /* ===== BUTTONS ===== */
+        .btn {
+            padding: .6rem 1.2rem;
+            border-radius: 8px;
+            font-size: .7rem;
+            font-weight: 700;
+            cursor: pointer;
+            font-family: 'Poppins', sans-serif;
+            border: 1px solid transparent;
+            transition: all .25s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: .4rem;
+            text-shadow: var(--theme-text-shadow);
+        }
+        .btn-primary {
+            background: transparent;
+            border: 1px solid rgba(244, 63, 94, 0.7);
+            color: #f43f5e;
+        }
+        .btn-primary:hover {
+            background: rgba(244, 63, 94, 0.15);
+            transform: translateY(-2px);
+        }
+        .btn-ghost {
+            background: transparent;
+            border: 1px solid var(--theme-border);
+            color: var(--theme-text-sub);
+        }
+        .btn-ghost:hover {
+            border-color: var(--theme-border-hover);
+            color: var(--theme-text);
+        }
+        .btn-danger {
+            background: transparent;
+            border: 1px solid rgba(244, 63, 94, 0.7);
+            color: #f43f5e;
+        }
+        .btn-danger:hover {
+            background: rgba(244, 63, 94, 0.15);
+        }
+        .btn-success {
+            background: transparent;
+            border: 1px solid rgba(16, 185, 129, 0.7);
+            color: #10b981;
+        }
+        .btn-success:hover {
+            background: rgba(16, 185, 129, 0.15);
+            transform: translateY(-2px);
+        }
+
+        /* ===== MODAL ===== */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(2, 6, 23, 0.75);
+            backdrop-filter: blur(6px);
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            overflow-y: auto;
+            z-index: 2000;
+        }
+        .modal-overlay.active {
+            display: flex;
+            animation: fadeInOverlay .25s ease;
+        }
+        @keyframes fadeInOverlay {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        .modal {
+            background: rgba(15, 23, 42, 0.98);
+            border: 1px solid var(--theme-border);
+            border-radius: 14px;
+            width: 100%;
+            max-width: 900px;
+            max-height: 92vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.7);
+            animation: slideUp .3s ease;
+        }
+        body.light-mode .modal {
+            background: rgba(255, 255, 255, 0.98);
+        }
+        @keyframes slideUp {
+            from { transform: translateY(30px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 1.3rem;
+            border-bottom: 1px solid var(--theme-border-soft);
+            background: transparent;
+            border-radius: 14px 14px 0 0;
+            position: sticky;
+            top: 0;
+            z-index: 5;
+            backdrop-filter: blur(10px);
+        }
+        .modal-header h3 {
+            font-size: .9rem;
+            font-weight: 800;
+            color: var(--theme-text);
+            display: flex;
+            align-items: center;
+            gap: .5rem;
+            text-shadow: var(--theme-text-shadow);
+        }
+        .modal-header h3 i { color: #f43f5e; }
+        .modal-close {
+            background: transparent;
+            border: 1px solid var(--theme-border);
+            color: var(--theme-text-sub);
+            width: 30px;
+            height: 30px;
+            border-radius: 7px;
+            cursor: pointer;
+            font-size: .75rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: all .2s;
+        }
+        .modal-close:hover {
+            color: #f43f5e;
+            border-color: #f43f5e;
+        }
+        .modal-body {
+            padding: 1.3rem 1.4rem;
+        }
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: .6rem;
+            padding: 1rem 1.4rem;
+            border-top: 1px solid var(--theme-border-soft);
+            background: transparent;
+            border-radius: 0 0 14px 14px;
+            position: sticky;
+            bottom: 0;
+            backdrop-filter: blur(10px);
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: .85rem;
+        }
+        .form-group { display: flex; flex-direction: column; gap: .3rem; }
+        .form-group.full { grid-column: 1 / -1; }
+
+        .form-group label {
+            font-size: .6rem;
+            color: var(--theme-text-sub);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: .4px;
+            text-shadow: var(--theme-text-shadow);
+        }
+        .form-group label .req { color: #f43f5e; margin-left: .15rem; }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            background: transparent;
+            border: 1px solid var(--theme-border);
+            border-radius: 8px;
+            padding: .55rem .75rem;
+            color: var(--theme-text);
+            font-size: .72rem;
+            font-family: 'Poppins', sans-serif;
+            transition: all .2s ease;
+            width: 100%;
+        }
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #f43f5e;
+            box-shadow: 0 0 0 3px rgba(244, 63, 94, 0.12);
+        }
+        .form-group input::placeholder,
+        .form-group textarea::placeholder {
+            color: var(--theme-text-sub);
+            opacity: 0.6;
+        }
+        .form-group textarea { resize: vertical; min-height: 70px; }
+        .form-group input[readonly] {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+
+        .lokasi-input-group {
+            display: flex;
+            gap: .4rem;
+        }
+        .lokasi-input-group input { flex: 1; }
+
+        .auto-keterangan {
+            background: rgba(56, 189, 248, 0.08) !important;
+            border: 1px solid rgba(56, 189, 248, 0.25) !important;
+            color: var(--theme-text-sub) !important;
+            font-size: .7rem !important;
+            line-height: 1.5;
+            min-height: 120px !important;
+            font-family: 'Poppins', sans-serif;
+            white-space: pre-wrap;
+        }
+
+        .durasi-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: .3rem;
+            background: transparent;
+            color: #f59e0b;
+            border: 1px solid rgba(245, 158, 11, 0.5);
+            padding: .2rem .55rem;
+            border-radius: 5px;
+            font-size: .6rem;
+            font-weight: 700;
+            white-space: nowrap;
+            text-shadow: var(--theme-text-shadow);
+        }
+
+        .btn-map {
+            background: transparent;
+            border: 1px solid rgba(16, 185, 129, 0.6);
+            color: #10b981;
+            padding: .55rem .75rem;
+            font-size: .68rem;
+            white-space: nowrap;
+        }
+        .btn-map:hover {
+            background: rgba(16, 185, 129, 0.15);
+        }
+
+        /* ===== LEAFLET STYLING ===== */
+        .leaflet-container {
+            font-family: 'Poppins', sans-serif !important;
+            background: #1e293b !important;
+        }
+        .leaflet-control-zoom a {
+            background: rgba(15, 23, 42, 0.9) !important;
+            color: #e2e8f0 !important;
+            border-color: rgba(255, 255, 255, 0.15) !important;
+        }
+        .leaflet-control-zoom a:hover {
+            background: rgba(30, 41, 59, 1) !important;
+            color: #38bdf8 !important;
+        }
+        .leaflet-control-attribution {
+            background: rgba(15, 23, 42, 0.8) !important;
+            color: #94a3b8 !important;
+            font-size: 9px !important;
+        }
+        .leaflet-control-attribution a {
+            color: #38bdf8 !important;
+        }
+        .leaflet-popup-content-wrapper {
+            background: rgba(15, 23, 42, 0.98) !important;
+            color: #fff !important;
+            border: 1px solid #10b981 !important;
+            border-radius: 8px !important;
+        }
+        .leaflet-popup-tip {
+            background: rgba(15, 23, 42, 0.98) !important;
+        }
+
+        #mapOverlay { z-index: 2500; }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 640px) {
+            .input-page { padding: 90px .9rem 1.5rem; }
+            .search-box { width: 100%; }
+            .table-head { flex-direction: column; align-items: flex-start; }
+            .th-tools { width: 100%; }
+            .th-tools .search-box,
+            .th-tools .sort-select { flex: 1; min-width: 120px; width: auto; }
+            .page-head { flex-direction: column; align-items: flex-start; }
+            .head-actions { width: 100%; }
+            .head-actions .add-btn,
+            .head-actions .excel-btn,
+            .head-actions .user-badge { flex: 1; justify-content: center; }
+            .form-grid { grid-template-columns: 1fr; }
+            #mapPicker { height: 300px !important; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="bg-layer"></div>
+    <div class="bg-overlay"></div>
+
+    <nav>
+        <div class="logo">
+            <i class="fa-solid fa-chart-simple"></i>
+            <span>BUCIN</span>
+        </div>
+        <ul class="nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="dashboard.html">Dashboard</a></li>
+            <li><a href="analytics.html">Analytics</a></li>
+            <li><a href="input-data.html" class="active">Input Data</a></li>
+            <li><a href="manajemen-stok.html">Stok</a></li>
+            <li><a href="reports.html">Reports</a></li>
+            <li><a href="contact.html">Contact</a></li>
+        </ul>
+
+        <button class="theme-toggle" id="themeToggle" title="Ganti Tema" aria-label="Ganti Tema">
+            <i class="fa-solid fa-moon icon-moon"></i>
+            <i class="fa-solid fa-sun icon-sun"></i>
+        </button>
+    </nav>
+
+    <div class="input-page">
+
+        <div class="top-back-wrap">
+            <a href="input-data.html" class="back-btn">
+                <i class="fa-solid fa-arrow-left"></i> Kembali
+            </a>
+        </div>
+
+        <div class="page-head">
+            <div>
+                <h1><i class="fa-solid fa-scissors"></i> FO Cut</h1>
+                <p>Manajemen data insiden fiber optik terputus</p>
+            </div>
+            <div class="head-actions">
+                <div class="user-badge" title="User yang sedang login">
+                    <span class="user-avatar" id="userAvatar">-</span>
+                    <span>Login: <span class="user-name" id="userName">Guest</span></span>
+                </div>
+                <button class="excel-btn" onclick="exportExcel()">
+                    <i class="fa-solid fa-file-excel"></i> Export Excel
+                </button>
+                <button class="add-btn" onclick="openModal()">
+                    <i class="fa-solid fa-plus"></i> Tambah Data
+                </button>
+            </div>
+        </div>
+
+        <div class="panel">
+            <div class="table-head">
+                <div class="th-title">
+                    <i class="fa-solid fa-table-list"></i> Tabel Data FO Cut
+                </div>
+                <div class="th-tools">
+                    <input type="text" class="search-box" id="searchBox" placeholder="Cari data..." oninput="renderTable()">
+                    <select class="sort-select" id="sortRange" onchange="renderTable()">
+                        <option value="all">Semua Data</option>
+                        <option value="weekly">Mingguan (7 hari)</option>
+                        <option value="monthly">Bulanan (bulan ini)</option>
+                        <option value="yearly">Tahunan (tahun ini)</option>
+                    </select>
+                    <select class="sort-select" id="sortBy" onchange="renderTable()">
+                        <option value="newest">Terbaru</option>
+                        <option value="oldest">Terlama</option>
+                        <option value="lokasi">Lokasi (A-Z)</option>
+                        <option value="durasi">Durasi Terlama</option>
+                        <option value="user">Input By (A-Z)</option>
+                    </select>
+                    <span class="table-count">Total: <strong id="tableCount">0</strong></span>
+                    <button class="btn btn-danger" onclick="clearFOCut()" style="padding: .45rem .9rem; font-size: .65rem;">
+                        <i class="fa-solid fa-trash"></i> Hapus Semua
+                    </button>
+                </div>
+            </div>
+
+            <div class="table-wrap" id="tableWrap">
+                <table id="dataTable">
+                    <thead>
+                        <tr>
+                            <th>No</th>
+                            <th>Tanggal</th>
+                            <th>Lokasi</th>
+                            <th>Jalur</th>
+                            <th>Koordinat</th>
+                            <th>Waktu Co</th>
+                            <th>Waktu Up</th>
+                            <th>Durasi</th>
+                            <th>Penyebab</th>
+                            <th>Input By</th>
+                            <th>Keterangan</th>
+                            <th class="col-aksi">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody"></tbody>
+                </table>
+            </div>
+
+            <div class="empty-state" id="emptyState" style="display:none;">
+                <i class="fa-solid fa-inbox"></i>
+                Belum ada data FO Cut yang tersimpan
+                <br>
+                <button class="btn btn-primary" onclick="openModal()" style="margin-top: 1rem;">
+                    <i class="fa-solid fa-plus"></i> Tambah Data Pertama
+                </button>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- MODAL FORM INPUT -->
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 id="modalTitle"><i class="fa-solid fa-plus"></i> Tambah Data FO Cut</h3>
+                <button class="modal-close" onclick="closeModal()">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <div class="modal-body">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Tanggal Insiden <span class="req">*</span></label>
+                        <input type="date" id="fc-tanggal" onchange="updateAutoKeterangan()">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Lokasi / Segmen <span class="req">*</span></label>
+                        <div class="lokasi-input-group">
+                            <input type="text" placeholder="Nama lokasi / segmen" id="fc-lokasi" oninput="updateAutoKeterangan()">
+                            <button type="button" class="btn btn-map" onclick="openMapPicker()" title="Tag lokasi dari peta">
+                                <i class="fa-solid fa-map-location-dot"></i> Map
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Jalur</label>
+                        <input type="text" placeholder="Contoh: Jalur A - Backbone" id="fc-jalur" oninput="updateAutoKeterangan()">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Titik Koordinat</label>
+                        <input type="text" placeholder="Otomatis dari peta" id="fc-koordinat" readonly>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Waktu Co (Cut Off) <span class="req">*</span></label>
+                        <input type="datetime-local" id="fc-waktu-co" onchange="updateAutoKeterangan()">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Waktu Up (Recovery) <span class="req">*</span></label>
+                        <input type="datetime-local" id="fc-waktu-up" onchange="updateAutoKeterangan()">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Penyebab <span class="req">*</span></label>
+                        <select id="fc-penyebab" onchange="updateAutoKeterangan()">
+                            <option value="">-- Pilih --</option>
+                            <option>Pihak Ke3</option>
+                            <option>Vandalisme</option>
+                            <option>Bencana</option>
+                            <option>Lainnya</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group full">
+                        <label>Keterangan <span style="color: var(--accent-sky); text-transform: none; font-weight: 500;">(otomatis dari data di atas)</span></label>
+                        <textarea id="fc-keterangan" class="auto-keterangan" readonly placeholder="Keterangan akan terisi otomatis setelah data di atas diisi..."></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-ghost" onclick="closeModal()">
+                    <i class="fa-solid fa-xmark"></i> Batal
+                </button>
+                <button class="btn btn-primary" onclick="submitFOCut()">
+                    <i class="fa-solid fa-floppy-disk"></i> Simpan Data
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL MAP PICKER -->
+    <div class="modal-overlay" id="mapOverlay">
+        <div class="modal" style="max-width: 800px; padding: 0; overflow: hidden; display: flex; flex-direction: column;">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-map-location-dot"></i> Pilih Lokasi di Peta</h3>
+                <button class="modal-close" onclick="closeMapPicker()">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <div style="padding: .7rem 1.1rem; background: transparent; display: flex; gap: .5rem; border-bottom: 1px solid var(--theme-border-soft);">
+                <input type="text" id="mapSearchInput" placeholder="Cari alamat / tempat..." onkeydown="if(event.key==='Enter'){event.preventDefault();searchMapAddress();}" style="flex:1; background: transparent; border: 1px solid var(--theme-border); border-radius: 8px; padding: .55rem .8rem; color: var(--theme-text); font-size: .72rem; font-family: 'Poppins', sans-serif;">
+                <button type="button" onclick="searchMapAddress()" style="background: transparent; border: 1px solid rgba(16, 185, 129, 0.6); color: #10b981; padding: .55rem 1rem; border-radius: 8px; font-size: .7rem; font-weight: 700; cursor: pointer; font-family: 'Poppins', sans-serif; display: inline-flex; align-items: center; gap: .4rem;">
+                    <i class="fa-solid fa-magnifying-glass"></i> Cari
+                </button>
+            </div>
+
+            <div id="mapPicker" style="width: 100%; height: 420px; background: #1e293b;"></div>
+
+            <div style="padding: .7rem 1.1rem; background: transparent; border-top: 1px solid var(--theme-border-soft); font-size: .7rem; color: var(--theme-text-sub); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: .5rem;">
+                <div style="text-shadow: var(--theme-text-shadow);">
+                    <i class="fa-solid fa-location-crosshairs" style="color:#10b981;"></i>
+                    Koordinat: <span class="coord-text" id="mapCoordText" style="font-family: 'Courier New', monospace; color: #10b981; font-weight: 700;">-</span>
+                </div>
+                <button class="btn btn-success" onclick="confirmMapPick()">
+                    <i class="fa-solid fa-check"></i> Gunakan Lokasi Ini
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="toastContainer"></div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="js/shared.js"></script>
+    <script>
+        /* ============ THEME TOGGLE ============ */
+        (function initThemeToggle(){
+            const toggle = document.getElementById('themeToggle');
+            if (!toggle) return;
+
+            const THEME_KEY = 'bucin_theme';
+            const savedTheme = localStorage.getItem(THEME_KEY);
+            if (savedTheme === 'light'){
+                document.body.classList.add('light-mode');
+            }
+
+            toggle.addEventListener('click', () => {
+                document.body.classList.toggle('light-mode');
+                const isLight = document.body.classList.contains('light-mode');
+                localStorage.setItem(THEME_KEY, isLight ? 'light' : 'dark');
+
+                toggle.style.transform = 'scale(0.9) rotate(180deg)';
+                setTimeout(() => { toggle.style.transform = ''; }, 300);
+            });
+        })();
+
+        const STORAGE_KEY = 'bucin_data';
+        let editingIndex = null;
+
+        function getShortLocation(lokasi) {
+            if (!lokasi) return '-';
+            let s = String(lokasi).trim();
+            s = s.replace(/\b\d{5}\b/g, '').replace(/,?\s*Indonesia\s*$/i, '');
+            let firstPart = s.split(',')[0].trim();
+            const words = firstPart.split(/\s+/);
+            if (words.length > 4) firstPart = words.slice(0, 4).join(' ');
+            if (firstPart.length > 35) firstPart = firstPart.substring(0, 35).trim() + '…';
+            return firstPart || s.substring(0, 35);
+        }
+
+        function formatTanggalShort(tglStr) {
+            if (!tglStr) return '-';
+            const d = new Date(tglStr);
+            if (isNaN(d.getTime())) return tglStr;
+            const pad = n => String(n).padStart(2, '0');
+            const yy = String(d.getFullYear()).slice(-2);
+            return pad(d.getDate()) + '/' + pad(d.getMonth() + 1) + '/' + yy;
+        }
+
+        function formatTanggalIndo(tglStr) {
+            if (!tglStr) return '-';
+            const d = new Date(tglStr);
+            if (isNaN(d.getTime())) return tglStr;
+            const hari = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
+            const bulan = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+            return hari[d.getDay()] + ', ' + d.getDate() + ' ' + bulan[d.getMonth()] + ' ' + d.getFullYear();
+        }
+
+        function formatDateTimeIndo(dtStr) {
+            if (!dtStr) return '-';
+            const d = new Date(dtStr);
+            if (isNaN(d.getTime())) return dtStr;
+            const pad = n => String(n).padStart(2, '0');
+            return pad(d.getDate()) + '/' + pad(d.getMonth()+1) + '/' + d.getFullYear() + ' ' + pad(d.getHours()) + ':' + pad(d.getMinutes());
+        }
+
+        function getCurrentUser() {
+            const candidates = ['bucin_user', 'user', 'username', 'loggedUser', 'currentUser', 'bucin_logged_user'];
+            for (const key of candidates) {
+                const val = localStorage.getItem(key);
+                if (!val) continue;
+                try {
+                    const obj = JSON.parse(val);
+                    if (obj && typeof obj === 'object') {
+                        return {
+                            username: obj.username || obj.name || obj.nama || obj.email || obj.user || 'User',
+                            role: obj.role || obj.jabatan || '',
+                            fullName: obj.fullName || obj.nama_lengkap || obj.name || ''
+                        };
+                    }
+                } catch (e) {
+                    return { username: val, role: '', fullName: '' };
+                }
+            }
+            return { username: 'Guest', role: '', fullName: '' };
+        }
+
+        function getUserInitial(name) {
+            if (!name) return '?';
+            return String(name).trim().charAt(0).toUpperCase();
+        }
+
+        function renderUserBadge() {
+            const u = getCurrentUser();
+            const displayName = u.fullName || u.username || 'Guest';
+            document.getElementById('userName').textContent = displayName;
+            document.getElementById('userAvatar').textContent = getUserInitial(displayName);
+        }
+
+        /* ===== MODAL ===== */
+        function openModal(editIdx = null) {
+            editingIndex = editIdx;
+            const overlay = document.getElementById('modalOverlay');
+            const title = document.getElementById('modalTitle');
+
+            if (editIdx !== null) {
+                title.innerHTML = '<i class="fa-solid fa-pen"></i> Edit Data FO Cut';
+                const data = getData();
+                const item = data.focut[editIdx];
+                if (item) {
+                    document.getElementById('fc-tanggal').value = item.tanggal || '';
+                    document.getElementById('fc-lokasi').value = item.lokasi || '';
+                    document.getElementById('fc-jalur').value = item.jalur || '';
+                    document.getElementById('fc-koordinat').value = item.koordinat || '';
+                    document.getElementById('fc-waktu-co').value = item.waktuCo || '';
+                    document.getElementById('fc-waktu-up').value = item.waktuUp || '';
+                    document.getElementById('fc-penyebab').value = item.penyebab || '';
+                    document.getElementById('fc-keterangan').value = item.keterangan || '';
+                    pickedLatLng = item.koordinat ? parseKoordinat(item.koordinat) : null;
+                }
+            } else {
+                title.innerHTML = '<i class="fa-solid fa-plus"></i> Tambah Data FO Cut';
+                resetForm();
+            }
+
+            overlay.classList.add('active');
+            document.body.style.overflow = 'hidden';
+            updateAutoKeterangan();
+        }
+
+        function closeModal() {
+            document.getElementById('modalOverlay').classList.remove('active');
+            document.body.style.overflow = '';
+            editingIndex = null;
+        }
+
+        document.getElementById('modalOverlay').addEventListener('click', function(e) {
+            if (e.target === this) closeModal();
+        });
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeModal();
+                closeMapPicker();
+            }
+        });
+
+        /* ===== MAP PICKER ===== */
+        let mapPickerInstance = null;
+        let mapMarker = null;
+        let pickedLatLng = null;
+
+        function isLeafletLoaded() {
+            return typeof L !== 'undefined' && L.map && L.tileLayer;
+        }
+
+        function openMapPicker() {
+            const overlay = document.getElementById('mapOverlay');
+            overlay.classList.add('active');
+            document.body.style.overflow = 'hidden';
+
+            if (!isLeafletLoaded()) {
+                document.getElementById('mapPicker').innerHTML =
+                    '<div style="padding:2rem;text-align:center;color:#f43f5e;">' +
+                    '<i class="fa-solid fa-triangle-exclamation" style="font-size:2rem;"></i>' +
+                    '<p style="margin-top:1rem;">Gagal memuat peta. Cek koneksi internet.</p></div>';
+                return;
+            }
+
+            setTimeout(function() {
+                try {
+                    initMapIfNeeded();
+                    if (mapPickerInstance) {
+                        mapPickerInstance.invalidateSize();
+                        const existingKoord = document.getElementById('fc-koordinat').value;
+                        if (existingKoord) {
+                            const latlng = parseKoordinat(existingKoord);
+                            if (latlng) {
+                                setMapMarker(latlng);
+                                mapPickerInstance.setView(latlng, 15);
+                            }
+                        } else if (pickedLatLng) {
+                            setMapMarker(pickedLatLng);
+                            mapPickerInstance.setView(pickedLatLng, 15);
+                        }
+                    }
+                } catch (err) {
+                    console.error('Map init error:', err);
+                }
+            }, 400);
+        }
+
+        function initMapIfNeeded() {
+            if (mapPickerInstance) return;
+            const mapEl = document.getElementById('mapPicker');
+            if (!mapEl) return;
+            if (mapEl.offsetHeight === 0) mapEl.style.height = '420px';
+
+            mapPickerInstance = L.map('mapPicker', {
+                center: [-2.5, 118.0],
+                zoom: 5,
+                zoomControl: true
+            });
+
+            const providers = [
+                { url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', attr: '&copy; OpenStreetMap', sub: 'abc' },
+                { url: 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', attr: '&copy; CARTO', sub: 'abcd' },
+                { url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', attr: '&copy; Esri', sub: '' }
+            ];
+
+            let tileLayer = null;
+            let errCount = 0;
+
+            function loadTile(i) {
+                if (i >= providers.length) return;
+                if (tileLayer) mapPickerInstance.removeLayer(tileLayer);
+                errCount = 0;
+                const p = providers[i];
+                tileLayer = L.tileLayer(p.url, {
+                    maxZoom: 19,
+                    attribution: p.attr,
+                    subdomains: p.sub || 'abc'
+                });
+                tileLayer.on('tileerror', function() {
+                    errCount++;
+                    if (errCount === 3 && i + 1 < providers.length) loadTile(i + 1);
+                });
+                tileLayer.addTo(mapPickerInstance);
+            }
+            loadTile(0);
+
+            mapPickerInstance.on('click', function(e) { setMapMarker(e.latlng); });
+        }
+
+        function closeMapPicker() {
+            document.getElementById('mapOverlay').classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        document.getElementById('mapOverlay').addEventListener('click', function(e) {
+            if (e.target === this) closeMapPicker();
+        });
+
+        function setMapMarker(latlng) {
+            if (!mapPickerInstance) return;
+            pickedLatLng = latlng;
+            if (mapMarker) {
+                mapMarker.setLatLng(latlng);
+            } else {
+                mapMarker = L.marker(latlng, { draggable: true }).addTo(mapPickerInstance);
+                mapMarker.on('dragend', function(e) {
+                    pickedLatLng = e.target.getLatLng();
+                    updateMapCoordText();
+                });
+            }
+            updateMapCoordText();
+        }
+
+        function updateMapCoordText() {
+            if (!pickedLatLng) {
+                document.getElementById('mapCoordText').textContent = '-';
+                return;
+            }
+            document.getElementById('mapCoordText').textContent =
+                pickedLatLng.lat.toFixed(6) + ', ' + pickedLatLng.lng.toFixed(6);
+        }
+
+        function confirmMapPick() {
+            if (!pickedLatLng) {
+                showToast('Pilih titik di peta terlebih dahulu', 'error');
+                return;
+            }
+            const koordText = pickedLatLng.lat.toFixed(6) + ', ' + pickedLatLng.lng.toFixed(6);
+            document.getElementById('fc-koordinat').value = koordText;
+
+            if (!document.getElementById('fc-lokasi').value.trim()) {
+                reverseGeocode(pickedLatLng.lat, pickedLatLng.lng);
+            } else {
+                updateAutoKeterangan();
+            }
+
+            closeMapPicker();
+            showToast('Koordinat berhasil diambil dari peta!');
+        }
+
+        function reverseGeocode(lat, lng) {
+            const url = 'https://nominatim.openstreetmap.org/reverse?format=json&lat=' + lat + '&lon=' + lng + '&zoom=16&addressdetails=1&accept-language=id';
+            fetch(url, { headers: { 'Accept-Language': 'id' } })
+                .then(res => res.json())
+                .then(data => {
+                    if (data && data.display_name) {
+                        const lokasiField = document.getElementById('fc-lokasi');
+                        if (!lokasiField.value.trim()) lokasiField.value = data.display_name;
+                    }
+                    updateAutoKeterangan();
+                })
+                .catch(() => updateAutoKeterangan());
+        }
+
+        function searchMapAddress() {
+            const q = document.getElementById('mapSearchInput').value.trim();
+            if (!q) { showToast('Masukkan alamat yang dicari', 'error'); return; }
+            if (!mapPickerInstance) { showToast('Peta belum siap', 'error'); return; }
+
+            const url = 'https://nominatim.openstreetmap.org/search?format=json&q=' + encodeURIComponent(q) + '&limit=1&accept-language=id';
+            fetch(url, { headers: { 'Accept-Language': 'id' } })
+                .then(res => res.json())
+                .then(data => {
+                    if (data && data.length > 0) {
+                        const latlng = { lat: parseFloat(data[0].lat), lng: parseFloat(data[0].lon) };
+                        mapPickerInstance.setView(latlng, 15);
+                        setMapMarker(latlng);
+                    } else {
+                        showToast('Lokasi tidak ditemukan', 'error');
+                    }
+                })
+                .catch(() => showToast('Gagal mencari lokasi', 'error'));
+        }
+
+        function parseKoordinat(str) {
+            if (!str) return null;
+            const parts = str.split(',');
+            if (parts.length !== 2) return null;
+            const lat = parseFloat(parts[0].trim());
+            const lng = parseFloat(parts[1].trim());
+            if (isNaN(lat) || isNaN(lng)) return null;
+            return { lat: lat, lng: lng };
+        }
+
+        function updateAutoKeterangan() {
+            const tanggal = document.getElementById('fc-tanggal').value;
+            const lokasi = document.getElementById('fc-lokasi').value;
+            const jalur = document.getElementById('fc-jalur').value;
+            const koordinat = document.getElementById('fc-koordinat').value;
+            const waktuCo = document.getElementById('fc-waktu-co').value;
+            const waktuUp = document.getElementById('fc-waktu-up').value;
+            const penyebab = document.getElementById('fc-penyebab').value;
+
+            let durasi = '-';
+            if (waktuCo && waktuUp) {
+                const co = new Date(waktuCo);
+                const up = new Date(waktuUp);
+                if (!isNaN(co.getTime()) && !isNaN(up.getTime()) && up >= co) {
+                    durasi = formatDurasi(up - co);
+                }
+            }
+
+            const lines = [];
+            lines.push('=== LAPORAN FO CUT ===');
+            if (tanggal) lines.push('Tanggal Insiden : ' + formatTanggalIndo(tanggal));
+            if (lokasi) lines.push('Lokasi / Segmen : ' + lokasi);
+            if (jalur) lines.push('Jalur : ' + jalur);
+            if (koordinat) lines.push('Titik Koordinat : ' + koordinat);
+            if (waktuCo) lines.push('Waktu Co : ' + formatDateTimeIndo(waktuCo));
+            if (waktuUp) lines.push('Waktu Up : ' + formatDateTimeIndo(waktuUp));
+            if (waktuCo && waktuUp) lines.push('Total Durasi Down : ' + durasi);
+            if (penyebab) lines.push('Penyebab : ' + penyebab);
+            lines.push('======================');
+
+            document.getElementById('fc-keterangan').value = lines.join('\n');
+        }
+
+        function formatDurasi(ms) {
+            const totalMenit = Math.floor(ms / 60000);
+            const hari = Math.floor(totalMenit / 1440);
+            const jam = Math.floor((totalMenit % 1440) / 60);
+            const menit = totalMenit % 60;
+            let parts = [];
+            if (hari > 0) parts.push(hari + ' hari');
+            if (jam > 0) parts.push(jam + ' jam');
+            if (menit > 0 || parts.length === 0) parts.push(menit + ' menit');
+            return parts.join(' ');
+        }
+
+        function getData() {
+            const raw = localStorage.getItem(STORAGE_KEY);
+            return raw ? JSON.parse(raw) : { focut: [], temuan: [], opm: [], joint: [], handhole: [] };
+        }
+        function saveData(data) {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+        }
+
+        function showToast(msg, type) {
+            const container = document.getElementById('toastContainer');
+            const t = document.createElement('div');
+            t.className = 'toast-msg';
+            const icon = type === 'error' ? 'fa-circle-exclamation' : 'fa-circle-check';
+            const color = type === 'error' ? '#f43f5e' : '#10b981';
+            t.innerHTML = '<i class="fa-solid ' + icon + '" style="color:' + color + ';"></i> ' + msg;
+            container.appendChild(t);
+            setTimeout(() => t.remove(), 3000);
+        }
+
+        function submitFOCut() {
+            const tanggal = document.getElementById('fc-tanggal').value;
+            const lokasi = document.getElementById('fc-lokasi').value;
+            const waktuCo = document.getElementById('fc-waktu-co').value;
+            const waktuUp = document.getElementById('fc-waktu-up').value;
+            const penyebab = document.getElementById('fc-penyebab').value;
+
+            if (!tanggal || !lokasi || !waktuCo || !waktuUp || !penyebab) {
+                showToast('Lengkapi field bertanda * terlebih dahulu', 'error');
+                return;
+            }
+
+            if (new Date(waktuUp) < new Date(waktuCo)) {
+                showToast('Waktu Up tidak boleh lebih awal dari Waktu Co', 'error');
+                return;
+            }
+
+            updateAutoKeterangan();
+
+            const data = getData();
+            const currentUser = getCurrentUser();
+
+            const koordinat = document.getElementById('fc-koordinat').value;
+            let lat = '', lng = '';
+            if (koordinat) {
+                const parts = koordinat.split(',');
+                if (parts.length === 2) {
+                    lat = parts[0].trim();
+                    lng = parts[1].trim();
+                }
+            }
+
+            const newItem = {
+                tanggal: tanggal,
+                lokasi: lokasi,
+                jalur: document.getElementById('fc-jalur').value,
+                koordinat: koordinat,
+                lat: lat,
+                lng: lng,
+                waktuCo: waktuCo,
+                waktuUp: waktuUp,
+                penyebab: penyebab,
+                keterangan: document.getElementById('fc-keterangan').value,
+                user: {
+                    username: currentUser.username,
+                    fullName: currentUser.fullName,
+                    role: currentUser.role
+                },
+                createdAt: new Date().toISOString()
+            };
+
+            if (editingIndex !== null) {
+                const existing = data.focut[editingIndex];
+                if (existing && existing.user) {
+                    newItem.user = existing.user;
+                }
+                data.focut[editingIndex] = { ...data.focut[editingIndex], ...newItem };
+                saveData(data);
+                showToast('Data FO Cut berhasil diperbarui!');
+            } else {
+                data.focut.push(newItem);
+                saveData(data);
+                showToast('Data FO Cut berhasil disimpan!');
+            }
+
+            closeModal();
+            renderTable();
+        }
+
+        function resetForm() {
+            document.querySelectorAll('#modalOverlay input, #modalOverlay select, #modalOverlay textarea').forEach(el => {
+                if (el.tagName === 'SELECT') el.selectedIndex = 0;
+                else el.value = '';
+            });
+            pickedLatLng = null;
+            if (mapMarker && mapPickerInstance) {
+                mapMarker.remove();
+                mapMarker = null;
+            }
+            document.getElementById('fc-keterangan').value = '';
+        }
+
+        function escapeHtml(str) {
+            if (str === null || str === undefined) return '';
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+
+        function renderTable() {
+            const data = getData();
+            const tbody = document.getElementById('tableBody');
+            const emptyState = document.getElementById('emptyState');
+            const tableWrap = document.getElementById('tableWrap');
+            const tableCount = document.getElementById('tableCount');
+
+            const filterText = (document.getElementById('searchBox')?.value || '').toLowerCase();
+            const range = document.getElementById('sortRange')?.value || 'all';
+            const sortBy = document.getElementById('sortBy')?.value || 'newest';
+
+            tbody.innerHTML = '';
+
+            let items = data.focut.map((item, idx) => ({ ...item, _idx: idx }));
+
+            if (filterText) {
+                items = items.filter(item =>
+                    (item.lokasi || '').toLowerCase().includes(filterText) ||
+                    (item.jalur || '').toLowerCase().includes(filterText) ||
+                    (item.penyebab || '').toLowerCase().includes(filterText) ||
+                    (item.koordinat || '').toLowerCase().includes(filterText) ||
+                    (item.keterangan || '').toLowerCase().includes(filterText) ||
+                    (item.user && ((item.user.username || '').toLowerCase().includes(filterText) ||
+                                   (item.user.fullName || '').toLowerCase().includes(filterText)))
+                );
+            }
+
+            if (range !== 'all') {
+                const now = new Date();
+                items = items.filter(item => {
+                    if (!item.tanggal) return false;
+                    const tgl = new Date(item.tanggal);
+                    if (isNaN(tgl.getTime())) return false;
+                    if (range === 'weekly') {
+                        const diffDays = (now - tgl) / (1000 * 60 * 60 * 24);
+                        return diffDays >= 0 && diffDays <= 7;
+                    }
+                    if (range === 'monthly') {
+                        return tgl.getMonth() === now.getMonth() && tgl.getFullYear() === now.getFullYear();
+                    }
+                    if (range === 'yearly') return tgl.getFullYear() === now.getFullYear();
+                    return true;
+                });
+            }
+
+            items.sort((a, b) => {
+                if (sortBy === 'oldest') return (a.createdAt || '').localeCompare(b.createdAt || '');
+                if (sortBy === 'lokasi') return (a.lokasi || '').localeCompare(b.lokasi || '');
+                if (sortBy === 'durasi') return getDurasiMs(b) - getDurasiMs(a);
+                if (sortBy === 'user') {
+                    const ua = (a.user && (a.user.fullName || a.user.username)) || '';
+                    const ub = (b.user && (b.user.fullName || b.user.username)) || '';
+                    return ua.localeCompare(ub);
+                }
+                return (b.createdAt || '').localeCompare(a.createdAt || '');
+            });
+
+            tableCount.textContent = items.length;
+
+            if (items.length === 0) {
+                emptyState.style.display = 'block';
+                tableWrap.style.display = 'none';
+                return;
+            }
+            emptyState.style.display = 'none';
+            tableWrap.style.display = 'block';
+
+            items.forEach((item, i) => {
+                const durasi = getDurasiText(item);
+                const tanggalShort = formatTanggalShort(item.tanggal);
+                const tanggalFull = formatTanggalIndo(item.tanggal);
+                const lokasiFull = item.lokasi || '-';
+                const lokasiShort = getShortLocation(lokasiFull);
+                const keteranganFull = item.keterangan || '-';
+                const keteranganShort = (keteranganFull.split('\n')[0] || '-');
+                const userName = (item.user && (item.user.fullName || item.user.username)) || 'Tidak diketahui';
+                const userInitial = getUserInitial(userName);
+
+                const tr = document.createElement('tr');
+                tr.innerHTML =
+                    '<td>' + (i + 1) + '</td>' +
+                    '<td class="col-tgl" title="' + escapeHtml(tanggalFull) + '">' + escapeHtml(tanggalShort) + '</td>' +
+                    '<td><span class="cell-truncate loc" title="' + escapeHtml(lokasiFull) + '">' + escapeHtml(lokasiShort) + '</span></td>' +
+                    '<td>' + escapeHtml(item.jalur || '-') + '</td>' +
+                    '<td style="font-family: monospace; font-size: .65rem;">' + escapeHtml(item.koordinat || '-') + '</td>' +
+                    '<td>' + formatDateTimeIndo(item.waktuCo) + '</td>' +
+                    '<td>' + formatDateTimeIndo(item.waktuUp) + '</td>' +
+                    '<td><span class="durasi-badge"><i class="fa-solid fa-clock"></i> ' + durasi + '</span></td>' +
+                    '<td><span class="badge-cause">' + escapeHtml(item.penyebab || '-') + '</span></td>' +
+                    '<td><span class="user-chip" title="User yang input data"><span class="uc-avatar">' + escapeHtml(userInitial) + '</span><span class="uc-name">' + escapeHtml(userName) + '</span></span></td>' +
+                    '<td><span class="cell-truncate ket" title="' + escapeHtml(keteranganFull) + '">' + escapeHtml(keteranganShort) + '</span></td>' +
+                    '<td class="col-aksi"><div class="action-btns">' +
+                        '<button class="icon-btn" title="Edit" onclick="openModal(' + item._idx + ')"><i class="fa-solid fa-pen"></i></button>' +
+                        '<button class="icon-btn danger" title="Hapus" onclick="deleteItem(' + item._idx + ')"><i class="fa-solid fa-trash"></i></button>' +
+                    '</div></td>';
+                tbody.appendChild(tr);
+            });
+        }
+
+        function getDurasiMs(item) {
+            if (!item.waktuCo || !item.waktuUp) return 0;
+            const co = new Date(item.waktuCo);
+            const up = new Date(item.waktuUp);
+            if (isNaN(co.getTime()) || isNaN(up.getTime())) return 0;
+            return up - co;
+        }
+
+        function getDurasiText(item) {
+            const ms = getDurasiMs(item);
+            if (ms <= 0) return '-';
+            return formatDurasi(ms);
+        }
+
+        function deleteItem(index) {
+            if (!confirm('Hapus data ini?')) return;
+            const data = getData();
+            data.focut.splice(index, 1);
+            saveData(data);
+            showToast('Data berhasil dihapus');
+            renderTable();
+        }
+
+        function clearFOCut() {
+            if (!confirm('Yakin hapus SEMUA data FO Cut?')) return;
+            const data = getData();
+            data.focut = [];
+            saveData(data);
+            showToast('Semua data FO Cut berhasil dihapus');
+            renderTable();
+        }
+
+        function exportExcel() {
+            const data = getData();
+            if (data.focut.length === 0) {
+                showToast('Tidak ada data untuk di-export', 'error');
+                return;
+            }
+
+            let html = '<html xmlns:x="urn:schemas-microsoft-com:office:excel"><head><meta charset="UTF-8"></head><body>';
+            html += '<table border="1"><thead><tr>';
+            html += '<th>No</th><th>Tanggal</th><th>Lokasi</th><th>Jalur</th><th>Koordinat</th><th>Waktu Co</th><th>Waktu Up</th><th>Durasi</th><th>Penyebab</th><th>Input By</th><th>Keterangan</th>';
+            html += '</tr></thead><tbody>';
+
+            data.focut.forEach((item, i) => {
+                const uName = (item.user && (item.user.fullName || item.user.username)) || '-';
+                html += '<tr>';
+                html += '<td>' + (i + 1) + '</td>';
+                html += '<td>' + formatTanggalIndo(item.tanggal) + '</td>';
+                html += '<td>' + (item.lokasi || '') + '</td>';
+                html += '<td>' + (item.jalur || '') + '</td>';
+                html += '<td>' + (item.koordinat || '') + '</td>';
+                html += '<td>' + (item.waktuCo || '') + '</td>';
+                html += '<td>' + (item.waktuUp || '') + '</td>';
+                html += '<td>' + getDurasiText(item) + '</td>';
+                html += '<td>' + (item.penyebab || '') + '</td>';
+                html += '<td>' + uName + '</td>';
+                html += '<td>' + (item.keterangan || '').replace(/\n/g, ' | ') + '</td>';
+                html += '</tr>';
+            });
+
+            html += '</tbody></table></body></html>';
+
+            downloadFile(html, 'focut_' + getTimestamp() + '.xls', 'application/vnd.ms-excel');
+            showToast('Excel berhasil di-download!');
+        }
+
+        function downloadFile(content, filename, mimeType) {
+            const blob = new Blob([content], { type: mimeType + ';charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        function getTimestamp() {
+            const d = new Date();
+            const pad = n => String(n).padStart(2, '0');
+            return d.getFullYear() + pad(d.getMonth() + 1) + pad(d.getDate()) + '_' + pad(d.getHours()) + pad(d.getMinutes());
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            renderUserBadge();
+            renderTable();
+        });
+    </script>
+</body>
+</html>

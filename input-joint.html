@@ -1,0 +1,1063 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Input Data Joint - BUCIN</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+
+    <style>
+        * { box-sizing: border-box; }
+        html { font-size: 13px; scroll-behavior: smooth; }
+
+        :root {
+            --theme-bg-image: url('gedung_telin2.jpeg');
+            --theme-page-bg: #0f172a;
+            --theme-text: #ffffff;
+            --theme-text-sub: #e2e8f0;
+            --theme-text-shadow: 0 1px 3px rgba(0, 0, 0, 0.9);
+            --theme-border: rgba(255, 255, 255, 0.35);
+            --theme-border-soft: rgba(255, 255, 255, 0.25);
+            --theme-border-hover: rgba(255, 255, 255, 0.65);
+            --theme-nav-link: #cbd5e1;
+            --theme-nav-link-hover: #ffffff;
+            --theme-nav-link-active: #38bdf8;
+            --accent-rose: #f43f5e;
+            --accent-emerald: #10b981;
+            --accent-sky: #38bdf8;
+            --accent-cyan: #06b6d4;
+            --accent-amber: #f59e0b;
+            --accent-purple: #a855f7;
+            --panel-border: rgba(255, 255, 255, 0.35);
+            --accent-modul: #f59e0b;
+        }
+        body.light-mode {
+            --theme-bg-image: url('gedung_telin1.jpeg');
+            --theme-page-bg: #e2e8f0;
+            --theme-text: #0f172a;
+            --theme-text-sub: #1e293b;
+            --theme-text-shadow: 0 1px 2px rgba(255,255,255,.9), 0 1px 3px rgba(0,0,0,.15);
+            --theme-border: rgba(15,23,42,.5);
+            --theme-border-soft: rgba(15,23,42,.3);
+            --theme-border-hover: rgba(15,23,42,.75);
+            --theme-nav-link: #334155;
+            --theme-nav-link-hover: #0f172a;
+            --theme-nav-link-active: #0284c7;
+            --panel-border: rgba(15,23,42,.5);
+        }
+        html, body { min-height:100vh; margin:0; padding:0; }
+        body {
+            background-image: var(--theme-bg-image);
+            background-size: cover;
+            background-position: center center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            background-color: var(--theme-page-bg);
+            color: var(--theme-text);
+            font-family: 'Poppins', sans-serif;
+            transition: background-image .5s ease, background-color .5s ease;
+        }
+        .bg-layer, .bg-overlay { display: none !important; }
+
+        /* ===== NAV ===== */
+        nav {
+            position: fixed; top:0; left:0; right:0; height:60px;
+            z-index:1000; display:flex; align-items:center; justify-content:space-between;
+            padding:0 20px; background:transparent; border-bottom:none; box-shadow:none; gap:1rem;
+        }
+        nav .logo {
+            display:flex; align-items:center; gap:6px; font-weight:800;
+            letter-spacing:1px; color:#38bdf8; text-shadow:var(--theme-text-shadow);
+            font-size:1.25rem; flex-shrink:0;
+        }
+        nav .logo i { font-size:1.1rem; color:#f43f5e; }
+        nav .logo span { font-size:.95rem; color:var(--theme-text); }
+        .nav-links {
+            display:flex; gap:14px; list-style:none; margin:0 0 0 auto;
+            padding:0; align-items:center;
+        }
+        .nav-links a {
+            color:var(--theme-nav-link); text-decoration:none; font-size:.75rem; font-weight:500;
+            padding:.2rem .3rem; transition:color .3s ease, transform .3s ease;
+            text-shadow:var(--theme-text-shadow); position:relative; white-space:nowrap;
+            display:inline-block;
+        }
+        .nav-links a:hover { color:var(--theme-nav-link-hover); transform:translateY(-2px); }
+        .nav-links a.active { color:var(--theme-nav-link-active); }
+        .nav-links a::after {
+            content:''; position:absolute; bottom:-4px; left:50%; width:0; height:2px;
+            background:var(--theme-nav-link-active); transition:width .3s ease, left .3s ease;
+            border-radius:2px;
+        }
+        .nav-links a:hover::after, .nav-links a.active::after { width:100%; left:0; }
+
+        .theme-toggle {
+            background:transparent; border:1px solid var(--theme-border); color:var(--theme-text);
+            width:36px; height:36px; border-radius:50%; cursor:pointer;
+            display:inline-flex; align-items:center; justify-content:center; font-size:.85rem;
+            transition:all .3s ease; flex-shrink:0; position:relative;
+            text-shadow:var(--theme-text-shadow); margin-left:14px;
+        }
+        .theme-toggle:hover {
+            transform:scale(1.1) rotate(15deg);
+            border-color:var(--theme-nav-link-active);
+            color:var(--theme-nav-link-active);
+        }
+        .theme-toggle .icon-sun, .theme-toggle .icon-moon {
+            transition:opacity .3s ease, transform .3s ease; position:absolute;
+        }
+        .theme-toggle .icon-sun { opacity:0; transform:rotate(-90deg); }
+        .theme-toggle .icon-moon { opacity:1; transform:rotate(0deg); }
+        body.light-mode .theme-toggle .icon-sun { opacity:1; transform:rotate(0deg); }
+        body.light-mode .theme-toggle .icon-moon { opacity:0; transform:rotate(90deg); }
+
+        @media (max-width:1100px){ .nav-links{gap:.7rem;} .nav-links a{font-size:.7rem;} }
+        @media (max-width:820px){
+            nav{flex-direction:column; height:auto; padding:.6rem .9rem; gap:.4rem;}
+            .nav-links{gap:.5rem; justify-content:center; width:100%; flex-wrap:wrap;}
+            .nav-links a{font-size:.66rem; padding:.15rem .3rem;}
+            .input-page{padding-top:110px !important;}
+        }
+        @media (max-width:500px){ .nav-links a{font-size:.6rem;} nav .logo{font-size:1.05rem;} }
+
+        /* ===== PAGE ===== */
+        .input-page {
+            max-width:1400px; margin:0 auto; padding:90px 1.2rem 2rem;
+            display:flex; flex-direction:column; gap:1rem;
+        }
+        .top-back-wrap { display:flex; justify-content:flex-start; }
+        .back-btn {
+            background:transparent; border:1px solid var(--theme-border); color:var(--theme-text-sub);
+            padding:.5rem 1rem; border-radius:8px; font-size:.7rem; font-weight:700;
+            cursor:pointer; font-family:'Poppins', sans-serif; text-decoration:none;
+            display:inline-flex; align-items:center; gap:.4rem; transition:all .2s;
+            text-shadow:var(--theme-text-shadow);
+        }
+        .back-btn:hover {
+            border-color:var(--accent-modul); color:var(--accent-modul); transform:translateX(-3px);
+        }
+
+        .page-head {
+            background:transparent; border:1px solid var(--theme-border); border-radius:12px;
+            padding:1rem 1.3rem; display:flex; justify-content:space-between;
+            align-items:center; flex-wrap:wrap; gap:.8rem;
+        }
+        .page-head h1 {
+            font-size:1.05rem; font-weight:800; color:var(--theme-text);
+            display:flex; align-items:center; gap:.5rem; margin:0 0 .15rem 0;
+            text-shadow:var(--theme-text-shadow);
+        }
+        .page-head h1 i { color:var(--accent-modul); }
+        .page-head p {
+            font-size:.68rem; color:var(--theme-text-sub); margin:0;
+            text-shadow:var(--theme-text-shadow);
+        }
+
+        .head-actions { display:flex; gap:.5rem; flex-wrap:wrap; align-items:center; }
+        .user-badge {
+            display:inline-flex; align-items:center; gap:.45rem;
+            background:transparent; border:1px solid rgba(16,185,129,.5);
+            border-radius:99px; padding:.4rem .9rem .4rem .4rem;
+            font-size:.68rem; font-weight:700; color:#6ee7b7;
+            text-shadow:var(--theme-text-shadow);
+        }
+        .user-badge .user-avatar {
+            width:26px; height:26px; border-radius:50%; background:transparent;
+            border:1px solid rgba(16,185,129,.6); color:#6ee7b7;
+            display:inline-flex; align-items:center; justify-content:center;
+            font-size:.7rem; font-weight:800; text-transform:uppercase; flex-shrink:0;
+        }
+        .user-badge .user-name { color:var(--theme-text); font-weight:800; }
+
+        .add-btn {
+            background:transparent; border:1px solid var(--accent-modul); color:var(--accent-modul);
+            padding:.5rem 1.1rem; border-radius:8px; font-size:.7rem; font-weight:700;
+            cursor:pointer; font-family:'Poppins', sans-serif;
+            display:inline-flex; align-items:center; gap:.4rem;
+            transition:all .25s ease; text-shadow:var(--theme-text-shadow);
+        }
+        .add-btn:hover {
+            background:rgba(245,158,11,.15); transform:translateY(-2px);
+        }
+        .excel-btn {
+            background:transparent; border:1px solid rgba(16,185,129,.7); color:#10b981;
+            padding:.5rem 1.1rem; border-radius:8px; font-size:.7rem; font-weight:700;
+            cursor:pointer; font-family:'Poppins', sans-serif;
+            display:inline-flex; align-items:center; gap:.4rem;
+            transition:all .25s ease; text-shadow:var(--theme-text-shadow);
+        }
+        .excel-btn:hover {
+            background:rgba(16,185,129,.15); transform:translateY(-2px);
+        }
+
+        .panel {
+            background:transparent; border:1px solid var(--theme-border);
+            border-radius:12px; padding:1.2rem 1.4rem;
+        }
+
+        .table-head {
+            display:flex; justify-content:space-between; align-items:center;
+            gap:.8rem; margin-bottom:.9rem; padding-bottom:.5rem;
+            border-bottom:1px solid var(--theme-border-soft); flex-wrap:wrap;
+        }
+        .table-head .th-title {
+            font-size:.75rem; font-weight:700; color:var(--accent-modul);
+            text-transform:uppercase; letter-spacing:.5px;
+            display:flex; align-items:center; gap:.4rem;
+            text-shadow:var(--theme-text-shadow);
+        }
+        .table-head .th-tools {
+            display:flex; align-items:center; gap:.5rem; flex-wrap:wrap;
+        }
+        .search-box {
+            background:transparent; border:1px solid var(--theme-border); border-radius:8px;
+            padding:.45rem .8rem; color:var(--theme-text); font-size:.7rem;
+            font-family:'Poppins', sans-serif; width:200px; transition:all .2s;
+        }
+        .search-box:focus {
+            outline:none; border-color:var(--accent-modul);
+            box-shadow:0 0 0 3px rgba(245,158,11,.12);
+        }
+        .search-box::placeholder { color:var(--theme-text-sub); opacity:.6; }
+
+        .sort-select {
+            background:transparent; border:1px solid var(--theme-border); border-radius:8px;
+            padding:.45rem 1.8rem .45rem .8rem; color:var(--theme-text); font-size:.7rem;
+            font-family:'Poppins', sans-serif; cursor:pointer; transition:all .2s;
+            appearance:none; -webkit-appearance:none;
+            background-image:url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat:no-repeat; background-position:right .5rem center;
+            background-size:.8rem;
+        }
+        .sort-select:focus {
+            outline:none; border-color:var(--accent-modul);
+            box-shadow:0 0 0 3px rgba(245,158,11,.12);
+        }
+        .sort-select option { background:#1e293b; color:#f8fafc; }
+
+        .table-count {
+            font-size:.65rem; color:var(--theme-text-sub); background:transparent;
+            padding:.3rem .7rem; border-radius:6px;
+            border:1px solid var(--theme-border); text-shadow:var(--theme-text-shadow);
+        }
+        .table-count strong { color:var(--accent-modul); }
+
+        .table-wrap {
+            overflow-x:auto; border-radius:8px;
+            border:1px solid var(--theme-border-soft);
+        }
+        table {
+            width:100%; border-collapse:collapse; font-size:.7rem; min-width:1300px;
+        }
+        thead th {
+            text-align:left; font-size:.58rem; color:var(--theme-text-sub);
+            text-transform:uppercase; font-weight:700; letter-spacing:.4px;
+            padding:.7rem .8rem; background:transparent;
+            border-bottom:1px solid var(--theme-border-soft);
+            white-space:nowrap; text-shadow:var(--theme-text-shadow);
+        }
+        tbody td {
+            padding:.7rem .8rem; color:var(--theme-text-sub);
+            border-bottom:1px solid var(--theme-border-soft);
+            font-weight:500; vertical-align:middle; text-shadow:var(--theme-text-shadow);
+        }
+        tbody tr { transition:background .15s; }
+        tbody tr:hover { background:rgba(245,158,11,.05); }
+
+        .cell-truncate {
+            display:block; max-width:180px; white-space:nowrap;
+            overflow:hidden; text-overflow:ellipsis; cursor:help;
+        }
+        .cell-truncate.loc { max-width:160px; }
+        .cell-truncate.ket { max-width:220px; }
+        .col-tgl {
+            font-family:'Courier New', monospace; font-size:.68rem;
+            white-space:nowrap; color:var(--theme-text);
+        }
+
+        .badge-cause {
+            font-size:.58rem; font-weight:700; padding:.22rem .55rem;
+            border-radius:5px; display:inline-block; background:transparent;
+            color:var(--accent-modul); border:1px solid var(--accent-modul);
+            text-shadow:var(--theme-text-shadow);
+        }
+        .badge-kondisi {
+            font-size:.58rem; font-weight:700; padding:.22rem .55rem;
+            border-radius:5px; display:inline-block; background:transparent;
+            text-shadow:var(--theme-text-shadow);
+        }
+        .badge-kondisi.baik { color:#10b981; border:1px solid rgba(16,185,129,.7); }
+        .badge-kondisi.perlu { color:#f59e0b; border:1px solid rgba(245,158,11,.7); }
+        .badge-kondisi.rusak { color:#f43f5e; border:1px solid rgba(244,63,94,.7); }
+
+        .core-progress {
+            display:inline-flex; align-items:center; gap:.4rem;
+            font-size:.62rem; font-weight:700; text-shadow:var(--theme-text-shadow);
+        }
+        .core-progress .bar {
+            width:50px; height:6px; background:rgba(148,163,184,.2);
+            border-radius:99px; overflow:hidden;
+        }
+        .core-progress .bar > span {
+            display:block; height:100%;
+            background:linear-gradient(90deg, #10b981, #f59e0b);
+            border-radius:99px;
+        }
+
+        .user-chip {
+            display:inline-flex; align-items:center; gap:.35rem;
+            background:transparent; border:1px solid rgba(16,185,129,.4);
+            border-radius:99px; padding:.18rem .6rem .18rem .18rem;
+            font-size:.62rem; font-weight:700; color:#6ee7b7;
+            white-space:nowrap; text-shadow:var(--theme-text-shadow);
+        }
+        .user-chip .uc-avatar {
+            width:18px; height:18px; border-radius:50%; background:transparent;
+            border:1px solid rgba(16,185,129,.5); color:#6ee7b7;
+            display:inline-flex; align-items:center; justify-content:center;
+            font-size:.55rem; font-weight:800; text-transform:uppercase; flex-shrink:0;
+        }
+        .user-chip .uc-name { color:var(--theme-text); font-weight:700; }
+
+        thead th.col-aksi, tbody td.col-aksi {
+            width:1%; white-space:nowrap; padding-left:.4rem;
+            padding-right:.4rem; text-align:center;
+        }
+        .action-btns { display:inline-flex; gap:.25rem; }
+        .icon-btn {
+            background:transparent; border:1px solid var(--theme-border); color:var(--theme-text-sub);
+            width:24px; height:24px; border-radius:5px; cursor:pointer;
+            font-size:.6rem; display:inline-flex; align-items:center; justify-content:center;
+            transition:all .2s ease; padding:0;
+        }
+        .icon-btn:hover { color:var(--accent-modul); border-color:var(--accent-modul); }
+        .icon-btn.danger:hover { color:#f43f5e; border-color:#f43f5e; }
+
+        .empty-state {
+            text-align:center; padding:2.5rem 1rem; color:var(--theme-text-sub);
+            font-size:.72rem; text-shadow:var(--theme-text-shadow);
+        }
+        .empty-state i {
+            font-size:2.2rem; color:var(--theme-text-sub); opacity:.5;
+            margin-bottom:.7rem; display:block;
+        }
+        .empty-state .btn { margin-top:1rem; }
+
+        .btn {
+            padding:.6rem 1.2rem; border-radius:8px; font-size:.7rem; font-weight:700;
+            cursor:pointer; font-family:'Poppins', sans-serif;
+            border:1px solid transparent; transition:all .25s ease;
+            display:inline-flex; align-items:center; gap:.4rem;
+            text-shadow:var(--theme-text-shadow);
+        }
+        .btn-primary {
+            background:transparent; border:1px solid var(--accent-modul);
+            color:var(--accent-modul);
+        }
+        .btn-primary:hover {
+            background:rgba(245,158,11,.15); transform:translateY(-2px);
+        }
+        .btn-ghost {
+            background:transparent; border:1px solid var(--theme-border);
+            color:var(--theme-text-sub);
+        }
+        .btn-ghost:hover { border-color:var(--theme-border-hover); color:var(--theme-text); }
+        .btn-danger {
+            background:transparent; border:1px solid rgba(244,63,94,.7);
+            color:#f43f5e;
+        }
+        .btn-danger:hover { background:rgba(244,63,94,.15); }
+
+        .modal-overlay {
+            display:none; position:fixed; top:0; left:0; right:0; bottom:0;
+            background:rgba(2,6,23,.75); backdrop-filter:blur(6px);
+            z-index:2000; align-items:center; justify-content:center;
+            padding:1rem; overflow-y:auto;
+        }
+        .modal-overlay.active { display:flex; animation:fadeInOverlay .25s ease; }
+        @keyframes fadeInOverlay { from{opacity:0;} to{opacity:1;} }
+        .modal {
+            background:rgba(15,23,42,.98); border:1px solid var(--theme-border);
+            border-radius:14px; width:100%; max-width:900px; max-height:92vh;
+            overflow-y:auto; box-shadow:0 20px 60px rgba(0,0,0,.7);
+            animation:slideUp .3s ease;
+        }
+        body.light-mode .modal { background:rgba(255,255,255,.98); }
+        @keyframes slideUp {
+            from{transform:translateY(30px); opacity:0;}
+            to{transform:translateY(0); opacity:1;}
+        }
+        .modal-header {
+            display:flex; justify-content:space-between; align-items:center;
+            padding:1rem 1.3rem; border-bottom:1px solid var(--theme-border-soft);
+            background:transparent; border-radius:14px 14px 0 0;
+            position:sticky; top:0; z-index:5; backdrop-filter:blur(10px);
+        }
+        .modal-header h3 {
+            font-size:.9rem; font-weight:800; color:var(--theme-text);
+            display:flex; align-items:center; gap:.5rem;
+            text-shadow:var(--theme-text-shadow);
+        }
+        .modal-header h3 i { color:var(--accent-modul); }
+        .modal-close {
+            background:transparent; border:1px solid var(--theme-border); color:var(--theme-text-sub);
+            width:30px; height:30px; border-radius:7px; cursor:pointer;
+            font-size:.75rem; display:inline-flex; align-items:center; justify-content:center;
+            transition:all .2s;
+        }
+        .modal-close:hover { color:#f43f5e; border-color:#f43f5e; }
+        .modal-body { padding:1.3rem 1.4rem; }
+        .modal-footer {
+            display:flex; justify-content:flex-end; gap:.6rem;
+            padding:1rem 1.4rem; border-top:1px solid var(--theme-border-soft);
+            background:transparent; border-radius:0 0 14px 14px;
+            position:sticky; bottom:0; backdrop-filter:blur(10px);
+        }
+
+        .form-grid {
+            display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr));
+            gap:.85rem;
+        }
+        .form-group { display:flex; flex-direction:column; gap:.3rem; }
+        .form-group.full { grid-column:1 / -1; }
+        .form-group label {
+            font-size:.6rem; color:var(--theme-text-sub); font-weight:700;
+            text-transform:uppercase; letter-spacing:.4px;
+            text-shadow:var(--theme-text-shadow);
+        }
+        .form-group label .req { color:var(--accent-modul); margin-left:.15rem; }
+
+        .form-group input, .form-group select, .form-group textarea {
+            background:transparent; border:1px solid var(--theme-border);
+            border-radius:8px; padding:.55rem .75rem; color:var(--theme-text);
+            font-size:.72rem; font-family:'Poppins', sans-serif;
+            transition:all .2s ease; width:100%;
+        }
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+            outline:none; border-color:var(--accent-modul);
+            box-shadow:0 0 0 3px rgba(245,158,11,.12);
+        }
+        .form-group input::placeholder, .form-group textarea::placeholder {
+            color:var(--theme-text-sub); opacity:.6;
+        }
+        .form-group textarea { resize:vertical; min-height:70px; }
+        .form-group input[readonly] { opacity:.7; cursor:not-allowed; }
+
+        .auto-keterangan {
+            background:rgba(245,158,11,.08) !important;
+            border:1px solid rgba(245,158,11,.25) !important;
+            color:var(--theme-text-sub) !important;
+            font-size:.7rem !important; line-height:1.5;
+            min-height:120px !important; font-family:'Poppins', sans-serif;
+            white-space:pre-wrap;
+        }
+
+        @media (max-width:640px){
+            .input-page{padding:90px .9rem 1.5rem;}
+            .search-box{width:100%;}
+            .table-head{flex-direction:column; align-items:flex-start;}
+            .th-tools{width:100%;}
+            .th-tools .search-box, .th-tools .sort-select {flex:1; min-width:120px; width:auto;}
+            .page-head{flex-direction:column; align-items:flex-start;}
+            .head-actions{width:100%;}
+            .head-actions .add-btn, .head-actions .excel-btn, .head-actions .user-badge {
+                flex:1; justify-content:center;
+            }
+            .form-grid{grid-template-columns:1fr;}
+        }
+    </style>
+</head>
+<body>
+
+    <div class="bg-layer"></div>
+    <div class="bg-overlay"></div>
+
+    <nav>
+        <div class="logo"><i class="fa-solid fa-chart-simple"></i><span>BUCIN</span></div>
+        <ul class="nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="dashboard.html">Dashboard</a></li>
+            <li><a href="analytics.html">Analytics</a></li>
+            <li><a href="input-data.html" class="active">Input Data</a></li>
+            <li><a href="manajemen-stok.html">Stok</a></li>
+            <li><a href="reports.html">Reports</a></li>
+            <li><a href="contact.html">Contact</a></li>
+        </ul>
+        <button class="theme-toggle" id="themeToggle" title="Ganti Tema" aria-label="Ganti Tema">
+            <i class="fa-solid fa-moon icon-moon"></i>
+            <i class="fa-solid fa-sun icon-sun"></i>
+        </button>
+    </nav>
+
+    <div class="input-page">
+
+        <div class="top-back-wrap">
+            <a href="input-data.html" class="back-btn">
+                <i class="fa-solid fa-arrow-left"></i> Kembali
+            </a>
+        </div>
+
+        <div class="page-head">
+            <div>
+                <h1><i class="fa-solid fa-circle-nodes"></i> Input Data Joint</h1>
+                <p>Manajemen data joint closure</p>
+            </div>
+            <div class="head-actions">
+                <div class="user-badge" title="User yang sedang login">
+                    <span class="user-avatar" id="userAvatar">-</span>
+                    <span>Login: <span class="user-name" id="userName">Guest</span></span>
+                </div>
+                <button class="excel-btn" onclick="exportExcel()">
+                    <i class="fa-solid fa-file-excel"></i> Export Excel
+                </button>
+                <button class="add-btn" onclick="openModal()">
+                    <i class="fa-solid fa-plus"></i> Tambah Data
+                </button>
+            </div>
+        </div>
+
+        <div class="panel">
+            <div class="table-head">
+                <div class="th-title">
+                    <i class="fa-solid fa-table-list"></i> Tabel Data Joint
+                </div>
+                <div class="th-tools">
+                    <input type="text" class="search-box" id="searchBox" placeholder="Cari data..." oninput="renderTable()">
+                    <select class="sort-select" id="sortRange" onchange="renderTable()">
+                        <option value="all">Semua Data</option>
+                        <option value="weekly">Mingguan (7 hari)</option>
+                        <option value="monthly">Bulanan (bulan ini)</option>
+                        <option value="yearly">Tahunan (tahun ini)</option>
+                    </select>
+                    <select class="sort-select" id="sortBy" onchange="renderTable()">
+                        <option value="newest">Terbaru</option>
+                        <option value="oldest">Terlama</option>
+                        <option value="lokasi">Lokasi (A-Z)</option>
+                        <option value="user">Input By (A-Z)</option>
+                    </select>
+                    <span class="table-count">Total: <strong id="tableCount">0</strong></span>
+                    <button class="btn btn-danger" onclick="clearJoint()" style="padding:.45rem .9rem; font-size:.65rem;">
+                        <i class="fa-solid fa-trash"></i> Hapus Semua
+                    </button>
+                </div>
+            </div>
+
+            <div class="table-wrap" id="tableWrap">
+                <table id="dataTable">
+                    <thead>
+                        <tr>
+                            <th>No</th>
+                            <th>Tanggal</th>
+                            <th>ID Joint</th>
+                            <th>Lokasi</th>
+                            <th>Tipe</th>
+                            <th>Kapasitas</th>
+                            <th>Kedalaman</th>
+                            <th>Kondisi</th>
+                            <th>Teknisi</th>
+                            <th>Input By</th>
+                            <th>Catatan</th>
+                            <th class="col-aksi">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody"></tbody>
+                </table>
+            </div>
+
+            <div class="empty-state" id="emptyState" style="display:none;">
+                <i class="fa-solid fa-inbox"></i>
+                Belum ada data Joint yang tersimpan
+                <br>
+                <button class="btn btn-primary" onclick="openModal()" style="margin-top:1rem;">
+                    <i class="fa-solid fa-plus"></i> Tambah Data Pertama
+                </button>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 id="modalTitle"><i class="fa-solid fa-plus"></i> Tambah Data Joint</h3>
+                <button class="modal-close" onclick="closeModal()">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <div class="modal-body">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>ID Joint <span class="req">*</span></label>
+                        <input type="text" placeholder="Contoh: JNT-BTM-001" id="jt-id">
+                    </div>
+                    <div class="form-group">
+                        <label>Tanggal Instalasi</label>
+                        <input type="date" id="jt-tanggal">
+                    </div>
+                    <div class="form-group">
+                        <label>Lokasi <span class="req">*</span></label>
+                        <input type="text" placeholder="Alamat / koordinat" id="jt-lokasi">
+                    </div>
+                    <div class="form-group">
+                        <label>Tipe Closure</label>
+                        <select id="jt-tipe">
+                            <option value="">-- Pilih --</option>
+                            <option>Dome 144C</option>
+                            <option>Dome 96C</option>
+                            <option>Inline 48C</option>
+                            <option>Inline 24C</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Kapasitas Core</label>
+                        <input type="number" placeholder="Contoh: 144" id="jt-kapasitas">
+                    </div>
+                    <div class="form-group">
+                        <label>Core Terpakai</label>
+                        <input type="number" placeholder="Contoh: 96" id="jt-terpakai">
+                    </div>
+                    <div class="form-group">
+                        <label>Kedalaman (cm)</label>
+                        <input type="number" placeholder="Contoh: 120" id="jt-kedalaman">
+                    </div>
+                    <div class="form-group">
+                        <label>Kondisi</label>
+                        <select id="jt-kondisi">
+                            <option>Baik</option>
+                            <option>Perlu Perawatan</option>
+                            <option>Rusak</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Teknisi</label>
+                        <input type="text" placeholder="Nama teknisi" id="jt-teknisi">
+                    </div>
+                    <div class="form-group full">
+                        <label>Keterangan <span style="color:var(--accent-modul); text-transform:none; font-weight:500;">(otomatis dari data di atas)</span></label>
+                        <textarea id="jt-keterangan" class="auto-keterangan" readonly placeholder="Keterangan akan terisi otomatis..."></textarea>
+                    </div>
+                    <div class="form-group full">
+                        <label>Catatan Tambahan</label>
+                        <textarea placeholder="Detail sambungan, redaman, dsb..." id="jt-catatan"></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-ghost" onclick="closeModal()">
+                    <i class="fa-solid fa-xmark"></i> Batal
+                </button>
+                <button class="btn btn-primary" onclick="submitJoint()">
+                    <i class="fa-solid fa-floppy-disk"></i> Simpan Data
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="toastContainer"></div>
+
+    <script src="js/shared.js"></script>
+    <script>
+        /* ============ THEME TOGGLE ============ */
+        (function initThemeToggle(){
+            const toggle = document.getElementById('themeToggle');
+            if (!toggle) return;
+            const THEME_KEY = 'bucin_theme';
+            const savedTheme = localStorage.getItem(THEME_KEY);
+            if (savedTheme === 'light'){ document.body.classList.add('light-mode'); }
+            toggle.addEventListener('click', () => {
+                document.body.classList.toggle('light-mode');
+                const isLight = document.body.classList.contains('light-mode');
+                localStorage.setItem(THEME_KEY, isLight ? 'light' : 'dark');
+                toggle.style.transform = 'scale(0.9) rotate(180deg)';
+                setTimeout(() => { toggle.style.transform = ''; }, 300);
+            });
+        })();
+
+        const STORAGE_KEY = 'bucin_data';
+        let editingIndex = null;
+
+        function getCurrentUser() {
+            const candidates = ['bucin_user','user','username','loggedUser','currentUser','bucin_logged_user'];
+            for (const key of candidates) {
+                const val = localStorage.getItem(key);
+                if (!val) continue;
+                try {
+                    const obj = JSON.parse(val);
+                    if (obj && typeof obj === 'object') {
+                        return {
+                            username: obj.username || obj.name || obj.nama || obj.email || obj.user || 'User',
+                            role: obj.role || obj.jabatan || '',
+                            fullName: obj.fullName || obj.nama_lengkap || obj.name || ''
+                        };
+                    }
+                } catch (e) { return { username: val, role: '', fullName: '' }; }
+            }
+            return { username: 'Guest', role: '', fullName: '' };
+        }
+        function getUserInitial(name) {
+            if (!name) return '?';
+            return String(name).trim().charAt(0).toUpperCase();
+        }
+        function renderUserBadge() {
+            const u = getCurrentUser();
+            const displayName = u.fullName || u.username || 'Guest';
+            document.getElementById('userName').textContent = displayName;
+            document.getElementById('userAvatar').textContent = getUserInitial(displayName);
+        }
+        function formatTanggalShort(tglStr) {
+            if (!tglStr) return '-';
+            const d = new Date(tglStr);
+            if (isNaN(d.getTime())) return tglStr;
+            const pad = n => String(n).padStart(2, '0');
+            const yy = String(d.getFullYear()).slice(-2);
+            return pad(d.getDate()) + '/' + pad(d.getMonth() + 1) + '/' + yy;
+        }
+        function formatTanggalIndo(tglStr) {
+            if (!tglStr) return '-';
+            const d = new Date(tglStr);
+            if (isNaN(d.getTime())) return tglStr;
+            const hari = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
+            const bulan = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+            return hari[d.getDay()] + ', ' + d.getDate() + ' ' + bulan[d.getMonth()] + ' ' + d.getFullYear();
+        }
+        function escapeHtml(str) {
+            if (str === null || str === undefined) return '';
+            return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;')
+                .replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+        }
+
+        function openModal(editIdx = null) {
+            editingIndex = editIdx;
+            const overlay = document.getElementById('modalOverlay');
+            const title = document.getElementById('modalTitle');
+
+            if (editIdx !== null) {
+                title.innerHTML = '<i class="fa-solid fa-pen"></i> Edit Data Joint';
+                const data = getData();
+                const item = data.joint[editIdx];
+                if (item) {
+                    document.getElementById('jt-id').value = item.id || '';
+                    document.getElementById('jt-tanggal').value = item.tanggal || '';
+                    document.getElementById('jt-lokasi').value = item.lokasi || '';
+                    document.getElementById('jt-tipe').value = item.tipe || '';
+                    document.getElementById('jt-kapasitas').value = item.kapasitas || '';
+                    document.getElementById('jt-terpakai').value = item.terpakai || '';
+                    document.getElementById('jt-kedalaman').value = item.kedalaman || '';
+                    document.getElementById('jt-kondisi').value = item.kondisi || 'Baik';
+                    document.getElementById('jt-teknisi').value = item.teknisi || '';
+                    document.getElementById('jt-catatan').value = item.catatan || '';
+                    document.getElementById('jt-keterangan').value = item.keterangan || '';
+                }
+            } else {
+                title.innerHTML = '<i class="fa-solid fa-plus"></i> Tambah Data Joint';
+                resetForm();
+            }
+            overlay.classList.add('active');
+            document.body.style.overflow = 'hidden';
+            updateAutoKeterangan();
+        }
+        function closeModal() {
+            document.getElementById('modalOverlay').classList.remove('active');
+            document.body.style.overflow = '';
+            editingIndex = null;
+        }
+        document.getElementById('modalOverlay').addEventListener('click', function(e) {
+            if (e.target === this) closeModal();
+        });
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') closeModal();
+        });
+
+        function updateAutoKeterangan() {
+            const id = document.getElementById('jt-id').value;
+            const tanggal = document.getElementById('jt-tanggal').value;
+            const lokasi = document.getElementById('jt-lokasi').value;
+            const tipe = document.getElementById('jt-tipe').value;
+            const kapasitas = document.getElementById('jt-kapasitas').value;
+            const terpakai = document.getElementById('jt-terpakai').value;
+            const kedalaman = document.getElementById('jt-kedalaman').value;
+            const kondisi = document.getElementById('jt-kondisi').value;
+            const teknisi = document.getElementById('jt-teknisi').value;
+            const catatan = document.getElementById('jt-catatan').value;
+
+            const lines = [];
+            lines.push('=== LAPORAN DATA JOINT ===');
+            if (id) lines.push('ID Joint : ' + id);
+            if (tanggal) lines.push('Tanggal Instalasi : ' + formatTanggalIndo(tanggal));
+            if (lokasi) lines.push('Lokasi : ' + lokasi);
+            if (tipe) lines.push('Tipe Closure : ' + tipe);
+            if (kapasitas) lines.push('Kapasitas Core : ' + kapasitas + ' core');
+            if (terpakai) lines.push('Core Terpakai : ' + terpakai + ' core');
+            if (kedalaman) lines.push('Kedalaman : ' + kedalaman + ' cm');
+            if (kondisi) lines.push('Kondisi : ' + kondisi);
+            if (teknisi) lines.push('Teknisi : ' + teknisi);
+            if (catatan) lines.push('Catatan : ' + catatan);
+            lines.push('==========================');
+            document.getElementById('jt-keterangan').value = lines.join('\n');
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            ['jt-id','jt-tanggal','jt-lokasi','jt-tipe','jt-kapasitas','jt-terpakai',
+             'jt-kedalaman','jt-kondisi','jt-teknisi','jt-catatan'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) {
+                    el.addEventListener('input', updateAutoKeterangan);
+                    el.addEventListener('change', updateAutoKeterangan);
+                }
+            });
+        });
+
+        function getData() {
+            const raw = localStorage.getItem(STORAGE_KEY);
+            return raw ? JSON.parse(raw) : { focut: [], temuan: [], opm: [], joint: [], handhole: [] };
+        }
+        function saveData(data) { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); }
+
+        function showToast(msg, type) {
+            const container = document.getElementById('toastContainer');
+            const t = document.createElement('div');
+            t.className = 'toast-msg';
+            const icon = type === 'error' ? 'fa-circle-exclamation' : 'fa-circle-check';
+            const color = type === 'error' ? '#f43f5e' : '#10b981';
+            t.innerHTML = '<i class="fa-solid ' + icon + '" style="color:' + color + ';"></i> ' + msg;
+            container.appendChild(t);
+            setTimeout(() => t.remove(), 3000);
+        }
+
+        function submitJoint() {
+            const id = document.getElementById('jt-id').value;
+            const lokasi = document.getElementById('jt-lokasi').value;
+            if (!id || !lokasi) {
+                showToast('Lengkapi field bertanda * terlebih dahulu', 'error');
+                return;
+            }
+            updateAutoKeterangan();
+            const data = getData();
+            const currentUser = getCurrentUser();
+
+            const newItem = {
+                id: id,
+                tanggal: document.getElementById('jt-tanggal').value,
+                lokasi: lokasi,
+                tipe: document.getElementById('jt-tipe').value,
+                kapasitas: document.getElementById('jt-kapasitas').value,
+                terpakai: document.getElementById('jt-terpakai').value,
+                kedalaman: document.getElementById('jt-kedalaman').value,
+                kondisi: document.getElementById('jt-kondisi').value,
+                teknisi: document.getElementById('jt-teknisi').value,
+                catatan: document.getElementById('jt-catatan').value,
+                keterangan: document.getElementById('jt-keterangan').value,
+                user: {
+                    username: currentUser.username,
+                    fullName: currentUser.fullName,
+                    role: currentUser.role
+                },
+                createdAt: new Date().toISOString()
+            };
+
+            if (editingIndex !== null) {
+                const existing = data.joint[editingIndex];
+                if (existing && existing.user) { newItem.user = existing.user; }
+                data.joint[editingIndex] = { ...data.joint[editingIndex], ...newItem };
+                saveData(data);
+                showToast('Data Joint berhasil diperbarui!');
+            } else {
+                data.joint.push(newItem);
+                saveData(data);
+                showToast('Data Joint berhasil disimpan!');
+            }
+            closeModal();
+            renderTable();
+        }
+
+        function resetForm() {
+            document.querySelectorAll('#modalOverlay input, #modalOverlay select, #modalOverlay textarea').forEach(el => {
+                if (el.tagName === 'SELECT') el.selectedIndex = 0;
+                else el.value = '';
+            });
+            document.getElementById('jt-kondisi').value = 'Baik';
+            document.getElementById('jt-keterangan').value = '';
+        }
+
+        function renderTable() {
+            const data = getData();
+            const tbody = document.getElementById('tableBody');
+            const emptyState = document.getElementById('emptyState');
+            const tableWrap = document.getElementById('tableWrap');
+            const tableCount = document.getElementById('tableCount');
+
+            const filterText = (document.getElementById('searchBox')?.value || '').toLowerCase();
+            const range = document.getElementById('sortRange')?.value || 'all';
+            const sortBy = document.getElementById('sortBy')?.value || 'newest';
+
+            tbody.innerHTML = '';
+            let items = data.joint.map((item, idx) => ({ ...item, _idx: idx }));
+
+            if (filterText) {
+                items = items.filter(item =>
+                    (item.id || '').toLowerCase().includes(filterText) ||
+                    (item.lokasi || '').toLowerCase().includes(filterText) ||
+                    (item.tipe || '').toLowerCase().includes(filterText) ||
+                    (item.kondisi || '').toLowerCase().includes(filterText) ||
+                    (item.teknisi || '').toLowerCase().includes(filterText) ||
+                    (item.catatan || '').toLowerCase().includes(filterText) ||
+                    (item.user && ((item.user.username || '').toLowerCase().includes(filterText) ||
+                                   (item.user.fullName || '').toLowerCase().includes(filterText)))
+                );
+            }
+            if (range !== 'all') {
+                const now = new Date();
+                items = items.filter(item => {
+                    if (!item.tanggal) return false;
+                    const tgl = new Date(item.tanggal);
+                    if (isNaN(tgl.getTime())) return false;
+                    if (range === 'weekly') {
+                        const diffDays = (now - tgl) / (1000 * 60 * 60 * 24);
+                        return diffDays >= 0 && diffDays <= 7;
+                    }
+                    if (range === 'monthly') return tgl.getMonth() === now.getMonth() && tgl.getFullYear() === now.getFullYear();
+                    if (range === 'yearly') return tgl.getFullYear() === now.getFullYear();
+                    return true;
+                });
+            }
+            items.sort((a, b) => {
+                if (sortBy === 'oldest') return (a.createdAt || '').localeCompare(b.createdAt || '');
+                if (sortBy === 'lokasi') return (a.lokasi || '').localeCompare(b.lokasi || '');
+                if (sortBy === 'user') {
+                    const ua = (a.user && (a.user.fullName || a.user.username)) || '';
+                    const ub = (b.user && (b.user.fullName || b.user.username)) || '';
+                    return ua.localeCompare(ub);
+                }
+                return (b.createdAt || '').localeCompare(a.createdAt || '');
+            });
+
+            tableCount.textContent = items.length;
+
+            if (items.length === 0) {
+                emptyState.style.display = 'block';
+                tableWrap.style.display = 'none';
+                return;
+            }
+            emptyState.style.display = 'none';
+            tableWrap.style.display = 'block';
+
+            items.forEach((item, i) => {
+                const tanggalShort = formatTanggalShort(item.tanggal);
+                const tanggalFull = formatTanggalIndo(item.tanggal);
+                const lokasiFull = item.lokasi || '-';
+                const lokasiShort = lokasiFull.length > 35 ? lokasiFull.substring(0, 35) + '…' : lokasiFull;
+                const catatanFull = item.catatan || '-';
+                const catatanShort = catatanFull.split('\n')[0] || '-';
+                const userName = (item.user && (item.user.fullName || item.user.username)) || 'Tidak diketahui';
+                const userInitial = getUserInitial(userName);
+
+                let kondisiClass = 'baik';
+                if (item.kondisi === 'Perlu Perawatan') kondisiClass = 'perlu';
+                else if (item.kondisi === 'Rusak') kondisiClass = 'rusak';
+
+                const kap = parseInt(item.kapasitas) || 0;
+                const ter = parseInt(item.terpakai) || 0;
+                const pct = kap > 0 ? Math.min(100, Math.round((ter / kap) * 100)) : 0;
+                const coreHtml =
+                    '<div class="core-progress" title="' + ter + ' / ' + kap + ' core terpakai">' +
+                        '<div class="bar"><span style="width:' + pct + '%"></span></div>' +
+                        '<span>' + ter + '/' + kap + '</span>' +
+                    '</div>';
+
+                const tr = document.createElement('tr');
+                tr.innerHTML =
+                    '<td>' + (i + 1) + '</td>' +
+                    '<td class="col-tgl" title="' + escapeHtml(tanggalFull) + '">' + escapeHtml(tanggalShort) + '</td>' +
+                    '<td><strong style="color:var(--theme-text);">' + escapeHtml(item.id || '-') + '</strong></td>' +
+                    '<td><span class="cell-truncate loc" title="' + escapeHtml(lokasiFull) + '">' + escapeHtml(lokasiShort) + '</span></td>' +
+                    '<td>' + escapeHtml(item.tipe || '-') + '</td>' +
+                    '<td>' + coreHtml + '</td>' +
+                    '<td>' + (item.kedalaman ? escapeHtml(item.kedalaman) + ' cm' : '-') + '</td>' +
+                    '<td><span class="badge-kondisi ' + kondisiClass + '">' + escapeHtml(item.kondisi || '-') + '</span></td>' +
+                    '<td>' + escapeHtml(item.teknisi || '-') + '</td>' +
+                    '<td><span class="user-chip" title="User yang input data"><span class="uc-avatar">' + escapeHtml(userInitial) + '</span><span class="uc-name">' + escapeHtml(userName) + '</span></span></td>' +
+                    '<td><span class="cell-truncate ket" title="' + escapeHtml(catatanFull) + '">' + escapeHtml(catatanShort) + '</span></td>' +
+                    '<td class="col-aksi"><div class="action-btns">' +
+                        '<button class="icon-btn" title="Edit" onclick="openModal(' + item._idx + ')"><i class="fa-solid fa-pen"></i></button>' +
+                        '<button class="icon-btn danger" title="Hapus" onclick="deleteItem(' + item._idx + ')"><i class="fa-solid fa-trash"></i></button>' +
+                    '</div></td>';
+                tbody.appendChild(tr);
+            });
+        }
+
+        function deleteItem(index) {
+            if (!confirm('Hapus data ini?')) return;
+            const data = getData();
+            data.joint.splice(index, 1);
+            saveData(data);
+            showToast('Data berhasil dihapus');
+            renderTable();
+        }
+        function clearJoint() {
+            if (!confirm('Yakin hapus SEMUA data Joint?')) return;
+            const data = getData();
+            data.joint = [];
+            saveData(data);
+            showToast('Semua data Joint berhasil dihapus');
+            renderTable();
+        }
+
+        function exportExcel() {
+            const data = getData();
+            if (data.joint.length === 0) {
+                showToast('Tidak ada data untuk di-export', 'error');
+                return;
+            }
+            let html = '<html xmlns:x="urn:schemas-microsoft-com:office:excel"><head><meta charset="UTF-8"></head><body>';
+            html += '<table border="1"><thead><tr>';
+            html += '<th>No</th><th>Tanggal</th><th>ID Joint</th><th>Lokasi</th><th>Tipe</th><th>Kapasitas</th><th>Terpakai</th><th>Kedalaman</th><th>Kondisi</th><th>Teknisi</th><th>Input By</th><th>Catatan</th>';
+            html += '</tr></thead><tbody>';
+            data.joint.forEach((item, i) => {
+                const uName = (item.user && (item.user.fullName || item.user.username)) || '-';
+                html += '<tr>';
+                html += '<td>' + (i + 1) + '</td>';
+                html += '<td>' + formatTanggalIndo(item.tanggal) + '</td>';
+                html += '<td>' + (item.id || '') + '</td>';
+                html += '<td>' + (item.lokasi || '') + '</td>';
+                html += '<td>' + (item.tipe || '') + '</td>';
+                html += '<td>' + (item.kapasitas || '') + '</td>';
+                html += '<td>' + (item.terpakai || '') + '</td>';
+                html += '<td>' + (item.kedalaman ? item.kedalaman + ' cm' : '') + '</td>';
+                html += '<td>' + (item.kondisi || '') + '</td>';
+                html += '<td>' + (item.teknisi || '') + '</td>';
+                html += '<td>' + uName + '</td>';
+                html += '<td>' + (item.catatan || '').replace(/\n/g, ' | ') + '</td>';
+                html += '</tr>';
+            });
+            html += '</tbody></table></body></html>';
+            downloadFile(html, 'joint_' + getTimestamp() + '.xls', 'application/vnd.ms-excel');
+            showToast('Excel berhasil di-download!');
+        }
+        function downloadFile(content, filename, mimeType) {
+            const blob = new Blob([content], { type: mimeType + ';charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url; a.download = filename;
+            document.body.appendChild(a); a.click();
+            document.body.removeChild(a); URL.revokeObjectURL(url);
+        }
+        function getTimestamp() {
+            const d = new Date();
+            const pad = n => String(n).padStart(2, '0');
+            return d.getFullYear() + pad(d.getMonth() + 1) + pad(d.getDate()) + '_' + pad(d.getHours()) + pad(d.getMinutes());
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            renderUserBadge();
+            renderTable();
+        });
+    </script>
+</body>
+</html>
