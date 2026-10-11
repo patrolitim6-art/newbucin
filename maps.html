@@ -48,8 +48,8 @@ html, body { height: 100%; overflow: hidden; font-family: var(--app-font); backg
 .header-btn.primary:hover { background: rgba(16, 185, 129, 0.15); border-color: var(--primary-green); color: var(--primary-green); }
 .header-btn i { width: 15px; height: 15px; }
 
-/* UKURAN MAP = 85% DARI TINGGI LAYAR (tidak menyisakan ruang kosong) */
-.map-wrap { position: relative; width: 100%; height: calc((100vh - var(--header-h)) * 0.85); }
+/* MAP FULL LEBAR, TINGGI DIKURANGI (minus 100px dari viewport) */
+.map-wrap { position: relative; width: 100%; height: calc(100vh - var(--header-h) - 100px); min-height: 300px; }
 #map-container { position: absolute; inset: 0; width: 100%; height: 100%; }
 #map-container canvas { image-rendering: -webkit-optimize-contrast; }
 
@@ -177,6 +177,7 @@ select.field-control option { background: var(--surface-3); color: var(--text-ma
   .floating-panel { right: 50px; left: 10px; min-width: 0; max-width: none; }
   .map-legend-container { max-width: 240px; }
   .custom-map-btn { width: 34px; height: 34px; }
+  .map-wrap { height: calc(100vh - var(--header-h) - 80px); }
 }
 </style>
 </head>
