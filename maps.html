@@ -17,219 +17,85 @@
         html, body { margin: 0; padding: 0; height: 100%; font-family: 'Poppins', sans-serif; background: #0f172a; overflow: hidden; }
         #map { width: 100%; height: 100%; background: #0f172a; }
 
-        .maps-header {
-            position: absolute; top: 0; left: 0; right: 0; height: 44px; z-index: 1000;
-            display: flex; align-items: center; gap: 8px; padding: 6px 12px;
-            background: rgba(15, 23, 42, 0.92); border-bottom: 1px solid rgba(255, 255, 255, 0.15);
-            backdrop-filter: blur(8px);
-        }
+        .maps-header { position: absolute; top: 0; left: 0; right: 0; height: 44px; z-index: 1000; display: flex; align-items: center; gap: 8px; padding: 6px 12px; background: rgba(15, 23, 42, 0.92); border-bottom: 1px solid rgba(255, 255, 255, 0.15); backdrop-filter: blur(8px); }
         .maps-header .header-title { font-size: 12px; font-weight: 800; color: #38bdf8; display: flex; align-items: center; gap: 6px; }
         .maps-header .header-title i { color: #f43f5e; }
         .maps-header .header-title span { color: #e2e8f0; font-weight: 600; font-size: 11px; }
 
-        .header-btn {
-            background: transparent; border: 1px solid rgba(255, 255, 255, 0.25); color: #e2e8f0;
-            padding: 5px 10px; border-radius: 6px; font-size: 11px; font-weight: 700;
-            cursor: pointer; font-family: 'Poppins', sans-serif;
-            display: inline-flex; align-items: center; gap: 5px;
-            transition: all 0.2s ease;
-        }
+        .header-btn { background: transparent; border: 1px solid rgba(255, 255, 255, 0.25); color: #e2e8f0; padding: 5px 10px; border-radius: 6px; font-size: 11px; font-weight: 700; cursor: pointer; font-family: 'Poppins', sans-serif; display: inline-flex; align-items: center; gap: 5px; transition: all 0.2s ease; }
         .header-btn:hover { color: #38bdf8; border-color: #38bdf8; }
         .header-btn.primary { color: #10b981; border-color: rgba(16, 185, 129, 0.6); }
         .header-btn.primary:hover { background: rgba(16, 185, 129, 0.15); }
-        .header-btn.danger { color: #f43f5e; border-color: rgba(244, 63, 94, 0.6); }
-        .header-btn.danger:hover { background: rgba(244, 63, 94, 0.15); }
         .header-btn.active { color: #38bdf8; border-color: #38bdf8; background: rgba(56, 189, 248, 0.15); }
 
-        .map-mode-btn {
-            background: rgba(30, 41, 59, 0.8); border: 1px solid rgba(255, 255, 255, 0.2);
-            color: #94a3b8; padding: 5px 9px; border-radius: 6px;
-            font-size: 10px; font-weight: 700; cursor: pointer; font-family: 'Poppins', sans-serif;
-            display: inline-flex; align-items: center; gap: 4px;
-        }
+        .map-mode-btn { background: rgba(30, 41, 59, 0.8); border: 1px solid rgba(255, 255, 255, 0.2); color: #94a3b8; padding: 5px 9px; border-radius: 6px; font-size: 10px; font-weight: 700; cursor: pointer; font-family: 'Poppins', sans-serif; display: inline-flex; align-items: center; gap: 4px; }
         .map-mode-btn:hover { color: #38bdf8; border-color: #38bdf8; }
         .map-mode-btn.active { color: #38bdf8; border-color: #38bdf8; background: rgba(56, 189, 248, 0.15); }
 
-        .map-legend {
-            position: absolute; top: 54px; left: 10px;
-            background: rgba(15, 23, 42, 0.88); border: 1px solid rgba(255, 255, 255, 0.3);
-            border-radius: 7px; padding: 6px 8px; z-index: 900;
-            font-size: 9.5px; color: #e2e8f0; max-width: 210px;
-            max-height: calc(100vh - 70px); overflow-y: auto;
-        }
-        .map-legend::-webkit-scrollbar { width: 3px; }
-        .map-legend::-webkit-scrollbar-thumb { background: rgba(56, 189, 248, 0.4); border-radius: 2px; }
+        .map-legend { position: absolute; top: 54px; left: 10px; background: rgba(15, 23, 42, 0.88); border: 1px solid rgba(255, 255, 255, 0.3); border-radius: 7px; padding: 6px 8px; z-index: 900; font-size: 9.5px; color: #e2e8f0; max-width: 210px; max-height: calc(100vh - 70px); overflow-y: auto; }
         .map-legend h5 { font-size: 9px; color: #38bdf8; margin: 0 0 5px 0; text-transform: uppercase; font-weight: 800; display: flex; align-items: center; gap: 4px; }
         .map-legend .section-title { font-size: 8px; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 800; margin: 5px 0 3px 0; padding-top: 4px; border-top: 1px dashed rgba(255,255,255,0.15); }
-        .map-legend .section-title:first-of-type { margin-top: 0; padding-top: 0; border-top: none; }
         .map-legend .li { display: flex; align-items: center; gap: 5px; color: #e2e8f0; padding: 2px 0; cursor: pointer; user-select: none; line-height: 1.2; }
         .map-legend .li:hover { opacity: 0.8; }
         .map-legend .li.off { opacity: 0.3; text-decoration: line-through; }
         .map-legend .li i { font-size: 8px; width: 10px; text-align: center; flex-shrink: 0; }
-        .map-legend .li .line-swatch {
-            width: 12px; height: 3px; border-radius: 2px;
-            flex-shrink: 0; border: 1px solid rgba(255,255,255,0.5);
-        }
+        .map-legend .li .line-swatch { width: 12px; height: 3px; border-radius: 2px; flex-shrink: 0; border: 1px solid rgba(255,255,255,0.5); }
         .map-legend .li span.count { margin-left: auto; font-weight: 700; color: #38bdf8; font-size: 9px; }
         .map-legend .li span.label-text { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex: 1; }
-        .map-legend .li .remove-line {
-            font-size: 9px; color: #f43f5e; opacity: 0.6;
-            cursor: pointer; padding: 0 2px; flex-shrink: 0;
-        }
+        .map-legend .li .remove-line { font-size: 9px; color: #f43f5e; opacity: 0.6; cursor: pointer; padding: 0 2px; flex-shrink: 0; }
         .map-legend .li .remove-line:hover { opacity: 1; }
         .map-legend .empty-msg { font-size: 8.5px; color: #64748b; font-style: italic; padding: 2px 0; }
 
-        .custom-zoom {
-            position: absolute; top: 54px; right: 10px; z-index: 900;
-            display: flex; flex-direction: column; gap: 4px;
-        }
-        .custom-zoom button {
-            width: 32px; height: 32px;
-            background: rgba(15, 23, 42, 0.92); color: #e2e8f0;
-            border: 1px solid rgba(255, 255, 255, 0.25); border-radius: 6px;
-            font-size: 14px; font-weight: 700; cursor: pointer;
-            display: flex; align-items: center; justify-content: center;
-        }
+        .custom-zoom { position: absolute; top: 54px; right: 10px; z-index: 900; display: flex; flex-direction: column; gap: 4px; }
+        .custom-zoom button { width: 32px; height: 32px; background: rgba(15, 23, 42, 0.92); color: #e2e8f0; border: 1px solid rgba(255, 255, 255, 0.25); border-radius: 6px; font-size: 14px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; }
         .custom-zoom button:hover { background: rgba(30, 41, 59, 1); color: #38bdf8; border-color: #38bdf8; }
 
         .ol-zoom { display: none !important; }
         .ol-attribution { font-size: 10px !important; background: rgba(15, 23, 42, 0.8) !important; border-radius: 4px !important; }
         .ol-attribution a { color: #38bdf8 !important; }
-        .ol-attribution button { background: rgba(15, 23, 42, 0.9) !important; color: #e2e8f0 !important; border: none !important; }
 
-        .kml-toast {
-            position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(20px);
-            z-index: 1100; background: rgba(15, 23, 42, 0.95);
-            border: 1px solid rgba(56, 189, 248, 0.5); color: #fff;
-            padding: 8px 16px; border-radius: 8px; font-size: 12px; font-weight: 600;
-            display: flex; align-items: center; gap: 8px;
-            opacity: 0; pointer-events: none; transition: all 0.3s ease;
-        }
+        .kml-toast { position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(20px); z-index: 1100; background: rgba(15, 23, 42, 0.95); border: 1px solid rgba(56, 189, 248, 0.5); color: #fff; padding: 8px 16px; border-radius: 8px; font-size: 12px; font-weight: 600; display: flex; align-items: center; gap: 8px; opacity: 0; pointer-events: none; transition: all 0.3s ease; }
         .kml-toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
         .kml-toast.success { border-color: rgba(16, 185, 129, 0.6); }
         .kml-toast.error { border-color: rgba(244, 63, 94, 0.6); }
 
-        .ol-popup {
-            position: absolute; background: rgba(15, 23, 42, 0.98); color: #fff;
-            border: 1px solid #38bdf8; border-radius: 10px;
-            padding: 10px 12px; font-size: 11px; min-width: 180px; max-width: 300px;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.6);
-            bottom: 12px; left: -50%; transform: translateX(-50%); z-index: 950;
-        }
-        .ol-popup::after {
-            content: ''; position: absolute; bottom: -8px; left: 50%; transform: translateX(-50%);
-            border-width: 8px 8px 0 8px; border-style: solid;
-            border-color: rgba(15, 23, 42, 0.98) transparent transparent transparent;
-        }
+        .ol-popup { position: absolute; background: rgba(15, 23, 42, 0.98); color: #fff; border: 1px solid #38bdf8; border-radius: 10px; padding: 10px 12px; font-size: 11px; min-width: 180px; max-width: 300px; box-shadow: 0 8px 24px rgba(0,0,0,0.6); bottom: 12px; left: -50%; transform: translateX(-50%); z-index: 950; }
+        .ol-popup::after { content: ''; position: absolute; bottom: -8px; left: 50%; transform: translateX(-50%); border-width: 8px 8px 0 8px; border-style: solid; border-color: rgba(15, 23, 42, 0.98) transparent transparent transparent; }
         .ol-popup-closer { position: absolute; top: 4px; right: 6px; font-size: 14px; color: #94a3b8; cursor: pointer; text-decoration: none; font-weight: bold; }
-        .ol-popup-closer:hover { color: #f43f5e; }
         .popup-title { font-size: 12px; font-weight: 800; margin-bottom: 5px; display: flex; align-items: center; gap: 5px; }
         .popup-row { font-size: 11px; color: #cbd5e1; line-height: 1.5; }
         .popup-row b { color: #fff; }
         .popup-badge { display: inline-block; padding: 1px 7px; border-radius: 8px; font-size: 9px; font-weight: 700; margin-top: 5px; }
 
-        .floating-panel {
-            position: absolute; top: 54px; right: 60px;
-            background: rgba(15, 23, 42, 0.98);
-            border: 1px solid rgba(56, 189, 248, 0.5);
-            border-radius: 8px; padding: 12px 14px;
-            z-index: 950; font-size: 11px; color: #e2e8f0;
-            min-width: 280px; display: none;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.5);
-        }
+        .floating-panel { position: absolute; top: 54px; right: 60px; background: rgba(15, 23, 42, 0.98); border: 1px solid rgba(56, 189, 248, 0.5); border-radius: 8px; padding: 12px 14px; z-index: 950; font-size: 11px; color: #e2e8f0; min-width: 300px; display: none; box-shadow: 0 8px 24px rgba(0,0,0,0.5); }
         .floating-panel.show { display: block; }
-        .floating-panel .panel-header {
-            display: flex; align-items: center; justify-content: space-between;
-            margin-bottom: 10px; padding-bottom: 8px;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-        }
-        .floating-panel h6 {
-            font-size: 11px; color: #38bdf8; margin: 0;
-            text-transform: uppercase; letter-spacing: 0.5px; font-weight: 800;
-            display: flex; align-items: center; gap: 5px;
-        }
-        .floating-panel .panel-close {
-            background: transparent; border: none; color: #94a3b8;
-            cursor: pointer; font-size: 14px; padding: 0; line-height: 1;
-        }
-        .floating-panel .panel-close:hover { color: #f43f5e; }
-
+        .floating-panel .panel-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; padding-bottom: 8px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .floating-panel h6 { font-size: 11px; color: #38bdf8; margin: 0; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 800; display: flex; align-items: center; gap: 5px; }
+        .floating-panel .panel-close { background: transparent; border: none; color: #94a3b8; cursor: pointer; font-size: 14px; padding: 0; line-height: 1; }
         .floating-panel .form-row { margin-bottom: 10px; }
-        .floating-panel label {
-            display: block; font-size: 10px; color: #94a3b8;
-            margin-bottom: 4px; font-weight: 600;
-            text-transform: uppercase; letter-spacing: 0.3px;
-        }
-        .floating-panel input[type="text"] {
-            width: 100%; background: rgba(30, 41, 59, 0.8);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 5px; color: #fff; padding: 6px 8px;
-            font-size: 11px; font-family: 'Poppins', sans-serif;
-        }
-        .floating-panel input[type="text"]:focus {
-            outline: none; border-color: #38bdf8;
-        }
+        .floating-panel label { display: block; font-size: 10px; color: #94a3b8; margin-bottom: 4px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.3px; }
+        .floating-panel input[type="text"] { width: 100%; background: rgba(30, 41, 59, 0.8); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 5px; color: #fff; padding: 6px 8px; font-size: 11px; font-family: 'Poppins', sans-serif; }
 
-        .file-picker {
-            display: flex; align-items: center; gap: 8px;
-            background: rgba(30, 41, 59, 0.6);
-            border: 1px dashed rgba(56, 189, 248, 0.5);
-            border-radius: 6px; padding: 10px;
-            cursor: pointer; transition: all 0.2s;
-        }
-        .file-picker:hover { border-color: #38bdf8; background: rgba(30, 41, 59, 0.9); }
-        .file-picker.has-file { border-style: solid; border-color: rgba(16, 185, 129, 0.6); background: rgba(16, 185, 129, 0.08); }
-        .file-picker i { font-size: 20px; color: #38bdf8; flex-shrink: 0; }
-        .file-picker.has-file i { color: #10b981; }
-        .file-picker .file-info { flex: 1; min-width: 0; }
-        .file-picker .file-label { font-size: 10px; color: #94a3b8; margin-bottom: 2px; }
-        .file-picker .file-name {
-            font-size: 11px; color: #fff; font-weight: 600;
-            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-        }
+        .floating-panel input[type="file"] { width: 100%; padding: 8px; background: rgba(30, 41, 59, 0.8); border: 1px dashed rgba(56, 189, 248, 0.5); border-radius: 6px; color: #e2e8f0; font-size: 11px; font-family: 'Poppins', sans-serif; cursor: pointer; }
+        .floating-panel input[type="file"]::file-selector-button { background: rgba(56, 189, 248, 0.2); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.5); border-radius: 4px; padding: 4px 10px; font-size: 10px; font-weight: 700; font-family: 'Poppins', sans-serif; cursor: pointer; margin-right: 8px; }
 
         .color-picker-row { display: flex; align-items: center; gap: 8px; }
-        .color-picker-row input[type="color"] {
-            width: 44px; height: 30px;
-            background: transparent; border: 1px solid rgba(255,255,255,0.2);
-            border-radius: 5px; cursor: pointer; padding: 2px;
-        }
+        .color-picker-row input[type="color"] { width: 44px; height: 30px; background: transparent; border: 1px solid rgba(255,255,255,0.2); border-radius: 5px; cursor: pointer; padding: 2px; }
         .color-picker-row .color-preview { flex: 1; font-size: 11px; color: #94a3b8; font-family: monospace; }
 
         .floating-panel .btn-row { display: flex; gap: 6px; margin-top: 12px; }
-        .floating-panel .btn-row button {
-            flex: 1; padding: 8px 10px; border-radius: 5px;
-            font-size: 11px; font-weight: 700; cursor: pointer;
-            font-family: 'Poppins', sans-serif;
-            display: flex; align-items: center; justify-content: center; gap: 5px;
-            transition: all 0.2s;
-        }
-        .floating-panel .btn-row button.primary {
-            background: rgba(16, 185, 129, 0.15);
-            border: 1px solid rgba(16, 185, 129, 0.6);
-            color: #10b981;
-        }
+        .floating-panel .btn-row button { flex: 1; padding: 8px 10px; border-radius: 5px; font-size: 11px; font-weight: 700; cursor: pointer; font-family: 'Poppins', sans-serif; display: flex; align-items: center; justify-content: center; gap: 5px; transition: all 0.2s; }
+        .floating-panel .btn-row button.primary { background: rgba(16, 185, 129, 0.15); border: 1px solid rgba(16, 185, 129, 0.6); color: #10b981; }
         .floating-panel .btn-row button.primary:hover:not(:disabled) { background: rgba(16, 185, 129, 0.25); }
         .floating-panel .btn-row button.primary:disabled { opacity: 0.4; cursor: not-allowed; }
-        .floating-panel .btn-row button.secondary {
-            background: transparent;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            color: #e2e8f0;
-        }
+        .floating-panel .btn-row button.secondary { background: transparent; border: 1px solid rgba(255, 255, 255, 0.2); color: #e2e8f0; }
         .floating-panel .btn-row button.secondary:hover:not(:disabled) { border-color: #38bdf8; color: #38bdf8; }
         .floating-panel .btn-row button.secondary:disabled { opacity: 0.4; cursor: not-allowed; }
-        .floating-panel .btn-row button.cancel {
-            background: transparent;
-            border: 1px solid rgba(244, 63, 94, 0.5);
-            color: #f43f5e;
-        }
+        .floating-panel .btn-row button.cancel { background: transparent; border: 1px solid rgba(244, 63, 94, 0.5); color: #f43f5e; }
         .floating-panel .btn-row button.cancel:hover:not(:disabled) { background: rgba(244, 63, 94, 0.15); }
         .floating-panel .btn-row button.cancel:disabled { opacity: 0.4; cursor: not-allowed; }
 
-        .floating-panel .info-count {
-            font-size: 10px; color: #38bdf8; margin-top: 8px;
-            text-align: center; font-weight: 700;
-        }
+        .floating-panel .info-count { font-size: 10px; color: #38bdf8; margin-top: 8px; text-align: center; font-weight: 700; }
         .floating-panel .info-count.error { color: #f43f5e; }
         .floating-panel .info-count.success { color: #10b981; }
 
@@ -250,34 +116,22 @@
             <i class="fa-solid fa-map"></i>
             <span>Peta Insiden Jaringan</span>
         </div>
-        <button class="map-mode-btn active" onclick="setMapMode('standard')" id="btnModeStandard"><i class="fa-solid fa-map"></i> <span>Standard</span></button>
-        <button class="map-mode-btn" onclick="setMapMode('satellite')" id="btnModeSatellite"><i class="fa-solid fa-satellite"></i> <span>Satelit</span></button>
-        <button class="header-btn" onclick="toggleDrawPanel()" id="btnDraw" title="Gambar garis manual">
-            <i class="fa-solid fa-pen"></i> <span>Gambar</span>
-        </button>
-        <button class="header-btn primary" onclick="toggleUploadPanel()" id="btnUpload" title="Upload KML/KMZ">
-            <i class="fa-solid fa-cloud-arrow-up"></i> <span>Upload</span>
-        </button>
+        <button class="map-mode-btn active" onclick="window.setMapMode('standard')" id="btnModeStandard"><i class="fa-solid fa-map"></i> <span>Standard</span></button>
+        <button class="map-mode-btn" onclick="window.setMapMode('satellite')" id="btnModeSatellite"><i class="fa-solid fa-satellite"></i> <span>Satelit</span></button>
+        <button class="header-btn" onclick="window.toggleDrawPanel()" id="btnDraw"><i class="fa-solid fa-pen"></i> <span>Gambar</span></button>
+        <button class="header-btn primary" onclick="window.toggleUploadPanel()" id="btnUpload"><i class="fa-solid fa-cloud-arrow-up"></i> <span>Upload</span></button>
     </div>
-
-    <input type="file" id="kmlFileInput" accept=".kml,.kmz" style="display:none;">
 
     <!-- PANEL UPLOAD -->
     <div class="floating-panel" id="uploadPanel">
         <div class="panel-header">
             <h6><i class="fa-solid fa-cloud-arrow-up"></i> Upload KML / KMZ</h6>
-            <button class="panel-close" onclick="toggleUploadPanel()">&times;</button>
+            <button class="panel-close" onclick="window.toggleUploadPanel()">&times;</button>
         </div>
 
         <div class="form-row">
             <label>File KML / KMZ</label>
-            <div class="file-picker" id="filePicker" onclick="document.getElementById('kmlFileInput').click()">
-                <i class="fa-solid fa-file-circle-plus" id="filePickerIcon"></i>
-                <div class="file-info">
-                    <div class="file-label" id="filePickerLabel">Klik untuk pilih file</div>
-                    <div class="file-name" id="pickedFileName">Belum ada file</div>
-                </div>
-            </div>
+            <input type="file" id="kmlFileInput" accept=".kml,.kmz" onchange="window.handleFileSelected(event)">
         </div>
 
         <div class="form-row">
@@ -288,16 +142,16 @@
         <div class="form-row">
             <label>Warna Line</label>
             <div class="color-picker-row">
-                <input type="color" id="uploadLineColor" value="#38bdf8">
+                <input type="color" id="uploadLineColor" value="#38bdf8" oninput="window.updateUploadColorPreview(event)">
                 <span class="color-preview" id="uploadColorPreview">#38bdf8</span>
             </div>
         </div>
 
         <div class="btn-row">
-            <button class="primary" onclick="processUpload()" id="btnProcessUpload" disabled>
+            <button class="primary" onclick="window.processUpload()" id="btnProcessUpload" disabled>
                 <i class="fa-solid fa-check"></i> Upload
             </button>
-            <button class="cancel" onclick="resetUploadForm()">
+            <button class="cancel" onclick="window.resetUploadForm()">
                 <i class="fa-solid fa-xmark"></i> Batal
             </button>
         </div>
@@ -309,7 +163,7 @@
     <div class="floating-panel" id="drawPanel">
         <div class="panel-header">
             <h6><i class="fa-solid fa-pen"></i> Gambar Garis Manual</h6>
-            <button class="panel-close" onclick="toggleDrawPanel()">&times;</button>
+            <button class="panel-close" onclick="window.toggleDrawPanel()">&times;</button>
         </div>
 
         <div class="form-row">
@@ -320,25 +174,25 @@
         <div class="form-row">
             <label>Warna</label>
             <div class="color-picker-row">
-                <input type="color" id="drawColor" value="#f59e0b">
+                <input type="color" id="drawColor" value="#f59e0b" oninput="window.updateDrawColorPreview(event)">
                 <span class="color-preview" id="drawColorPreview">#f59e0b</span>
             </div>
         </div>
 
         <div class="btn-row">
-            <button class="primary" onclick="startDrawing()" id="btnStartDraw">
+            <button class="primary" onclick="window.startDrawing()" id="btnStartDraw">
                 <i class="fa-solid fa-play"></i> Mulai
             </button>
-            <button class="secondary" onclick="finishDrawing()" id="btnFinishDraw" disabled>
+            <button class="secondary" onclick="window.finishDrawing()" id="btnFinishDraw" disabled>
                 <i class="fa-solid fa-check"></i> Selesai
             </button>
         </div>
 
         <div class="btn-row">
-            <button class="cancel" onclick="cancelDrawing()" id="btnCancelDraw" disabled>
+            <button class="cancel" onclick="window.cancelDrawing()" id="btnCancelDraw" disabled>
                 <i class="fa-solid fa-xmark"></i> Batal
             </button>
-            <button class="secondary" onclick="undoLastPoint()" id="btnUndoPoint" disabled>
+            <button class="secondary" onclick="window.undoLastPoint()" id="btnUndoPoint" disabled>
                 <i class="fa-solid fa-rotate-left"></i> Undo
             </button>
         </div>
@@ -388,36 +242,61 @@
     </div>
 
     <div class="custom-zoom">
-        <button onclick="zoomIn()" title="Zoom In"><i class="fa-solid fa-plus"></i></button>
-        <button onclick="zoomOut()" title="Zoom Out"><i class="fa-solid fa-minus"></i></button>
+        <button onclick="window.zoomIn()" title="Zoom In"><i class="fa-solid fa-plus"></i></button>
+        <button onclick="window.zoomOut()" title="Zoom Out"><i class="fa-solid fa-minus"></i></button>
     </div>
 
     <div class="kml-toast" id="kmlToast"></div>
 
     <div id="popup" class="ol-popup" style="display:none;">
-        <a href="#" id="popup-closer" class="ol-popup-closer">&times;</a>
+        <a href="#" class="ol-popup-closer" onclick="window.closePopup(event)">&times;</a>
         <div id="popup-content"></div>
     </div>
 
     <script>
-        /* ============================================================
-           BUCIN MAP — VERSI FINAL
-           ============================================================ */
+    (function() {
+        'use strict';
 
         console.log('[BUCIN] Script start');
 
+        // ============================================================
+        // GLOBAL STATE
+        // ============================================================
         var MANADO_CENTER = [124.8421, 1.4748];
         var MANADO_ZOOM   = 11;
 
+        var pickedFile = null;
+        var uploads = [];
+        var uploadLayers = [];
+        var drawings = [];
+        var isDrawing = false;
+        var currentDrawCoords = [];
+
+        var markers = [];
+        var markersByType = { focut: [], temuan: [], opm: [], joint: [], handhole: [] };
+        var markerVisibility = { focut: true, temuan: true, opm: true, joint: true, handhole: true };
+
+        var UPLOAD_STORAGE_KEY = 'bucin_uploads_v6';
+        var DRAW_STORAGE_KEY = 'bucin_drawings_v6';
+        var STORAGE_KEY = 'bucin_data';
+
+        var KATEGORI = {
+            focut:    { warna: '#f43f5e', label: 'FO Cut',    icon: '✂️' },
+            temuan:   { warna: '#10b981', label: 'Temuan',    icon: '🔍' },
+            opm:      { warna: '#38bdf8', label: 'OPM / OLS', icon: '📊' },
+            joint:    { warna: '#f59e0b', label: 'Joint',     icon: '🔗' },
+            handhole: { warna: '#a855f7', label: 'Handhole',  icon: '📦' }
+        };
+
+        // ============================================================
+        // VIEW & MAP
+        // ============================================================
         var view = new ol.View({
             center: ol.proj.fromLonLat(MANADO_CENTER),
             zoom: MANADO_ZOOM,
             maxZoom: 19, minZoom: 3
         });
 
-        /* ============================================================
-           BASEMAPS
-           ============================================================ */
         var baseLayerStandard = new ol.layer.Tile({
             source: new ol.source.OSM({
                 url: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
@@ -436,17 +315,6 @@
             visible: false, zIndex: 0
         });
 
-        /* ============================================================
-           KATEGORI MARKER
-           ============================================================ */
-        var KATEGORI = {
-            focut:    { warna: '#f43f5e', label: 'FO Cut',    icon: '✂️' },
-            temuan:   { warna: '#10b981', label: 'Temuan',    icon: '🔍' },
-            opm:      { warna: '#38bdf8', label: 'OPM / OLS', icon: '📊' },
-            joint:    { warna: '#f59e0b', label: 'Joint',     icon: '🔗' },
-            handhole: { warna: '#a855f7', label: 'Handhole',  icon: '📦' }
-        };
-
         var markerSource = new ol.source.Vector();
         var markerLayer = new ol.layer.Vector({
             source: markerSource, zIndex: 10,
@@ -463,19 +331,13 @@
             }
         });
 
-        /* ============================================================
-           DRAW LAYER
-           ============================================================ */
         var drawSource = new ol.source.Vector();
         var drawLayer = new ol.layer.Vector({
             source: drawSource, zIndex: 15,
             style: function(feature) {
                 var color = feature.get('color') || '#38bdf8';
                 return new ol.style.Style({
-                    stroke: new ol.style.Stroke({
-                        color: color, width: 4,
-                        lineCap: 'round', lineJoin: 'round'
-                    }),
+                    stroke: new ol.style.Stroke({ color: color, width: 4, lineCap: 'round', lineJoin: 'round' }),
                     image: new ol.style.Circle({
                         radius: 5,
                         fill: new ol.style.Fill({ color: color }),
@@ -498,9 +360,6 @@
             })
         });
 
-        /* ============================================================
-           MAP INIT
-           ============================================================ */
         var map = new ol.Map({
             target: 'map',
             layers: [baseLayerStandard, baseLayerSatellite, drawLayer, markerLayer, draftLayer],
@@ -508,23 +367,58 @@
             controls: ol.control.defaults.defaults({ attribution: true, zoom: false, rotate: false })
         });
 
-        var uploadLayers = [];
-
         var attrControl = map.getControls().getArray().find(function(c) { return c instanceof ol.control.Attribution; });
         if (attrControl) attrControl.setPosition('bottom-right');
 
-        console.log('[BUCIN] Map initialized');
+        console.log('[BUCIN] Map ready');
 
-        /* ============================================================
-           ZOOM
-           ============================================================ */
-        function zoomIn()  { var v = map.getView(); v.animate({ zoom: v.getZoom() + 1, duration: 200 }); }
-        function zoomOut() { var v = map.getView(); v.animate({ zoom: v.getZoom() - 1, duration: 200 }); }
+        // ============================================================
+        // POPUP
+        // ============================================================
+        var popupContainer = document.getElementById('popup');
+        var popupContent   = document.getElementById('popup-content');
+        var popupOverlay = new ol.Overlay({
+            element: popupContainer,
+            autoPan: { animation: { duration: 250 } },
+            positioning: 'bottom-center',
+            offset: [0, -12]
+        });
+        map.addOverlay(popupOverlay);
 
-        /* ============================================================
-           MODE SWITCHER
-           ============================================================ */
-        function setMapMode(mode) {
+        // ============================================================
+        // UTILITIES
+        // ============================================================
+        function showToast(msg, type) {
+            var toast = document.getElementById('kmlToast');
+            var icon = type === 'error' ? 'fa-circle-exclamation' : type === 'success' ? 'fa-circle-check' : 'fa-circle-info';
+            var color = type === 'error' ? '#f43f5e' : type === 'success' ? '#10b981' : '#38bdf8';
+            toast.innerHTML = '<i class="fa-solid ' + icon + '" style="color:' + color + ';"></i> ' + msg;
+            toast.className = 'kml-toast show ' + (type || '');
+            setTimeout(function() { toast.classList.remove('show'); }, 3500);
+        }
+
+        function setUploadInfo(msg, type) {
+            var el = document.getElementById('uploadInfo');
+            el.textContent = msg;
+            el.className = 'info-count' + (type ? ' ' + type : '');
+        }
+
+        // ============================================================
+        // ZOOM
+        // ============================================================
+        window.zoomIn = function() {
+            var v = map.getView();
+            v.animate({ zoom: v.getZoom() + 1, duration: 200 });
+        };
+        window.zoomOut = function() {
+            var v = map.getView();
+            v.animate({ zoom: v.getZoom() - 1, duration: 200 });
+        };
+
+        // ============================================================
+        // MODE SWITCH
+        // ============================================================
+        window.setMapMode = function(mode) {
             document.querySelectorAll('.map-mode-btn').forEach(function(b){ b.classList.remove('active'); });
             if (mode === 'standard') {
                 baseLayerStandard.setVisible(true);
@@ -537,54 +431,597 @@
                 document.getElementById('btnModeSatellite').classList.add('active');
                 showToast('Mode: Citra Satelit', 'info');
             }
-        }
-
-        /* ============================================================
-           STORAGE
-           ============================================================ */
-        var STORAGE_KEY = 'bucin_data';
-        var UPLOAD_STORAGE_KEY = 'bucin_uploads_v4';
-        var DRAW_STORAGE_KEY = 'bucin_drawings_v4';
-
-        var markers = [];
-        var markersByType = { focut: [], temuan: [], opm: [], joint: [], handhole: [] };
-        var markerVisibility = { focut: true, temuan: true, opm: true, joint: true, handhole: true };
-
-        var uploads = [];
-        var drawings = [];
-
-        /* ============================================================
-           POPUP
-           ============================================================ */
-        var popupContainer = document.getElementById('popup');
-        var popupContent   = document.getElementById('popup-content');
-        var popupCloser    = document.getElementById('popup-closer');
-        var popupOverlay = new ol.Overlay({
-            element: popupContainer,
-            autoPan: { animation: { duration: 250 } },
-            positioning: 'bottom-center',
-            offset: [0, -12]
-        });
-        map.addOverlay(popupOverlay);
-
-        popupCloser.onclick = function() {
-            popupOverlay.setPosition(undefined);
-            popupContainer.style.display = 'none';
-            return false;
         };
 
-        function showToast(msg, type) {
-            var toast = document.getElementById('kmlToast');
-            var icon = type === 'error' ? 'fa-circle-exclamation' : type === 'success' ? 'fa-circle-check' : 'fa-circle-info';
-            var color = type === 'error' ? '#f43f5e' : type === 'success' ? '#10b981' : '#38bdf8';
-            toast.innerHTML = '<i class="fa-solid ' + icon + '" style="color:' + color + ';"></i> ' + msg;
-            toast.className = 'kml-toast show ' + (type || '');
-            setTimeout(function() { toast.classList.remove('show'); }, 3500);
+        // ============================================================
+        // PANEL TOGGLE
+        // ============================================================
+        window.toggleUploadPanel = function() {
+            var panel = document.getElementById('uploadPanel');
+            var drawPanelEl = document.getElementById('drawPanel');
+            if (!panel.classList.contains('show')) {
+                drawPanelEl.classList.remove('show');
+                document.getElementById('btnDraw').classList.remove('active');
+            }
+            panel.classList.toggle('show');
+            document.getElementById('btnUpload').classList.toggle('active', panel.classList.contains('show'));
+        };
+
+        window.toggleDrawPanel = function() {
+            var panel = document.getElementById('drawPanel');
+            var uploadPanelEl = document.getElementById('uploadPanel');
+            if (!panel.classList.contains('show')) {
+                uploadPanelEl.classList.remove('show');
+                document.getElementById('btnUpload').classList.remove('active');
+            }
+            panel.classList.toggle('show');
+            document.getElementById('btnDraw').classList.toggle('active', panel.classList.contains('show'));
+        };
+
+        // ============================================================
+        // UPLOAD HANDLERS
+        // ============================================================
+        window.handleFileSelected = function(event) {
+            console.log('[UPLOAD] Change event fired');
+            var file = event.target.files[0];
+            if (!file) {
+                console.log('[UPLOAD] Tidak ada file');
+                return;
+            }
+            console.log('[UPLOAD] File:', file.name, file.size);
+
+            pickedFile = file;
+            document.getElementById('btnProcessUpload').disabled = false;
+
+            var nameInput = document.getElementById('uploadLineName');
+            if (!nameInput.value.trim()) {
+                nameInput.value = file.name.replace(/\.(kml|kmz)$/i, '');
+            }
+
+            setUploadInfo('File siap: ' + file.name, 'success');
+        };
+
+        window.updateUploadColorPreview = function(event) {
+            document.getElementById('uploadColorPreview').textContent = event.target.value;
+        };
+
+        window.updateDrawColorPreview = function(event) {
+            document.getElementById('drawColorPreview').textContent = event.target.value;
+        };
+
+        window.resetUploadForm = function() {
+            pickedFile = null;
+            document.getElementById('kmlFileInput').value = '';
+            document.getElementById('uploadLineName').value = '';
+            document.getElementById('uploadLineColor').value = '#38bdf8';
+            document.getElementById('uploadColorPreview').textContent = '#38bdf8';
+            document.getElementById('btnProcessUpload').disabled = true;
+            setUploadInfo('Pilih file dulu, lalu isi nama');
+        };
+
+        window.processUpload = function() {
+            console.log('[UPLOAD] Process click, pickedFile:', pickedFile ? pickedFile.name : 'null');
+
+            if (!pickedFile) {
+                showToast('Pilih file dulu', 'error');
+                return;
+            }
+
+            var lineName = (document.getElementById('uploadLineName').value || '').trim();
+            if (!lineName) lineName = pickedFile.name.replace(/\.(kml|kmz)$/i, '');
+            var lineColor = document.getElementById('uploadLineColor').value || '#38bdf8';
+
+            setUploadInfo('Memproses...', '');
+            document.getElementById('btnProcessUpload').disabled = true;
+
+            var isKMZ = pickedFile.name.toLowerCase().endsWith('.kmz');
+            var reader = new FileReader();
+
+            reader.onerror = function() {
+                showToast('Gagal baca file', 'error');
+                setUploadInfo('Gagal baca', 'error');
+                document.getElementById('btnProcessUpload').disabled = false;
+            };
+
+            if (isKMZ) {
+                reader.onload = function(ev) {
+                    JSZip.loadAsync(ev.target.result).then(function(zip){
+                        var kmlName = null;
+                        zip.forEach(function(p){
+                            if (!kmlName && p.toLowerCase().endsWith('.kml')) kmlName = p;
+                        });
+                        if (!kmlName) throw new Error('KMZ tidak berisi KML');
+                        return zip.file(kmlName).async('string');
+                    }).then(function(text){
+                        if (!text) throw new Error('KML kosong');
+                        renderUploadedKML(text, lineName, lineColor);
+                    }).catch(function(err){
+                        showToast('Gagal: ' + err.message, 'error');
+                        setUploadInfo('Gagal: ' + err.message, 'error');
+                        document.getElementById('btnProcessUpload').disabled = false;
+                    });
+                };
+                reader.readAsArrayBuffer(pickedFile);
+            } else {
+                reader.onload = function(ev) {
+                    renderUploadedKML(ev.target.result, lineName, lineColor);
+                };
+                reader.readAsText(pickedFile);
+            }
+        };
+
+        function renderUploadedKML(kmlText, lineName, lineColor) {
+            try {
+                console.log('[UPLOAD] Parsing KML, length:', kmlText.length);
+                var parser = new DOMParser();
+                var kmlDom = parser.parseFromString(kmlText, 'text/xml');
+                if (kmlDom.querySelector('parsererror')) throw new Error('Format XML tidak valid');
+
+                var lib = window.toGeoJSON || window.togeojson;
+                if (!lib) throw new Error('togeojson tidak tersedia');
+
+                var geojson = lib.kml(kmlDom);
+                console.log('[UPLOAD] GeoJSON features:', geojson && geojson.features ? geojson.features.length : 0);
+
+                if (!geojson || !geojson.features || !geojson.features.length) {
+                    throw new Error('KML tidak berisi fitur valid');
+                }
+
+                var format = new ol.format.GeoJSON();
+                var features = format.readFeatures(geojson, {
+                    dataProjection: 'EPSG:4326',
+                    featureProjection: 'EPSG:3857'
+                });
+
+                if (!features.length) throw new Error('Tidak ada fitur yang bisa dibaca');
+                console.log('[UPLOAD] Fitur di-parse:', features.length);
+
+                var uploadId = 'up_' + Date.now() + '_' + Math.random().toString(36).substr(2, 6);
+
+                features.forEach(function(f){
+                    f.set('uploadId', uploadId);
+                    var name = f.get('name') || 'Feature';
+                    f.set('popupHtml',
+                        '<div class="popup-title" style="color:' + lineColor + ';"><i class="fa-solid fa-cloud-arrow-up"></i> ' + lineName + '</div>' +
+                        '<div class="popup-row"><b>Feature:</b> ' + name + '</div>' +
+                        '<span class="popup-badge" style="background:' + lineColor + '22;color:' + lineColor + ';border:1px solid ' + lineColor + ';">UPLOADED</span>'
+                    );
+                });
+
+                var source = new ol.source.Vector({ features: features });
+                var layer = new ol.layer.Vector({
+                    source: source,
+                    zIndex: 20,
+                    style: function(f) {
+                        var t = f.getGeometry().getType();
+                        if (t === 'LineString' || t === 'MultiLineString') {
+                            return new ol.style.Style({
+                                stroke: new ol.style.Stroke({ color: lineColor, width: 4, lineCap: 'round', lineJoin: 'round' })
+                            });
+                        }
+                        if (t === 'Polygon' || t === 'MultiPolygon') {
+                            return new ol.style.Style({
+                                stroke: new ol.style.Stroke({ color: lineColor, width: 2 }),
+                                fill: new ol.style.Fill({ color: lineColor + '33' })
+                            });
+                        }
+                        return new ol.style.Style({
+                            image: new ol.style.Circle({
+                                radius: 7,
+                                fill: new ol.style.Fill({ color: lineColor }),
+                                stroke: new ol.style.Stroke({ color: '#fff', width: 2 })
+                            })
+                        });
+                    }
+                });
+
+                map.addLayer(layer);
+
+                var meta = {
+                    id: uploadId, name: lineName, color: lineColor,
+                    visible: true, fileName: pickedFile.name,
+                    featureCount: features.length, geojson: geojson
+                };
+                uploads.push(meta);
+                uploadLayers.push({ meta: meta, layer: layer });
+
+                saveUploads();
+                renderLegendUploads();
+
+                try {
+                    var ext = source.getExtent();
+                    if (ext && isFinite(ext[0]) && (ext[0] !== ext[2])) {
+                        view.fit(ext, { padding: [80, 80, 80, 80], duration: 600, maxZoom: 16 });
+                    }
+                } catch(e) {}
+
+                setUploadInfo('✓ ' + features.length + ' fitur diupload', 'success');
+                showToast('Upload "' + lineName + '" berhasil (' + features.length + ' fitur)', 'success');
+
+                setTimeout(function() {
+                    resetUploadForm();
+                    toggleUploadPanel();
+                }, 1200);
+
+            } catch(err) {
+                console.error('[UPLOAD] Error:', err);
+                showToast('Gagal parse: ' + err.message, 'error');
+                setUploadInfo('Error: ' + err.message, 'error');
+                document.getElementById('btnProcessUpload').disabled = false;
+            }
         }
 
-        /* ============================================================
-           MARKER DATA
-           ============================================================ */
+        // ============================================================
+        // LEGENDA UPLOAD
+        // ============================================================
+        function renderLegendUploads() {
+            var container = document.getElementById('uploadedLinesList');
+            if (uploads.length === 0) {
+                container.innerHTML = '<div class="empty-msg">Belum ada upload</div>';
+                return;
+            }
+            var html = '';
+            uploads.forEach(function(u) {
+                html += '<div class="li' + (u.visible ? '' : ' off') + '" data-upload-id="' + u.id + '">' +
+                    '<span class="line-swatch" style="background:' + u.color + ';"></span>' +
+                    '<span class="label-text" title="' + u.name + '">' + u.name + '</span>' +
+                    '<span class="count">' + u.featureCount + '</span>' +
+                    '<span class="remove-line" data-remove="' + u.id + '">✕</span>' +
+                '</div>';
+            });
+            container.innerHTML = html;
+
+            container.querySelectorAll('.li[data-upload-id]').forEach(function(li) {
+                li.addEventListener('click', function(e) {
+                    if (e.target.dataset.remove) return;
+                    window.toggleUploadVisibility(li.dataset.uploadId);
+                });
+            });
+            container.querySelectorAll('.remove-line[data-remove]').forEach(function(btn) {
+                btn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    window.removeUpload(btn.dataset.remove);
+                });
+            });
+        }
+
+        window.toggleUploadVisibility = function(id) {
+            var u = uploads.find(function(x){ return x.id === id; });
+            if (!u) return;
+            u.visible = !u.visible;
+            var entry = uploadLayers.find(function(x){ return x.meta.id === id; });
+            if (entry) entry.layer.setVisible(u.visible);
+            saveUploads();
+            renderLegendUploads();
+        };
+
+        window.removeUpload = function(id) {
+            if (!confirm('Hapus line upload ini?')) return;
+            var entry = uploadLayers.find(function(x){ return x.meta.id === id; });
+            if (entry) {
+                map.removeLayer(entry.layer);
+                uploadLayers = uploadLayers.filter(function(x){ return x.meta.id !== id; });
+            }
+            uploads = uploads.filter(function(x){ return x.id !== id; });
+            saveUploads();
+            renderLegendUploads();
+            showToast('Line upload dihapus', 'success');
+        };
+
+        function saveUploads() {
+            try {
+                var data = uploads.map(function(u) {
+                    return {
+                        id: u.id, name: u.name, color: u.color,
+                        visible: u.visible, fileName: u.fileName,
+                        featureCount: u.featureCount, geojson: u.geojson
+                    };
+                });
+                localStorage.setItem(UPLOAD_STORAGE_KEY, JSON.stringify(data));
+            } catch(e) { console.warn('Gagal simpan:', e); }
+        }
+
+        function loadUploads() {
+            try {
+                var raw = localStorage.getItem(UPLOAD_STORAGE_KEY);
+                if (!raw) return;
+                var data = JSON.parse(raw);
+                data.forEach(function(u) {
+                    if (!u.geojson || !u.geojson.features || !u.geojson.features.length) return;
+                    var format = new ol.format.GeoJSON();
+                    var features = format.readFeatures(u.geojson, {
+                        dataProjection: 'EPSG:4326',
+                        featureProjection: 'EPSG:3857'
+                    });
+                    features.forEach(function(f){
+                        f.set('uploadId', u.id);
+                        var name = f.get('name') || 'Feature';
+                        f.set('popupHtml',
+                            '<div class="popup-title" style="color:' + u.color + ';"><i class="fa-solid fa-cloud-arrow-up"></i> ' + u.name + '</div>' +
+                            '<div class="popup-row"><b>Feature:</b> ' + name + '</div>' +
+                            '<span class="popup-badge" style="background:' + u.color + '22;color:' + u.color + ';border:1px solid ' + u.color + ';">UPLOADED</span>'
+                        );
+                    });
+                    var source = new ol.source.Vector({ features: features });
+                    var layer = new ol.layer.Vector({
+                        source: source,
+                        zIndex: 20,
+                        visible: u.visible !== false,
+                        style: (function(color) {
+                            return function(f) {
+                                var t = f.getGeometry().getType();
+                                if (t === 'LineString' || t === 'MultiLineString') {
+                                    return new ol.style.Style({
+                                        stroke: new ol.style.Stroke({ color: color, width: 4, lineCap: 'round', lineJoin: 'round' })
+                                    });
+                                }
+                                if (t === 'Polygon' || t === 'MultiPolygon') {
+                                    return new ol.style.Style({
+                                        stroke: new ol.style.Stroke({ color: color, width: 2 }),
+                                        fill: new ol.style.Fill({ color: color + '33' })
+                                    });
+                                }
+                                return new ol.style.Style({
+                                    image: new ol.style.Circle({
+                                        radius: 7,
+                                        fill: new ol.style.Fill({ color: color }),
+                                        stroke: new ol.style.Stroke({ color: '#fff', width: 2 })
+                                    })
+                                });
+                            };
+                        })(u.color)
+                    });
+                    map.addLayer(layer);
+                    var meta = {
+                        id: u.id, name: u.name, color: u.color,
+                        visible: u.visible !== false, fileName: u.fileName,
+                        featureCount: u.featureCount, geojson: u.geojson
+                    };
+                    uploads.push(meta);
+                    uploadLayers.push({ meta: meta, layer: layer });
+                });
+                renderLegendUploads();
+            } catch(e) { console.warn('Gagal load uploads:', e); }
+        }
+
+        // ============================================================
+        // DRAW HANDLERS
+        // ============================================================
+        window.startDrawing = function() {
+            console.log('[DRAW] startDrawing clicked');
+            isDrawing = true;
+            currentDrawCoords = [];
+            draftSource.clear();
+
+            document.getElementById('btnStartDraw').disabled = true;
+            document.getElementById('btnFinishDraw').disabled = true;
+            document.getElementById('btnCancelDraw').disabled = false;
+            document.getElementById('btnUndoPoint').disabled = true;
+
+            var infoEl = document.getElementById('drawInfo');
+            infoEl.textContent = 'Klik di peta untuk menambah titik...';
+            infoEl.className = 'info-count';
+
+            map.getTargetElement().style.cursor = 'crosshair';
+            showToast('Mode gambar aktif — klik di peta', 'info');
+        };
+
+        window.finishDrawing = function() {
+            console.log('[DRAW] finishDrawing, titik:', currentDrawCoords.length);
+            if (currentDrawCoords.length < 2) {
+                showToast('Minimal 2 titik', 'error');
+                return;
+            }
+
+            var name = (document.getElementById('drawName').value || '').trim() || ('Garis ' + new Date().toLocaleTimeString('id-ID'));
+            var color = document.getElementById('drawColor').value || '#38bdf8';
+            var coords4326 = currentDrawCoords.map(function(c) { return ol.proj.toLonLat(c); });
+
+            var drawId = 'dr_' + Date.now() + '_' + Math.random().toString(36).substr(2, 6);
+            var feature = new ol.Feature({
+                geometry: new ol.geom.LineString(currentDrawCoords),
+                drawId: drawId, name: name, color: color, coords4326: coords4326
+            });
+            feature.set('popupHtml',
+                '<div class="popup-title" style="color:' + color + ';"><i class="fa-solid fa-pen"></i> ' + name + '</div>' +
+                '<div class="popup-row"><b>Titik:</b> ' + currentDrawCoords.length + '</div>' +
+                '<span class="popup-badge" style="background:' + color + '22;color:' + color + ';border:1px solid ' + color + ';">MANUAL</span>'
+            );
+
+            drawSource.addFeature(feature);
+
+            drawings.push({
+                id: drawId, name: name, color: color,
+                visible: true, coords4326: coords4326
+            });
+            saveDrawings();
+            renderLegendDrawings();
+            resetDrawingState();
+            showToast('Garis "' + name + '" tersimpan', 'success');
+        };
+
+        window.cancelDrawing = function() {
+            resetDrawingState();
+            showToast('Dibatalkan', 'info');
+        };
+
+        window.undoLastPoint = function() {
+            if (currentDrawCoords.length === 0) return;
+            currentDrawCoords.pop();
+            updateDraft();
+            document.getElementById('btnFinishDraw').disabled = currentDrawCoords.length < 2;
+            document.getElementById('btnUndoPoint').disabled = currentDrawCoords.length === 0;
+            document.getElementById('drawInfo').textContent = 'Titik: ' + currentDrawCoords.length;
+        };
+
+        function updateDraft() {
+            draftSource.clear();
+            if (currentDrawCoords.length === 0) return;
+            currentDrawCoords.forEach(function(c) {
+                draftSource.addFeature(new ol.Feature({ geometry: new ol.geom.Point(c) }));
+            });
+            if (currentDrawCoords.length >= 2) {
+                draftSource.addFeature(new ol.Feature({ geometry: new ol.geom.LineString(currentDrawCoords) }));
+            }
+        }
+
+        function resetDrawingState() {
+            isDrawing = false;
+            currentDrawCoords = [];
+            draftSource.clear();
+            document.getElementById('btnStartDraw').disabled = false;
+            document.getElementById('btnFinishDraw').disabled = true;
+            document.getElementById('btnCancelDraw').disabled = true;
+            document.getElementById('btnUndoPoint').disabled = true;
+            var infoEl = document.getElementById('drawInfo');
+            infoEl.textContent = 'Klik "Mulai" untuk menggambar';
+            infoEl.className = 'info-count';
+            map.getTargetElement().style.cursor = '';
+        }
+
+        function renderLegendDrawings() {
+            var container = document.getElementById('drawnLinesList');
+            if (drawings.length === 0) {
+                container.innerHTML = '<div class="empty-msg">Belum ada gambar</div>';
+                return;
+            }
+            var html = '';
+            drawings.forEach(function(d) {
+                html += '<div class="li' + (d.visible ? '' : ' off') + '" data-draw-id="' + d.id + '">' +
+                    '<span class="line-swatch" style="background:' + d.color + ';"></span>' +
+                    '<span class="label-text" title="' + d.name + '">' + d.name + '</span>' +
+                    '<span class="count">' + d.coords4326.length + '</span>' +
+                    '<span class="remove-line" data-remove="' + d.id + '">✕</span>' +
+                '</div>';
+            });
+            container.innerHTML = html;
+
+            container.querySelectorAll('.li[data-draw-id]').forEach(function(li) {
+                li.addEventListener('click', function(e) {
+                    if (e.target.dataset.remove) return;
+                    window.toggleDrawingVisibility(li.dataset.drawId);
+                });
+            });
+            container.querySelectorAll('.remove-line[data-remove]').forEach(function(btn) {
+                btn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    window.removeDrawing(btn.dataset.remove);
+                });
+            });
+        }
+
+        window.toggleDrawingVisibility = function(id) {
+            var d = drawings.find(function(x){ return x.id === id; });
+            if (!d) return;
+            d.visible = !d.visible;
+            var features = drawSource.getFeatures().filter(function(f){ return f.get('drawId') === id; });
+            if (d.visible) {
+                if (features.length === 0) {
+                    var coords3857 = d.coords4326.map(function(c){ return ol.proj.fromLonLat(c); });
+                    var feature = new ol.Feature({
+                        geometry: new ol.geom.LineString(coords3857),
+                        drawId: id, name: d.name, color: d.color, coords4326: d.coords4326
+                    });
+                    feature.set('popupHtml',
+                        '<div class="popup-title" style="color:' + d.color + ';"><i class="fa-solid fa-pen"></i> ' + d.name + '</div>' +
+                        '<span class="popup-badge" style="background:' + d.color + '22;color:' + d.color + ';border:1px solid ' + d.color + ';">MANUAL</span>'
+                    );
+                    drawSource.addFeature(feature);
+                }
+            } else {
+                features.forEach(function(f){ drawSource.removeFeature(f); });
+            }
+            saveDrawings();
+            renderLegendDrawings();
+        };
+
+        window.removeDrawing = function(id) {
+            if (!confirm('Hapus garis ini?')) return;
+            drawings = drawings.filter(function(d){ return d.id !== id; });
+            var toRemove = drawSource.getFeatures().filter(function(f){ return f.get('drawId') === id; });
+            toRemove.forEach(function(f){ drawSource.removeFeature(f); });
+            saveDrawings();
+            renderLegendDrawings();
+            showToast('Garis dihapus', 'success');
+        };
+
+        function saveDrawings() {
+            try {
+                localStorage.setItem(DRAW_STORAGE_KEY, JSON.stringify(drawings));
+            } catch(e) { console.warn('Gagal simpan drawings:', e); }
+        }
+
+        function loadDrawings() {
+            try {
+                var raw = localStorage.getItem(DRAW_STORAGE_KEY);
+                if (!raw) return;
+                drawings = JSON.parse(raw);
+                drawings.forEach(function(d) {
+                    if (!d.coords4326 || d.coords4326.length < 2) return;
+                    if (!d.visible) return;
+                    var coords3857 = d.coords4326.map(function(c){ return ol.proj.fromLonLat(c); });
+                    var feature = new ol.Feature({
+                        geometry: new ol.geom.LineString(coords3857),
+                        drawId: d.id, name: d.name, color: d.color, coords4326: d.coords4326
+                    });
+                    feature.set('popupHtml',
+                        '<div class="popup-title" style="color:' + d.color + ';"><i class="fa-solid fa-pen"></i> ' + d.name + '</div>' +
+                        '<span class="popup-badge" style="background:' + d.color + '22;color:' + d.color + ';border:1px solid ' + d.color + ';">MANUAL</span>'
+                    );
+                    drawSource.addFeature(feature);
+                });
+                renderLegendDrawings();
+            } catch(e) { console.warn('Gagal load drawings:', e); }
+        }
+
+        // ============================================================
+        // MAP CLICK
+        // ============================================================
+        map.on('singleclick', function(evt) {
+            if (isDrawing) {
+                currentDrawCoords.push(evt.coordinate);
+                console.log('[DRAW] Titik:', currentDrawCoords.length);
+                updateDraft();
+                document.getElementById('btnUndoPoint').disabled = false;
+                if (currentDrawCoords.length >= 2) {
+                    document.getElementById('btnFinishDraw').disabled = false;
+                }
+                document.getElementById('drawInfo').textContent = 'Titik: ' + currentDrawCoords.length;
+                return;
+            }
+
+            var feature = map.forEachFeatureAtPixel(evt.pixel, function(f){ return f; }, { hitTolerance: 5 });
+            if (feature) {
+                var html = feature.get('popupHtml');
+                if (html) {
+                    popupContent.innerHTML = html;
+                    popupContainer.style.display = 'block';
+                    var g = feature.getGeometry();
+                    popupOverlay.setPosition(g.getType() === 'Point' ? g.getCoordinates() : evt.coordinate);
+                }
+            } else {
+                popupOverlay.setPosition(undefined);
+                popupContainer.style.display = 'none';
+            }
+        });
+
+        map.on('pointermove', function(evt) {
+            if (isDrawing) {
+                map.getTargetElement().style.cursor = 'crosshair';
+                return;
+            }
+            map.getTargetElement().style.cursor = map.hasFeatureAtPixel(evt.pixel, { hitTolerance: 5 }) ? 'pointer' : '';
+        });
+
+        window.closePopup = function(e) {
+            e.preventDefault();
+            popupOverlay.setPosition(undefined);
+            popupContainer.style.display = 'none';
+        };
+
+        // ============================================================
+        // MARKERS
+        // ============================================================
         function getData(){
             try {
                 var raw = localStorage.getItem(STORAGE_KEY);
@@ -637,7 +1074,6 @@
                         kategori: kat
                     });
                     feature.set('popupHtml', buatPopup(item, kat));
-                    feature.set('data', item);
                     if (markerVisibility[kat]) markerSource.addFeature(feature);
                     var obj = { feature: feature, kategori: kat, data: item };
                     markers.push(obj);
@@ -653,616 +1089,6 @@
             document.getElementById('cntHandhole').textContent = counters.handhole;
         }
 
-        /* ============================================================
-           PANEL TOGGLE
-           ============================================================ */
-        function toggleUploadPanel() {
-            var panel = document.getElementById('uploadPanel');
-            var drawPanelEl = document.getElementById('drawPanel');
-            if (!panel.classList.contains('show')) {
-                drawPanelEl.classList.remove('show');
-                document.getElementById('btnDraw').classList.remove('active');
-            }
-            panel.classList.toggle('show');
-            document.getElementById('btnUpload').classList.toggle('active', panel.classList.contains('show'));
-            if (panel.classList.contains('show')) resetUploadForm();
-        }
-
-        function toggleDrawPanel() {
-            var panel = document.getElementById('drawPanel');
-            var uploadPanelEl = document.getElementById('uploadPanel');
-            if (!panel.classList.contains('show')) {
-                uploadPanelEl.classList.remove('show');
-                document.getElementById('btnUpload').classList.remove('active');
-            }
-            panel.classList.toggle('show');
-            document.getElementById('btnDraw').classList.toggle('active', panel.classList.contains('show'));
-        }
-
-        /* ============================================================
-           UPLOAD
-           ============================================================ */
-        var pickedFile = null;
-
-        document.getElementById('kmlFileInput').addEventListener('change', function(e){
-            var file = e.target.files[0];
-            if (!file) return;
-            console.log('[UPLOAD] File dipilih:', file.name);
-            pickedFile = file;
-
-            var picker = document.getElementById('filePicker');
-            picker.classList.add('has-file');
-            document.getElementById('filePickerIcon').className = 'fa-solid fa-file-circle-check';
-            document.getElementById('filePickerLabel').textContent = 'File terpilih:';
-            document.getElementById('pickedFileName').textContent = file.name;
-
-            var nameInput = document.getElementById('uploadLineName');
-            if (!nameInput.value.trim()) {
-                nameInput.value = file.name.replace(/\.(kml|kmz)$/i, '');
-            }
-
-            document.getElementById('btnProcessUpload').disabled = false;
-            setUploadInfo('File siap diupload', 'success');
-            e.target.value = '';
-        });
-
-        document.getElementById('uploadLineColor').addEventListener('input', function(e) {
-            document.getElementById('uploadColorPreview').textContent = e.target.value;
-        });
-
-        document.getElementById('drawColor').addEventListener('input', function(e) {
-            document.getElementById('drawColorPreview').textContent = e.target.value;
-        });
-
-        function setUploadInfo(msg, type) {
-            var el = document.getElementById('uploadInfo');
-            el.textContent = msg;
-            el.className = 'info-count' + (type ? ' ' + type : '');
-        }
-
-        function resetUploadForm() {
-            pickedFile = null;
-            var picker = document.getElementById('filePicker');
-            picker.classList.remove('has-file');
-            document.getElementById('filePickerIcon').className = 'fa-solid fa-file-circle-plus';
-            document.getElementById('filePickerLabel').textContent = 'Klik untuk pilih file';
-            document.getElementById('pickedFileName').textContent = 'Belum ada file';
-            document.getElementById('uploadLineName').value = '';
-            document.getElementById('uploadLineColor').value = '#38bdf8';
-            document.getElementById('uploadColorPreview').textContent = '#38bdf8';
-            document.getElementById('btnProcessUpload').disabled = true;
-            setUploadInfo('Pilih file dulu, lalu isi nama');
-        }
-
-        function processUpload() {
-            if (!pickedFile) { showToast('Pilih file dulu', 'error'); return; }
-
-            var lineName = (document.getElementById('uploadLineName').value || '').trim();
-            if (!lineName) lineName = pickedFile.name.replace(/\.(kml|kmz)$/i, '');
-            var lineColor = document.getElementById('uploadLineColor').value || '#38bdf8';
-
-            console.log('[UPLOAD] Memproses:', lineName, lineColor);
-            setUploadInfo('Memproses file...', '');
-            document.getElementById('btnProcessUpload').disabled = true;
-
-            var isKMZ = pickedFile.name.toLowerCase().endsWith('.kmz');
-            var reader = new FileReader();
-
-            reader.onerror = function() {
-                showToast('Gagal baca file', 'error');
-                setUploadInfo('Gagal baca file', 'error');
-                document.getElementById('btnProcessUpload').disabled = false;
-            };
-
-            if (isKMZ) {
-                reader.onload = function(ev) {
-                    JSZip.loadAsync(ev.target.result).then(function(zip){
-                        var kmlName = null;
-                        zip.forEach(function(p){ if (!kmlName && p.toLowerCase().endsWith('.kml')) kmlName = p; });
-                        if (!kmlName) throw new Error('KMZ tidak berisi file KML');
-                        return zip.file(kmlName).async('string');
-                    }).then(function(text){
-                        if (!text) throw new Error('KML kosong');
-                        renderUploadedKML(text, lineName, lineColor);
-                    }).catch(function(err){
-                        console.error('[UPLOAD] Error KMZ:', err);
-                        showToast('Gagal baca KMZ: ' + err.message, 'error');
-                        setUploadInfo('Gagal: ' + err.message, 'error');
-                        document.getElementById('btnProcessUpload').disabled = false;
-                    });
-                };
-                reader.readAsArrayBuffer(pickedFile);
-            } else {
-                reader.onload = function(ev) { renderUploadedKML(ev.target.result, lineName, lineColor); };
-                reader.readAsText(pickedFile);
-            }
-        }
-
-        function renderUploadedKML(kmlText, lineName, lineColor) {
-            try {
-                var parser = new DOMParser();
-                var kmlDom = parser.parseFromString(kmlText, 'text/xml');
-                if (kmlDom.querySelector('parsererror')) throw new Error('Format XML tidak valid');
-
-                var lib = window.toGeoJSON || window.togeojson;
-                if (!lib) throw new Error('Library togeojson tidak tersedia');
-
-                var geojson = lib.kml(kmlDom);
-                console.log('[UPLOAD] GeoJSON:', geojson);
-
-                if (!geojson || !geojson.features || !geojson.features.length) {
-                    throw new Error('KML tidak berisi fitur valid');
-                }
-
-                var format = new ol.format.GeoJSON();
-                var features = format.readFeatures(geojson, {
-                    dataProjection: 'EPSG:4326',
-                    featureProjection: 'EPSG:3857'
-                });
-
-                if (!features.length) throw new Error('Tidak ada fitur yang bisa dibaca');
-
-                console.log('[UPLOAD] Fitur:', features.length);
-                var uploadId = 'up_' + Date.now() + '_' + Math.random().toString(36).substr(2, 6);
-
-                features.forEach(function(f){
-                    f.set('uploadId', uploadId);
-                    var name = f.get('name') || (f.getProperties() && f.getProperties().name) || 'Feature';
-                    f.set('popupHtml',
-                        '<div class="popup-title" style="color:' + lineColor + ';">' +
-                            '<i class="fa-solid fa-cloud-arrow-up"></i> ' + lineName +
-                        '</div>' +
-                        '<div class="popup-row"><b>Feature:</b> ' + name + '</div>' +
-                        '<div class="popup-row"><b>Tipe:</b> ' + f.getGeometry().getType() + '</div>' +
-                        '<span class="popup-badge" style="background:' + lineColor + '22;color:' + lineColor + ';border:1px solid ' + lineColor + ';">UPLOADED</span>'
-                    );
-                });
-
-                var source = new ol.source.Vector({ features: features });
-                var layer = new ol.layer.Vector({
-                    source: source,
-                    zIndex: 20,
-                    style: function(f) {
-                        var t = f.getGeometry().getType();
-                        if (t === 'LineString' || t === 'MultiLineString') {
-                            return new ol.style.Style({
-                                stroke: new ol.style.Stroke({ color: lineColor, width: 4, lineCap: 'round', lineJoin: 'round' })
-                            });
-                        }
-                        if (t === 'Polygon' || t === 'MultiPolygon') {
-                            return new ol.style.Style({
-                                stroke: new ol.style.Stroke({ color: lineColor, width: 2 }),
-                                fill: new ol.style.Fill({ color: lineColor + '33' })
-                            });
-                        }
-                        return new ol.style.Style({
-                            image: new ol.style.Circle({
-                                radius: 7,
-                                fill: new ol.style.Fill({ color: lineColor }),
-                                stroke: new ol.style.Stroke({ color: '#fff', width: 2 })
-                            })
-                        });
-                    }
-                });
-
-                map.addLayer(layer);
-
-                var uploadMeta = {
-                    id: uploadId, name: lineName, color: lineColor,
-                    visible: true, fileName: pickedFile.name,
-                    featureCount: features.length, geojson: geojson
-                };
-                uploads.push(uploadMeta);
-                uploadLayers.push({ meta: uploadMeta, layer: layer });
-
-                saveUploads();
-                renderLegendUploads();
-
-                try {
-                    var ext = source.getExtent();
-                    if (ext && isFinite(ext[0]) && (ext[0] !== ext[2])) {
-                        view.fit(ext, { padding: [80, 80, 80, 80], duration: 600, maxZoom: 16 });
-                    }
-                } catch(e) {}
-
-                setUploadInfo('✓ ' + features.length + ' fitur berhasil diupload', 'success');
-                showToast('Upload "' + lineName + '" berhasil (' + features.length + ' fitur)', 'success');
-
-                setTimeout(function() {
-                    resetUploadForm();
-                    toggleUploadPanel();
-                }, 1200);
-
-            } catch(err) {
-                console.error('[UPLOAD] Error:', err);
-                showToast('Gagal parse KML: ' + err.message, 'error');
-                setUploadInfo('Error: ' + err.message, 'error');
-                document.getElementById('btnProcessUpload').disabled = false;
-            }
-        }
-
-        /* ============================================================
-           LEGENDA UPLOADS
-           ============================================================ */
-        function renderLegendUploads() {
-            var container = document.getElementById('uploadedLinesList');
-            if (uploads.length === 0) {
-                container.innerHTML = '<div class="empty-msg">Belum ada upload</div>';
-                return;
-            }
-            var html = '';
-            uploads.forEach(function(u) {
-                html += '<div class="li' + (u.visible ? '' : ' off') + '" data-upload-id="' + u.id + '">' +
-                    '<span class="line-swatch" style="background:' + u.color + ';"></span>' +
-                    '<span class="label-text" title="' + u.name + ' (' + u.featureCount + ' fitur)">' + u.name + '</span>' +
-                    '<span class="count">' + u.featureCount + '</span>' +
-                    '<span class="remove-line" data-remove="' + u.id + '" title="Hapus">✕</span>' +
-                '</div>';
-            });
-            container.innerHTML = html;
-
-            container.querySelectorAll('.li[data-upload-id]').forEach(function(li) {
-                li.addEventListener('click', function(e) {
-                    if (e.target.dataset.remove) return;
-                    toggleUploadVisibility(li.dataset.uploadId);
-                });
-            });
-            container.querySelectorAll('.remove-line[data-remove]').forEach(function(btn) {
-                btn.addEventListener('click', function(e) {
-                    e.stopPropagation();
-                    removeUpload(btn.dataset.remove);
-                });
-            });
-        }
-
-        function toggleUploadVisibility(id) {
-            var u = uploads.find(function(x){ return x.id === id; });
-            if (!u) return;
-            u.visible = !u.visible;
-            var entry = uploadLayers.find(function(x){ return x.meta.id === id; });
-            if (entry) entry.layer.setVisible(u.visible);
-            saveUploads();
-            renderLegendUploads();
-        }
-
-        function removeUpload(id) {
-            if (!confirm('Hapus line upload ini?')) return;
-            var entry = uploadLayers.find(function(x){ return x.meta.id === id; });
-            if (entry) {
-                map.removeLayer(entry.layer);
-                uploadLayers = uploadLayers.filter(function(x){ return x.meta.id !== id; });
-            }
-            uploads = uploads.filter(function(x){ return x.id !== id; });
-            saveUploads();
-            renderLegendUploads();
-            showToast('Line upload dihapus', 'success');
-        }
-
-        function saveUploads() {
-            try {
-                var data = uploads.map(function(u) {
-                    return {
-                        id: u.id, name: u.name, color: u.color,
-                        visible: u.visible, fileName: u.fileName,
-                        featureCount: u.featureCount, geojson: u.geojson
-                    };
-                });
-                localStorage.setItem(UPLOAD_STORAGE_KEY, JSON.stringify(data));
-            } catch(e) { console.warn('Gagal simpan uploads:', e); }
-        }
-
-        function loadUploads() {
-            try {
-                var raw = localStorage.getItem(UPLOAD_STORAGE_KEY);
-                if (!raw) return;
-                var data = JSON.parse(raw);
-                data.forEach(function(u) {
-                    if (!u.geojson || !u.geojson.features || !u.geojson.features.length) return;
-
-                    var format = new ol.format.GeoJSON();
-                    var features = format.readFeatures(u.geojson, {
-                        dataProjection: 'EPSG:4326',
-                        featureProjection: 'EPSG:3857'
-                    });
-
-                    features.forEach(function(f){
-                        f.set('uploadId', u.id);
-                        var name = f.get('name') || 'Feature';
-                        f.set('popupHtml',
-                            '<div class="popup-title" style="color:' + u.color + ';">' +
-                                '<i class="fa-solid fa-cloud-arrow-up"></i> ' + u.name +
-                            '</div>' +
-                            '<div class="popup-row"><b>Feature:</b> ' + name + '</div>' +
-                            '<span class="popup-badge" style="background:' + u.color + '22;color:' + u.color + ';border:1px solid ' + u.color + ';">UPLOADED</span>'
-                        );
-                    });
-
-                    var source = new ol.source.Vector({ features: features });
-                    var layer = new ol.layer.Vector({
-                        source: source,
-                        zIndex: 20,
-                        visible: u.visible !== false,
-                        style: function(f) {
-                            var t = f.getGeometry().getType();
-                            var c = u.color;
-                            if (t === 'LineString' || t === 'MultiLineString') {
-                                return new ol.style.Style({
-                                    stroke: new ol.style.Stroke({ color: c, width: 4, lineCap: 'round', lineJoin: 'round' })
-                                });
-                            }
-                            if (t === 'Polygon' || t === 'MultiPolygon') {
-                                return new ol.style.Style({
-                                    stroke: new ol.style.Stroke({ color: c, width: 2 }),
-                                    fill: new ol.style.Fill({ color: c + '33' })
-                                });
-                            }
-                            return new ol.style.Style({
-                                image: new ol.style.Circle({
-                                    radius: 7,
-                                    fill: new ol.style.Fill({ color: c }),
-                                    stroke: new ol.style.Stroke({ color: '#fff', width: 2 })
-                                })
-                            });
-                        }
-                    });
-
-                    map.addLayer(layer);
-                    var meta = {
-                        id: u.id, name: u.name, color: u.color,
-                        visible: u.visible !== false, fileName: u.fileName,
-                        featureCount: u.featureCount, geojson: u.geojson
-                    };
-                    uploads.push(meta);
-                    uploadLayers.push({ meta: meta, layer: layer });
-                });
-                renderLegendUploads();
-            } catch(e) { console.warn('Gagal load uploads:', e); }
-        }
-
-        /* ============================================================
-           GAMBAR GARIS MANUAL
-           ============================================================ */
-        var isDrawing = false;
-        var currentDrawCoords = [];
-
-        function startDrawing() {
-            console.log('[DRAW] startDrawing');
-            isDrawing = true;
-            currentDrawCoords = [];
-            draftSource.clear();
-            document.getElementById('btnStartDraw').disabled = true;
-            document.getElementById('btnFinishDraw').disabled = true;
-            document.getElementById('btnCancelDraw').disabled = false;
-            document.getElementById('btnUndoPoint').disabled = true;
-            var infoEl = document.getElementById('drawInfo');
-            infoEl.textContent = 'Klik di peta untuk menambah titik...';
-            infoEl.className = 'info-count';
-            map.getTargetElement().style.cursor = 'crosshair';
-            showToast('Mode gambar aktif — klik di peta', 'info');
-        }
-
-        function finishDrawing() {
-            if (currentDrawCoords.length < 2) {
-                showToast('Minimal 2 titik untuk membuat garis', 'error');
-                return;
-            }
-
-            var name = (document.getElementById('drawName').value || '').trim() || ('Garis ' + new Date().toLocaleTimeString('id-ID'));
-            var color = document.getElementById('drawColor').value || '#38bdf8';
-            var coords4326 = currentDrawCoords.map(function(c) { return ol.proj.toLonLat(c); });
-
-            var drawId = 'dr_' + Date.now() + '_' + Math.random().toString(36).substr(2, 6);
-            var feature = new ol.Feature({
-                geometry: new ol.geom.LineString(currentDrawCoords),
-                drawId: drawId, name: name, color: color, coords4326: coords4326
-            });
-            feature.set('popupHtml',
-                '<div class="popup-title" style="color:' + color + ';">' +
-                    '<i class="fa-solid fa-pen"></i> ' + name +
-                '</div>' +
-                '<div class="popup-row"><b>Total titik:</b> ' + currentDrawCoords.length + '</div>' +
-                '<div class="popup-row"><b>Tipe:</b> Garis Manual</div>' +
-                '<span class="popup-badge" style="background:' + color + '22;color:' + color + ';border:1px solid ' + color + ';">MANUAL</span>'
-            );
-
-            drawSource.addFeature(feature);
-
-            drawings.push({
-                id: drawId, name: name, color: color,
-                visible: true, coords4326: coords4326
-            });
-            saveDrawings();
-            renderLegendDrawings();
-            resetDrawingState();
-            showToast('Garis "' + name + '" tersimpan (' + currentDrawCoords.length + ' titik)', 'success');
-        }
-
-        function cancelDrawing() {
-            resetDrawingState();
-            showToast('Gambar dibatalkan', 'info');
-        }
-
-        function undoLastPoint() {
-            if (currentDrawCoords.length === 0) return;
-            currentDrawCoords.pop();
-            updateDraft();
-            document.getElementById('btnFinishDraw').disabled = currentDrawCoords.length < 2;
-            document.getElementById('btnUndoPoint').disabled = currentDrawCoords.length === 0;
-            document.getElementById('drawInfo').textContent = 'Titik: ' + currentDrawCoords.length;
-        }
-
-        function updateDraft() {
-            draftSource.clear();
-            if (currentDrawCoords.length === 0) return;
-            currentDrawCoords.forEach(function(c) {
-                draftSource.addFeature(new ol.Feature({ geometry: new ol.geom.Point(c) }));
-            });
-            if (currentDrawCoords.length >= 2) {
-                draftSource.addFeature(new ol.Feature({ geometry: new ol.geom.LineString(currentDrawCoords) }));
-            }
-        }
-
-        function resetDrawingState() {
-            isDrawing = false;
-            currentDrawCoords = [];
-            draftSource.clear();
-            document.getElementById('btnStartDraw').disabled = false;
-            document.getElementById('btnFinishDraw').disabled = true;
-            document.getElementById('btnCancelDraw').disabled = true;
-            document.getElementById('btnUndoPoint').disabled = true;
-            var infoEl = document.getElementById('drawInfo');
-            infoEl.textContent = 'Klik "Mulai" untuk menggambar';
-            infoEl.className = 'info-count';
-            map.getTargetElement().style.cursor = '';
-        }
-
-        function renderLegendDrawings() {
-            var container = document.getElementById('drawnLinesList');
-            if (drawings.length === 0) {
-                container.innerHTML = '<div class="empty-msg">Belum ada gambar</div>';
-                return;
-            }
-            var html = '';
-            drawings.forEach(function(d) {
-                html += '<div class="li' + (d.visible ? '' : ' off') + '" data-draw-id="' + d.id + '">' +
-                    '<span class="line-swatch" style="background:' + d.color + ';"></span>' +
-                    '<span class="label-text" title="' + d.name + '">' + d.name + '</span>' +
-                    '<span class="count">' + d.coords4326.length + '</span>' +
-                    '<span class="remove-line" data-remove="' + d.id + '" title="Hapus">✕</span>' +
-                '</div>';
-            });
-            container.innerHTML = html;
-
-            container.querySelectorAll('.li[data-draw-id]').forEach(function(li) {
-                li.addEventListener('click', function(e) {
-                    if (e.target.dataset.remove) return;
-                    toggleDrawingVisibility(li.dataset.drawId);
-                });
-            });
-            container.querySelectorAll('.remove-line[data-remove]').forEach(function(btn) {
-                btn.addEventListener('click', function(e) {
-                    e.stopPropagation();
-                    removeDrawing(btn.dataset.remove);
-                });
-            });
-        }
-
-        function toggleDrawingVisibility(id) {
-            var d = drawings.find(function(x){ return x.id === id; });
-            if (!d) return;
-            d.visible = !d.visible;
-
-            var features = drawSource.getFeatures().filter(function(f){ return f.get('drawId') === id; });
-            if (d.visible) {
-                if (features.length === 0) {
-                    var coords3857 = d.coords4326.map(function(c){ return ol.proj.fromLonLat(c); });
-                    var feature = new ol.Feature({
-                        geometry: new ol.geom.LineString(coords3857),
-                        drawId: id, name: d.name, color: d.color,
-                        coords4326: d.coords4326
-                    });
-                    feature.set('popupHtml',
-                        '<div class="popup-title" style="color:' + d.color + ';">' +
-                            '<i class="fa-solid fa-pen"></i> ' + d.name +
-                        '</div>' +
-                        '<div class="popup-row"><b>Total titik:</b> ' + d.coords4326.length + '</div>' +
-                        '<span class="popup-badge" style="background:' + d.color + '22;color:' + d.color + ';border:1px solid ' + d.color + ';">MANUAL</span>'
-                    );
-                    drawSource.addFeature(feature);
-                }
-            } else {
-                features.forEach(function(f){ drawSource.removeFeature(f); });
-            }
-
-            saveDrawings();
-            renderLegendDrawings();
-        }
-
-        function removeDrawing(id) {
-            if (!confirm('Hapus garis ini?')) return;
-            drawings = drawings.filter(function(d){ return d.id !== id; });
-            var toRemove = drawSource.getFeatures().filter(function(f){ return f.get('drawId') === id; });
-            toRemove.forEach(function(f){ drawSource.removeFeature(f); });
-            saveDrawings();
-            renderLegendDrawings();
-            showToast('Garis dihapus', 'success');
-        }
-
-        function saveDrawings() {
-            try {
-                localStorage.setItem(DRAW_STORAGE_KEY, JSON.stringify(drawings));
-            } catch(e) { console.warn('Gagal simpan drawings:', e); }
-        }
-
-        function loadDrawings() {
-            try {
-                var raw = localStorage.getItem(DRAW_STORAGE_KEY);
-                if (!raw) return;
-                drawings = JSON.parse(raw);
-                drawings.forEach(function(d) {
-                    if (!d.coords4326 || d.coords4326.length < 2) return;
-                    if (!d.visible) return;
-                    var coords3857 = d.coords4326.map(function(c){ return ol.proj.fromLonLat(c); });
-                    var feature = new ol.Feature({
-                        geometry: new ol.geom.LineString(coords3857),
-                        drawId: d.id, name: d.name, color: d.color,
-                        coords4326: d.coords4326
-                    });
-                    feature.set('popupHtml',
-                        '<div class="popup-title" style="color:' + d.color + ';">' +
-                            '<i class="fa-solid fa-pen"></i> ' + d.name +
-                        '</div>' +
-                        '<div class="popup-row"><b>Total titik:</b> ' + d.coords4326.length + '</div>' +
-                        '<span class="popup-badge" style="background:' + d.color + '22;color:' + d.color + ';border:1px solid ' + d.color + ';">MANUAL</span>'
-                    );
-                    drawSource.addFeature(feature);
-                });
-                renderLegendDrawings();
-            } catch(e) { console.warn('Gagal load drawings:', e); }
-        }
-
-        /* ============================================================
-           MAP CLICK
-           ============================================================ */
-        map.on('singleclick', function(evt) {
-            if (isDrawing) {
-                currentDrawCoords.push(evt.coordinate);
-                console.log('[DRAW] Titik ditambah:', currentDrawCoords.length);
-                updateDraft();
-                document.getElementById('btnUndoPoint').disabled = false;
-                if (currentDrawCoords.length >= 2) {
-                    document.getElementById('btnFinishDraw').disabled = false;
-                }
-                document.getElementById('drawInfo').textContent = 'Titik: ' + currentDrawCoords.length + ' (klik "Selesai" untuk menyimpan)';
-                return;
-            }
-
-            var feature = map.forEachFeatureAtPixel(evt.pixel, function(f){ return f; }, { hitTolerance: 5 });
-            if (feature) {
-                var html = feature.get('popupHtml');
-                if (html) {
-                    popupContent.innerHTML = html;
-                    popupContainer.style.display = 'block';
-                    var g = feature.getGeometry();
-                    popupOverlay.setPosition(g.getType() === 'Point' ? g.getCoordinates() : evt.coordinate);
-                }
-            } else {
-                popupOverlay.setPosition(undefined);
-                popupContainer.style.display = 'none';
-            }
-        });
-
-        map.on('pointermove', function(evt) {
-            if (isDrawing) {
-                map.getTargetElement().style.cursor = 'crosshair';
-                return;
-            }
-            map.getTargetElement().style.cursor = map.hasFeatureAtPixel(evt.pixel, { hitTolerance: 5 }) ? 'pointer' : '';
-        });
-
-        /* ============================================================
-           TOGGLE MARKER DI LEGENDA
-           ============================================================ */
         document.querySelectorAll('.map-legend .li[data-toggle="marker"]').forEach(function(li){
             li.addEventListener('click', function(){
                 var kat = li.dataset.kat;
@@ -1275,10 +1101,9 @@
             });
         });
 
-        /* ============================================================
-           INIT
-           ============================================================ */
-        console.log('[BUCIN] Init markers, uploads, drawings');
+        // ============================================================
+        // INIT
+        // ============================================================
         renderMarkers();
         loadUploads();
         loadDrawings();
@@ -1287,7 +1112,8 @@
         setTimeout(function(){ map.updateSize(); }, 800);
         window.addEventListener('resize', function(){ map.updateSize(); });
 
-        console.log('[BUCIN] Ready');
+        console.log('[BUCIN] Ready — semua fungsi ter-expose di window');
+    })();
     </script>
 </body>
 </html>
