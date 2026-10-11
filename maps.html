@@ -54,7 +54,7 @@
             position: absolute; top: 54px; left: 10px;
             background: rgba(15, 23, 42, 0.88); border: 1px solid rgba(255, 255, 255, 0.3);
             border-radius: 7px; padding: 6px 8px; z-index: 900;
-            font-size: 9.5px; color: #e2e8f0; max-width: 190px;
+            font-size: 9.5px; color: #e2e8f0; max-width: 200px;
             max-height: calc(100vh - 70px); overflow-y: auto;
         }
         .map-legend::-webkit-scrollbar { width: 3px; }
@@ -74,9 +74,10 @@
         .map-legend .li span.label-text { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex: 1; }
         .map-legend .li .remove-line {
             font-size: 9px; color: #f43f5e; opacity: 0.6;
-            cursor: pointer; padding: 0 2px;
+            cursor: pointer; padding: 0 2px; flex-shrink: 0;
         }
         .map-legend .li .remove-line:hover { opacity: 1; }
+        .map-legend .empty-msg { font-size: 8.5px; color: #64748b; font-style: italic; padding: 2px 0; }
 
         .custom-zoom {
             position: absolute; top: 54px; right: 10px; z-index: 900;
@@ -127,14 +128,14 @@
         .popup-row b { color: #fff; }
         .popup-badge { display: inline-block; padding: 1px 7px; border-radius: 8px; font-size: 9px; font-weight: 700; margin-top: 5px; }
 
-        /* Panel floating (untuk form upload & gambar) */
+        /* Floating panel */
         .floating-panel {
             position: absolute; top: 54px; right: 60px;
             background: rgba(15, 23, 42, 0.98);
             border: 1px solid rgba(56, 189, 248, 0.5);
             border-radius: 8px; padding: 12px 14px;
             z-index: 950; font-size: 11px; color: #e2e8f0;
-            min-width: 260px; display: none;
+            min-width: 280px; display: none;
             box-shadow: 0 8px 24px rgba(0,0,0,0.5);
         }
         .floating-panel.show { display: block; }
@@ -170,7 +171,6 @@
             outline: none; border-color: #38bdf8;
         }
 
-        /* File picker custom */
         .file-picker {
             display: flex; align-items: center; gap: 8px;
             background: rgba(30, 41, 59, 0.6);
@@ -179,34 +179,27 @@
             cursor: pointer; transition: all 0.2s;
         }
         .file-picker:hover { border-color: #38bdf8; background: rgba(30, 41, 59, 0.9); }
-        .file-picker i { font-size: 20px; color: #38bdf8; }
-        .file-picker .file-info { flex: 1; }
-        .file-picker .file-info .file-label {
-            font-size: 10px; color: #94a3b8; margin-bottom: 2px;
-        }
-        .file-picker .file-info .file-name {
+        .file-picker.has-file { border-style: solid; border-color: rgba(16, 185, 129, 0.6); background: rgba(16, 185, 129, 0.08); }
+        .file-picker i { font-size: 20px; color: #38bdf8; flex-shrink: 0; }
+        .file-picker.has-file i { color: #10b981; }
+        .file-picker .file-info { flex: 1; min-width: 0; }
+        .file-picker .file-label { font-size: 10px; color: #94a3b8; margin-bottom: 2px; }
+        .file-picker .file-name {
             font-size: 11px; color: #fff; font-weight: 600;
             white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-            max-width: 160px;
         }
 
-        /* Color picker row */
-        .color-picker-row {
-            display: flex; align-items: center; gap: 8px;
-        }
+        .color-picker-row { display: flex; align-items: center; gap: 8px; }
         .color-picker-row input[type="color"] {
             width: 44px; height: 30px;
             background: transparent; border: 1px solid rgba(255,255,255,0.2);
             border-radius: 5px; cursor: pointer; padding: 2px;
         }
-        .color-picker-row .color-preview {
-            flex: 1; font-size: 11px; color: #94a3b8;
-            font-family: monospace;
-        }
+        .color-picker-row .color-preview { flex: 1; font-size: 11px; color: #94a3b8; font-family: monospace; }
 
         .floating-panel .btn-row { display: flex; gap: 6px; margin-top: 12px; }
         .floating-panel .btn-row button {
-            flex: 1; padding: 7px 10px; border-radius: 5px;
+            flex: 1; padding: 8px 10px; border-radius: 5px;
             font-size: 11px; font-weight: 700; cursor: pointer;
             font-family: 'Poppins', sans-serif;
             display: flex; align-items: center; justify-content: center; gap: 5px;
@@ -217,33 +210,35 @@
             border: 1px solid rgba(16, 185, 129, 0.6);
             color: #10b981;
         }
-        .floating-panel .btn-row button.primary:hover { background: rgba(16, 185, 129, 0.25); }
-        .floating-panel .btn-row button.primary:disabled {
-            opacity: 0.4; cursor: not-allowed;
-        }
+        .floating-panel .btn-row button.primary:hover:not(:disabled) { background: rgba(16, 185, 129, 0.25); }
+        .floating-panel .btn-row button.primary:disabled { opacity: 0.4; cursor: not-allowed; }
         .floating-panel .btn-row button.secondary {
             background: transparent;
             border: 1px solid rgba(255, 255, 255, 0.2);
             color: #e2e8f0;
         }
-        .floating-panel .btn-row button.secondary:hover { border-color: #38bdf8; color: #38bdf8; }
+        .floating-panel .btn-row button.secondary:hover:not(:disabled) { border-color: #38bdf8; color: #38bdf8; }
+        .floating-panel .btn-row button.secondary:disabled { opacity: 0.4; cursor: not-allowed; }
         .floating-panel .btn-row button.cancel {
             background: transparent;
             border: 1px solid rgba(244, 63, 94, 0.5);
             color: #f43f5e;
         }
-        .floating-panel .btn-row button.cancel:hover { background: rgba(244, 63, 94, 0.15); }
+        .floating-panel .btn-row button.cancel:hover:not(:disabled) { background: rgba(244, 63, 94, 0.15); }
+        .floating-panel .btn-row button.cancel:disabled { opacity: 0.4; cursor: not-allowed; }
 
         .floating-panel .info-count {
             font-size: 10px; color: #38bdf8; margin-top: 8px;
             text-align: center; font-weight: 700;
         }
+        .floating-panel .info-count.error { color: #f43f5e; }
+        .floating-panel .info-count.success { color: #10b981; }
 
         @media (max-width: 640px) {
             .maps-header .header-title span, .header-btn span, .map-mode-btn span { display: none; }
             .map-legend { top: 48px; left: 6px; font-size: 8.5px; max-width: 150px; }
             .custom-zoom { top: 48px; right: 6px; }
-            .floating-panel { right: 50px; min-width: 220px; }
+            .floating-panel { right: 50px; left: 10px; min-width: 0; }
         }
     </style>
 </head>
@@ -261,11 +256,8 @@
         <button class="header-btn" onclick="toggleDrawPanel()" id="btnDraw" title="Gambar garis manual">
             <i class="fa-solid fa-pen"></i> <span>Gambar</span>
         </button>
-        <button class="header-btn primary" onclick="toggleUploadPanel()" id="btnUpload" title="Upload KML/KMZ dengan nama">
+        <button class="header-btn primary" onclick="toggleUploadPanel()" id="btnUpload" title="Upload KML/KMZ">
             <i class="fa-solid fa-cloud-arrow-up"></i> <span>Upload</span>
-        </button>
-        <button class="header-btn danger" onclick="clearAllUploads()" title="Hapus semua upload">
-            <i class="fa-solid fa-trash"></i> <span>Reset</span>
         </button>
     </div>
 
@@ -281,10 +273,10 @@
 
         <div class="form-row">
             <label>File KML / KMZ</label>
-            <div class="file-picker" onclick="document.getElementById('kmlFileInput').click()">
-                <i class="fa-solid fa-file-circle-plus"></i>
+            <div class="file-picker" id="filePicker" onclick="document.getElementById('kmlFileInput').click()">
+                <i class="fa-solid fa-file-circle-plus" id="filePickerIcon"></i>
                 <div class="file-info">
-                    <div class="file-label">Klik untuk pilih file</div>
+                    <div class="file-label" id="filePickerLabel">Klik untuk pilih file</div>
                     <div class="file-name" id="pickedFileName">Belum ada file</div>
                 </div>
             </div>
@@ -388,14 +380,12 @@
 
         <div class="section-title">Upload KML/KMZ</div>
         <div id="uploadedLinesList">
-            <!-- Item line upload akan di-inject di sini -->
-            <div style="font-size: 8.5px; color: #64748b; font-style: italic; padding: 2px 0;">Belum ada upload</div>
+            <div class="empty-msg">Belum ada upload</div>
         </div>
 
         <div class="section-title">Gambar Manual</div>
         <div id="drawnLinesList">
-            <!-- Item line manual akan di-inject di sini -->
-            <div style="font-size: 8.5px; color: #64748b; font-style: italic; padding: 2px 0;">Belum ada gambar</div>
+            <div class="empty-msg">Belum ada gambar</div>
         </div>
     </div>
 
@@ -413,7 +403,7 @@
 
     <script>
         /* ============================================================
-           BUCIN MAP
+           BUCIN MAP — Upload & Draw dengan Layer Terpisah
            ============================================================ */
 
         var MANADO_CENTER = [124.8421, 1.4748];
@@ -422,8 +412,7 @@
         var view = new ol.View({
             center: ol.proj.fromLonLat(MANADO_CENTER),
             zoom: MANADO_ZOOM,
-            maxZoom: 19,
-            minZoom: 3
+            maxZoom: 19, minZoom: 3
         });
 
         /* ============================================================
@@ -475,36 +464,6 @@
         });
 
         /* ============================================================
-           UPLOAD LAYER (multiple KML/KMZ)
-           ============================================================ */
-        var uploadLayer = new ol.layer.Vector({
-            source: new ol.source.Vector(),
-            zIndex: 20,
-            style: function(feature) {
-                var color = feature.get('lineColor') || '#38bdf8';
-                var t = feature.getGeometry().getType();
-                if (t === 'LineString' || t === 'MultiLineString') {
-                    return new ol.style.Style({
-                        stroke: new ol.style.Stroke({ color: color, width: 4, lineCap: 'round', lineJoin: 'round' })
-                    });
-                }
-                if (t === 'Polygon' || t === 'MultiPolygon') {
-                    return new ol.style.Style({
-                        stroke: new ol.style.Stroke({ color: color, width: 2 }),
-                        fill: new ol.style.Fill({ color: color + '33' })
-                    });
-                }
-                return new ol.style.Style({
-                    image: new ol.style.Circle({
-                        radius: 7,
-                        fill: new ol.style.Fill({ color: color }),
-                        stroke: new ol.style.Stroke({ color: '#fff', width: 2 })
-                    })
-                });
-            }
-        });
-
-        /* ============================================================
            DRAW LAYER (garis manual)
            ============================================================ */
         var drawSource = new ol.source.Vector();
@@ -515,8 +474,7 @@
                 return new ol.style.Style({
                     stroke: new ol.style.Stroke({
                         color: color, width: 4,
-                        lineCap: 'round', lineJoin: 'round',
-                        lineDash: feature.get('isDraft') ? [8, 6] : null
+                        lineCap: 'round', lineJoin: 'round'
                     }),
                     image: new ol.style.Circle({
                         radius: 5,
@@ -545,10 +503,13 @@
            ============================================================ */
         var map = new ol.Map({
             target: 'map',
-            layers: [baseLayerStandard, baseLayerSatellite, drawLayer, markerLayer, uploadLayer, draftLayer],
+            layers: [baseLayerStandard, baseLayerSatellite, drawLayer, markerLayer, draftLayer],
             view: view,
             controls: ol.control.defaults.defaults({ attribution: true, zoom: false, rotate: false })
         });
+
+        // Upload layers di-manage dinamis — di-add ke atas marker
+        var uploadLayers = []; // array of { meta, layer }
 
         var attrControl = map.getControls().getArray().find(function(c) { return c instanceof ol.control.Attribution; });
         if (attrControl) attrControl.setPosition('bottom-right');
@@ -578,20 +539,18 @@
         }
 
         /* ============================================================
-           STORAGE
+           STORAGE KEYS
            ============================================================ */
         var STORAGE_KEY = 'bucin_data';
-        var UPLOAD_STORAGE_KEY = 'bucin_uploads';
-        var DRAW_STORAGE_KEY = 'bucin_drawings';
+        var UPLOAD_STORAGE_KEY = 'bucin_uploads_v2';
+        var DRAW_STORAGE_KEY = 'bucin_drawings_v2';
 
         var markers = [];
         var markersByType = { focut: [], temuan: [], opm: [], joint: [], handhole: [] };
         var markerVisibility = { focut: true, temuan: true, opm: true, joint: true, handhole: true };
 
-        // Uploads metadata: { id, name, color, visible, featureIds: [] }
-        var uploads = [];
-        // Drawings metadata
-        var drawings = [];
+        var uploads = [];  // { id, name, color, visible, fileName, featureCount, geojson }
+        var drawings = []; // { id, name, color, visible, coords4326 }
 
         /* ============================================================
            POPUP
@@ -622,6 +581,9 @@
             setTimeout(function() { toast.classList.remove('show'); }, 3500);
         }
 
+        /* ============================================================
+           MARKER DATA
+           ============================================================ */
         function getData(){
             try {
                 var raw = localStorage.getItem(STORAGE_KEY);
@@ -691,10 +653,8 @@
         }
 
         /* ============================================================
-           PANEL UPLOAD
+           PANEL TOGGLE
            ============================================================ */
-        var pickedFile = null;
-
         function toggleUploadPanel() {
             var panel = document.getElementById('uploadPanel');
             var drawPanelEl = document.getElementById('drawPanel');
@@ -718,23 +678,32 @@
             document.getElementById('btnDraw').classList.toggle('active', panel.classList.contains('show'));
         }
 
+        /* ============================================================
+           UPLOAD — Form handling
+           ============================================================ */
+        var pickedFile = null;
+
         document.getElementById('kmlFileInput').addEventListener('change', function(e){
             var file = e.target.files[0];
             if (!file) return;
             pickedFile = file;
-            document.getElementById('pickedFileName').textContent = file.name;
-            document.getElementById('pickedFileName').style.color = '#10b981';
 
-            // Auto-fill nama dari nama file (tanpa ekstensi)
+            // Update UI file picker
+            var picker = document.getElementById('filePicker');
+            picker.classList.add('has-file');
+            document.getElementById('filePickerIcon').className = 'fa-solid fa-file-circle-check';
+            document.getElementById('filePickerLabel').textContent = 'File terpilih:';
+            document.getElementById('pickedFileName').textContent = file.name;
+
+            // Auto-fill nama line
             var nameInput = document.getElementById('uploadLineName');
-            if (!nameInput.value) {
-                var baseName = file.name.replace(/\.(kml|kmz)$/i, '');
-                nameInput.value = baseName;
+            if (!nameInput.value.trim()) {
+                nameInput.value = file.name.replace(/\.(kml|kmz)$/i, '');
             }
 
             document.getElementById('btnProcessUpload').disabled = false;
-            document.getElementById('uploadInfo').textContent = 'File siap diupload';
-            e.target.value = ''; // reset supaya bisa pilih file yang sama lagi
+            setUploadInfo('File siap diupload', 'success');
+            e.target.value = ''; // reset agar bisa pilih file yang sama lagi
         });
 
         document.getElementById('uploadLineColor').addEventListener('input', function(e) {
@@ -745,15 +714,26 @@
             document.getElementById('drawColorPreview').textContent = e.target.value;
         });
 
+        function setUploadInfo(msg, type) {
+            var el = document.getElementById('uploadInfo');
+            el.textContent = msg;
+            el.className = 'info-count' + (type ? ' ' + type : '');
+        }
+
         function resetUploadForm() {
             pickedFile = null;
+
+            var picker = document.getElementById('filePicker');
+            picker.classList.remove('has-file');
+            document.getElementById('filePickerIcon').className = 'fa-solid fa-file-circle-plus';
+            document.getElementById('filePickerLabel').textContent = 'Klik untuk pilih file';
             document.getElementById('pickedFileName').textContent = 'Belum ada file';
-            document.getElementById('pickedFileName').style.color = '#fff';
+
             document.getElementById('uploadLineName').value = '';
             document.getElementById('uploadLineColor').value = '#38bdf8';
             document.getElementById('uploadColorPreview').textContent = '#38bdf8';
             document.getElementById('btnProcessUpload').disabled = true;
-            document.getElementById('uploadInfo').textContent = 'Pilih file dulu, lalu isi nama';
+            setUploadInfo('Pilih file dulu, lalu isi nama');
         }
 
         function processUpload() {
@@ -765,29 +745,45 @@
             }
             var lineColor = document.getElementById('uploadLineColor').value || '#38bdf8';
 
-            var fileName = pickedFile.name;
-            var isKMZ = fileName.toLowerCase().endsWith('.kmz');
+            setUploadInfo('Memproses file...', '');
+            document.getElementById('btnProcessUpload').disabled = true;
 
-            document.getElementById('uploadInfo').textContent = 'Memproses...';
+            var isKMZ = pickedFile.name.toLowerCase().endsWith('.kmz');
 
             if (isKMZ) {
                 var reader = new FileReader();
                 reader.onload = function(ev) {
-                    JSZip.loadAsync(ev.target.result).then(function(zip){
-                        var kmlName = null;
-                        zip.forEach(function(p){ if (!kmlName && p.toLowerCase().endsWith('.kml')) kmlName = p; });
-                        if (!kmlName) { showToast('KMZ tidak berisi KML', 'error'); return; }
-                        return zip.file(kmlName).async('string');
-                    }).then(function(text){
-                        if (text) renderUploadedKML(text, lineName, lineColor);
-                    }).catch(function(err){ showToast('Gagal baca KMZ: ' + err.message, 'error'); });
+                    JSZip.loadAsync(ev.target.result)
+                        .then(function(zip){
+                            var kmlName = null;
+                            zip.forEach(function(p){
+                                if (!kmlName && p.toLowerCase().endsWith('.kml')) kmlName = p;
+                            });
+                            if (!kmlName) throw new Error('KMZ tidak berisi file KML');
+                            return zip.file(kmlName).async('string');
+                        })
+                        .then(function(text){
+                            if (text) renderUploadedKML(text, lineName, lineColor);
+                            else throw new Error('KML kosong');
+                        })
+                        .catch(function(err){
+                            showToast('Gagal baca KMZ: ' + err.message, 'error');
+                            setUploadInfo('Gagal: ' + err.message, 'error');
+                            document.getElementById('btnProcessUpload').disabled = false;
+                        });
                 };
-                reader.onerror = function() { showToast('Gagal baca file', 'error'); };
+                reader.onerror = function() {
+                    showToast('Gagal baca file', 'error');
+                    setUploadInfo('Gagal baca file', 'error');
+                };
                 reader.readAsArrayBuffer(pickedFile);
             } else {
                 var reader = new FileReader();
                 reader.onload = function(ev) { renderUploadedKML(ev.target.result, lineName, lineColor); };
-                reader.onerror = function() { showToast('Gagal baca file', 'error'); };
+                reader.onerror = function() {
+                    showToast('Gagal baca file', 'error');
+                    setUploadInfo('Gagal baca file', 'error');
+                };
                 reader.readAsText(pickedFile);
             }
         }
@@ -797,21 +793,17 @@
                 var parser = new DOMParser();
                 var kmlDom = parser.parseFromString(kmlText, 'text/xml');
                 if (kmlDom.querySelector('parsererror')) {
-                    showToast('KML tidak valid (parse error)', 'error');
-                    document.getElementById('uploadInfo').textContent = 'Gagal parse';
-                    return;
+                    throw new Error('Format XML tidak valid');
                 }
 
                 var lib = window.toGeoJSON || window.togeojson;
-                if (!lib) { showToast('Library togeojson tidak tersedia', 'error'); return; }
+                if (!lib) throw new Error('Library togeojson tidak tersedia');
 
                 var geojson = lib.kml(kmlDom);
                 console.log('[UPLOAD] GeoJSON:', geojson);
 
                 if (!geojson || !geojson.features || !geojson.features.length) {
-                    showToast('KML tidak berisi fitur valid', 'error');
-                    document.getElementById('uploadInfo').textContent = 'KML kosong';
-                    return;
+                    throw new Error('KML tidak berisi fitur valid');
                 }
 
                 var format = new ol.format.GeoJSON();
@@ -822,25 +814,53 @@
 
                 console.log('[UPLOAD] Fitur di-parse:', features.length);
 
-                // Beri ID upload
+                if (!features.length) throw new Error('Tidak ada fitur yang bisa dibaca');
+
                 var uploadId = 'up_' + Date.now() + '_' + Math.random().toString(36).substr(2, 6);
 
+                // Set popup untuk setiap fitur
                 features.forEach(function(f){
                     f.set('uploadId', uploadId);
-                    f.set('lineColor', lineColor);
-                    f.set('lineName', lineName);
-                    var name = f.get('name') || (f.getProperties() && f.getProperties().name) || 'Unnamed';
-                    var html = '<div class="popup-title" style="color:' + lineColor + ';">' +
-                                    '<i class="fa-solid fa-cloud-arrow-up"></i> ' + lineName +
-                                '</div>' +
-                                '<div class="popup-row"><b>Feature:</b> ' + name + '</div>' +
-                                '<div class="popup-row"><b>Tipe:</b> ' + f.getGeometry().getType() + '</div>' +
-                                '<span class="popup-badge" style="background:' + lineColor + '22;color:' + lineColor + ';border:1px solid ' + lineColor + ';">UPLOADED</span>';
-                    f.set('popupHtml', html);
+                    var name = f.get('name') || (f.getProperties() && f.getProperties().name) || 'Feature';
+                    f.set('popupHtml',
+                        '<div class="popup-title" style="color:' + lineColor + ';">' +
+                            '<i class="fa-solid fa-cloud-arrow-up"></i> ' + lineName +
+                        '</div>' +
+                        '<div class="popup-row"><b>Feature:</b> ' + name + '</div>' +
+                        '<div class="popup-row"><b>Tipe:</b> ' + f.getGeometry().getType() + '</div>' +
+                        '<span class="popup-badge" style="background:' + lineColor + '22;color:' + lineColor + ';border:1px solid ' + lineColor + ';">UPLOADED</span>'
+                    );
                 });
 
-                // Tambahkan ke layer
-                uploadLayer.getSource().addFeatures(features);
+                // Buat layer terpisah untuk upload ini
+                var source = new ol.source.Vector({ features: features });
+                var layer = new ol.layer.Vector({
+                    source: source,
+                    zIndex: 20,
+                    style: function(f) {
+                        var t = f.getGeometry().getType();
+                        if (t === 'LineString' || t === 'MultiLineString') {
+                            return new ol.style.Style({
+                                stroke: new ol.style.Stroke({ color: lineColor, width: 4, lineCap: 'round', lineJoin: 'round' })
+                            });
+                        }
+                        if (t === 'Polygon' || t === 'MultiPolygon') {
+                            return new ol.style.Style({
+                                stroke: new ol.style.Stroke({ color: lineColor, width: 2 }),
+                                fill: new ol.style.Fill({ color: lineColor + '33' })
+                            });
+                        }
+                        return new ol.style.Style({
+                            image: new ol.style.Circle({
+                                radius: 7,
+                                fill: new ol.style.Fill({ color: lineColor }),
+                                stroke: new ol.style.Stroke({ color: '#fff', width: 2 })
+                            })
+                        });
+                    }
+                });
+
+                map.addLayer(layer);
 
                 // Simpan metadata
                 var uploadMeta = {
@@ -848,25 +868,28 @@
                     name: lineName,
                     color: lineColor,
                     visible: true,
-                    fileName: pickedFile ? pickedFile.name : 'unknown',
-                    featureCount: features.length
+                    fileName: pickedFile.name,
+                    featureCount: features.length,
+                    geojson: geojson // simpan untuk restore
                 };
                 uploads.push(uploadMeta);
+                uploadLayers.push({ meta: uploadMeta, layer: layer });
+
                 saveUploads();
                 renderLegendUploads();
 
-                // Zoom ke extent upload baru
+                // Zoom ke extent
                 try {
-                    var ext = uploadLayer.getSource().getExtent();
+                    var ext = source.getExtent();
                     if (ext && isFinite(ext[0]) && (ext[0] !== ext[2])) {
                         view.fit(ext, { padding: [80, 80, 80, 80], duration: 600, maxZoom: 16 });
                     }
                 } catch(e) {}
 
-                document.getElementById('uploadInfo').textContent = '✓ ' + features.length + ' fitur berhasil diupload';
+                setUploadInfo('✓ ' + features.length + ' fitur berhasil diupload', 'success');
                 showToast('Upload "' + lineName + '" berhasil (' + features.length + ' fitur)', 'success');
 
-                // Reset form setelah berhasil
+                // Auto-close panel setelah 1.2 detik
                 setTimeout(function() {
                     resetUploadForm();
                     toggleUploadPanel();
@@ -875,7 +898,8 @@
             } catch(err) {
                 console.error('KML parse error:', err);
                 showToast('Gagal parse KML: ' + err.message, 'error');
-                document.getElementById('uploadInfo').textContent = 'Error: ' + err.message;
+                setUploadInfo('Error: ' + err.message, 'error');
+                document.getElementById('btnProcessUpload').disabled = false;
             }
         }
 
@@ -885,26 +909,31 @@
         function renderLegendUploads() {
             var container = document.getElementById('uploadedLinesList');
             if (uploads.length === 0) {
-                container.innerHTML = '<div style="font-size: 8.5px; color: #64748b; font-style: italic; padding: 2px 0;">Belum ada upload</div>';
+                container.innerHTML = '<div class="empty-msg">Belum ada upload</div>';
                 return;
             }
             var html = '';
             uploads.forEach(function(u) {
-                html += '<div class="li" data-upload-id="' + u.id + '">' +
+                html += '<div class="li' + (u.visible ? '' : ' off') + '" data-upload-id="' + u.id + '">' +
                     '<span class="line-swatch" style="background:' + u.color + ';"></span>' +
                     '<span class="label-text" title="' + u.name + ' (' + u.featureCount + ' fitur)">' + u.name + '</span>' +
                     '<span class="count">' + u.featureCount + '</span>' +
-                    '<span class="remove-line" onclick="removeUpload(event, \'' + u.id + '\')" title="Hapus">✕</span>' +
+                    '<span class="remove-line" data-remove="' + u.id + '" title="Hapus">✕</span>' +
                 '</div>';
             });
             container.innerHTML = html;
 
-            // Bind click toggle
+            // Bind events
             container.querySelectorAll('.li[data-upload-id]').forEach(function(li) {
                 li.addEventListener('click', function(e) {
-                    if (e.target.classList.contains('remove-line')) return;
-                    var id = li.dataset.uploadId;
-                    toggleUploadVisibility(id);
+                    if (e.target.dataset.remove) return;
+                    toggleUploadVisibility(li.dataset.uploadId);
+                });
+            });
+            container.querySelectorAll('.remove-line[data-remove]').forEach(function(btn) {
+                btn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    removeUpload(btn.dataset.remove);
                 });
             });
         }
@@ -914,77 +943,42 @@
             if (!u) return;
             u.visible = !u.visible;
 
-            uploadLayer.getSource().getFeatures().forEach(function(f) {
-                if (f.get('uploadId') === id) {
-                    // Kita tidak bisa toggle per-feature visibility di OL 9 tanpa
-                    // bikin style custom. Solusi: hapus/tambah dari source.
-                }
-            });
+            var entry = uploadLayers.find(function(x){ return x.meta.id === id; });
+            if (entry) entry.layer.setVisible(u.visible);
 
-            // Cara paling gampang: rebuild layer features
-            rebuildUploadLayer();
-
-            // Update UI
-            var li = document.querySelector('.li[data-upload-id="' + id + '"]');
-            if (li) li.classList.toggle('off', !u.visible);
+            saveUploads();
+            renderLegendUploads();
         }
 
-        function rebuildUploadLayer() {
-            var src = uploadLayer.getSource();
-            // Simpan fitur yang visible
-            var toKeep = src.getFeatures().filter(function(f) {
-                var u = uploads.find(function(x){ return x.id === f.get('uploadId'); });
-                return u && u.visible;
-            });
-            src.clear();
-            toKeep.forEach(function(f) { src.addFeature(f); });
-        }
-
-        function removeUpload(e, id) {
-            e.stopPropagation();
+        function removeUpload(id) {
             if (!confirm('Hapus line upload ini?')) return;
 
-            // Hapus dari metadata
-            uploads = uploads.filter(function(u){ return u.id !== id; });
-
-            // Hapus fitur dari layer
-            var src = uploadLayer.getSource();
-            var toRemove = src.getFeatures().filter(function(f){ return f.get('uploadId') === id; });
-            toRemove.forEach(function(f){ src.removeFeature(f); });
+            var entry = uploadLayers.find(function(x){ return x.meta.id === id; });
+            if (entry) {
+                map.removeLayer(entry.layer);
+                uploadLayers = uploadLayers.filter(function(x){ return x.meta.id !== id; });
+            }
+            uploads = uploads.filter(function(x){ return x.id !== id; });
 
             saveUploads();
             renderLegendUploads();
             showToast('Line upload dihapus', 'success');
         }
 
-        function clearAllUploads() {
-            if (uploads.length === 0) { showToast('Tidak ada upload', 'info'); return; }
-            if (!confirm('Hapus semua line upload?')) return;
-            uploadLayer.getSource().clear();
-            uploads = [];
-            saveUploads();
-            renderLegendUploads();
-            showToast('Semua upload dihapus', 'success');
-        }
-
         function saveUploads() {
             try {
-                // Simpan metadata + geometry supaya bisa restore setelah refresh
-                var dataToSave = uploads.map(function(u) {
-                    var feats = uploadLayer.getSource().getFeatures().filter(function(f){ return f.get('uploadId') === u.id; });
-                    var format = new ol.format.GeoJSON();
-                    var geojson = JSON.parse(format.writeFeatures(feats, {
-                        dataProjection: 'EPSG:4326',
-                        featureProjection: 'EPSG:3857'
-                    }));
+                var data = uploads.map(function(u) {
                     return {
                         id: u.id, name: u.name, color: u.color,
-                        visible: u.visible, fileName: u.fileName, featureCount: u.featureCount,
-                        geojson: geojson
+                        visible: u.visible, fileName: u.fileName,
+                        featureCount: u.featureCount, geojson: u.geojson
                     };
                 });
-                localStorage.setItem(UPLOAD_STORAGE_KEY, JSON.stringify(dataToSave));
-            } catch(e) { console.warn('Gagal simpan uploads:', e); }
+                localStorage.setItem(UPLOAD_STORAGE_KEY, JSON.stringify(data));
+            } catch(e) {
+                console.warn('Gagal simpan uploads:', e);
+                showToast('Peringatan: data terlalu besar untuk localStorage', 'error');
+            }
         }
 
         function loadUploads() {
@@ -993,33 +987,69 @@
                 if (!raw) return;
                 var data = JSON.parse(raw);
                 data.forEach(function(u) {
-                    if (!u.geojson || !u.geojson.features) return;
+                    if (!u.geojson || !u.geojson.features || !u.geojson.features.length) return;
+
                     var format = new ol.format.GeoJSON();
                     var features = format.readFeatures(u.geojson, {
                         dataProjection: 'EPSG:4326',
                         featureProjection: 'EPSG:3857'
                     });
-                    features.forEach(function(f) {
+
+                    features.forEach(function(f){
                         f.set('uploadId', u.id);
-                        f.set('lineColor', u.color);
-                        f.set('lineName', u.name);
                         var name = f.get('name') || 'Feature';
                         f.set('popupHtml',
                             '<div class="popup-title" style="color:' + u.color + ';">' +
                                 '<i class="fa-solid fa-cloud-arrow-up"></i> ' + u.name +
                             '</div>' +
                             '<div class="popup-row"><b>Feature:</b> ' + name + '</div>' +
+                            '<div class="popup-row"><b>Tipe:</b> ' + f.getGeometry().getType() + '</div>' +
                             '<span class="popup-badge" style="background:' + u.color + '22;color:' + u.color + ';border:1px solid ' + u.color + ';">UPLOADED</span>'
                         );
                     });
-                    if (u.visible) uploadLayer.getSource().addFeatures(features);
+
+                    var source = new ol.source.Vector({ features: features });
+                    var layer = new ol.layer.Vector({
+                        source: source,
+                        zIndex: 20,
+                        visible: u.visible !== false,
+                        style: function(f) {
+                            var t = f.getGeometry().getType();
+                            var c = u.color;
+                            if (t === 'LineString' || t === 'MultiLineString') {
+                                return new ol.style.Style({
+                                    stroke: new ol.style.Stroke({ color: c, width: 4, lineCap: 'round', lineJoin: 'round' })
+                                });
+                            }
+                            if (t === 'Polygon' || t === 'MultiPolygon') {
+                                return new ol.style.Style({
+                                    stroke: new ol.style.Stroke({ color: c, width: 2 }),
+                                    fill: new ol.style.Fill({ color: c + '33' })
+                                });
+                            }
+                            return new ol.style.Style({
+                                image: new ol.style.Circle({
+                                    radius: 7,
+                                    fill: new ol.style.Fill({ color: c }),
+                                    stroke: new ol.style.Stroke({ color: '#fff', width: 2 })
+                                })
+                            });
+                        }
+                    });
+
+                    map.addLayer(layer);
+
                     uploads.push({
                         id: u.id, name: u.name, color: u.color,
-                        visible: u.visible, fileName: u.fileName, featureCount: u.featureCount
+                        visible: u.visible !== false, fileName: u.fileName,
+                        featureCount: u.featureCount, geojson: u.geojson
                     });
+                    uploadLayers.push({ meta: uploads[uploads.length - 1], layer: layer });
                 });
                 renderLegendUploads();
-            } catch(e) { console.warn('Gagal load uploads:', e); }
+            } catch(e) {
+                console.warn('Gagal load uploads:', e);
+            }
         }
 
         /* ============================================================
@@ -1027,23 +1057,21 @@
            ============================================================ */
         var isDrawing = false;
         var currentDrawCoords = [];
-        var drawNameInput = document.getElementById('drawName');
-        var drawColorInput = document.getElementById('drawColor');
-        var drawInfo = document.getElementById('drawInfo');
-        var btnStartDraw = document.getElementById('btnStartDraw');
-        var btnFinishDraw = document.getElementById('btnFinishDraw');
-        var btnCancelDraw = document.getElementById('btnCancelDraw');
-        var btnUndoPoint = document.getElementById('btnUndoPoint');
 
         function startDrawing() {
             isDrawing = true;
             currentDrawCoords = [];
             draftSource.clear();
-            btnStartDraw.disabled = true;
-            btnFinishDraw.disabled = true;
-            btnCancelDraw.disabled = false;
-            btnUndoPoint.disabled = true;
-            drawInfo.textContent = 'Klik di peta untuk menambah titik...';
+
+            document.getElementById('btnStartDraw').disabled = true;
+            document.getElementById('btnFinishDraw').disabled = true;
+            document.getElementById('btnCancelDraw').disabled = false;
+            document.getElementById('btnUndoPoint').disabled = true;
+
+            var infoEl = document.getElementById('drawInfo');
+            infoEl.textContent = 'Klik di peta untuk menambah titik...';
+            infoEl.className = 'info-count';
+
             map.getTargetElement().style.cursor = 'crosshair';
             showToast('Mode gambar aktif — klik di peta', 'info');
         }
@@ -1054,8 +1082,8 @@
                 return;
             }
 
-            var name = (drawNameInput.value || '').trim() || ('Garis ' + new Date().toLocaleTimeString('id-ID'));
-            var color = drawColorInput.value || '#38bdf8';
+            var name = (document.getElementById('drawName').value || '').trim() || ('Garis ' + new Date().toLocaleTimeString('id-ID'));
+            var color = document.getElementById('drawColor').value || '#38bdf8';
 
             var coords4326 = currentDrawCoords.map(function(c) {
                 return ol.proj.toLonLat(c);
@@ -1067,8 +1095,7 @@
                 drawId: drawId,
                 name: name,
                 color: color,
-                coords4326: coords4326,
-                isDraft: false
+                coords4326: coords4326
             });
             feature.set('popupHtml',
                 '<div class="popup-title" style="color:' + color + ';">' +
@@ -1081,7 +1108,6 @@
 
             drawSource.addFeature(feature);
 
-            // Simpan metadata
             drawings.push({
                 id: drawId, name: name, color: color,
                 visible: true, coords4326: coords4326
@@ -1102,9 +1128,9 @@
             if (currentDrawCoords.length === 0) return;
             currentDrawCoords.pop();
             updateDraft();
-            btnFinishDraw.disabled = currentDrawCoords.length < 2;
-            btnUndoPoint.disabled = currentDrawCoords.length === 0;
-            drawInfo.textContent = 'Titik: ' + currentDrawCoords.length;
+            document.getElementById('btnFinishDraw').disabled = currentDrawCoords.length < 2;
+            document.getElementById('btnUndoPoint').disabled = currentDrawCoords.length === 0;
+            document.getElementById('drawInfo').textContent = 'Titik: ' + currentDrawCoords.length;
         }
 
         function updateDraft() {
@@ -1122,35 +1148,46 @@
             isDrawing = false;
             currentDrawCoords = [];
             draftSource.clear();
-            btnStartDraw.disabled = false;
-            btnFinishDraw.disabled = true;
-            btnCancelDraw.disabled = true;
-            btnUndoPoint.disabled = true;
-            drawInfo.textContent = 'Klik "Mulai" untuk menggambar';
+
+            document.getElementById('btnStartDraw').disabled = false;
+            document.getElementById('btnFinishDraw').disabled = true;
+            document.getElementById('btnCancelDraw').disabled = true;
+            document.getElementById('btnUndoPoint').disabled = true;
+
+            var infoEl = document.getElementById('drawInfo');
+            infoEl.textContent = 'Klik "Mulai" untuk menggambar';
+            infoEl.className = 'info-count';
+
             map.getTargetElement().style.cursor = '';
         }
 
         function renderLegendDrawings() {
             var container = document.getElementById('drawnLinesList');
             if (drawings.length === 0) {
-                container.innerHTML = '<div style="font-size: 8.5px; color: #64748b; font-style: italic; padding: 2px 0;">Belum ada gambar</div>';
+                container.innerHTML = '<div class="empty-msg">Belum ada gambar</div>';
                 return;
             }
             var html = '';
             drawings.forEach(function(d) {
-                html += '<div class="li" data-draw-id="' + d.id + '">' +
+                html += '<div class="li' + (d.visible ? '' : ' off') + '" data-draw-id="' + d.id + '">' +
                     '<span class="line-swatch" style="background:' + d.color + ';"></span>' +
                     '<span class="label-text" title="' + d.name + '">' + d.name + '</span>' +
                     '<span class="count">' + d.coords4326.length + '</span>' +
-                    '<span class="remove-line" onclick="removeDrawing(event, \'' + d.id + '\')" title="Hapus">✕</span>' +
+                    '<span class="remove-line" data-remove="' + d.id + '" title="Hapus">✕</span>' +
                 '</div>';
             });
             container.innerHTML = html;
 
             container.querySelectorAll('.li[data-draw-id]').forEach(function(li) {
                 li.addEventListener('click', function(e) {
-                    if (e.target.classList.contains('remove-line')) return;
+                    if (e.target.dataset.remove) return;
                     toggleDrawingVisibility(li.dataset.drawId);
+                });
+            });
+            container.querySelectorAll('.remove-line[data-remove]').forEach(function(btn) {
+                btn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    removeDrawing(btn.dataset.remove);
                 });
             });
         }
@@ -1160,44 +1197,40 @@
             if (!d) return;
             d.visible = !d.visible;
 
-            var src = drawSource;
-            if (d.visible) {
-                // Re-add feature jika belum ada
-                var exists = src.getFeatures().some(function(f){ return f.get('drawId') === id; });
-                if (!exists) {
-                    var coords3857 = d.coords4326.map(function(c){ return ol.proj.fromLonLat(c); });
-                    var feature = new ol.Feature({
-                        geometry: new ol.geom.LineString(coords3857),
-                        drawId: id, name: d.name, color: d.color,
-                        coords4326: d.coords4326, isDraft: false
-                    });
-                    feature.set('popupHtml',
-                        '<div class="popup-title" style="color:' + d.color + ';">' +
-                            '<i class="fa-solid fa-pen"></i> ' + d.name +
-                        '</div>' +
-                        '<div class="popup-row"><b>Total titik:</b> ' + d.coords4326.length + '</div>' +
-                        '<span class="popup-badge" style="background:' + d.color + '22;color:' + d.color + ';border:1px solid ' + d.color + ';">MANUAL</span>'
-                    );
-                    src.addFeature(feature);
-                }
-            } else {
-                var toRemove = src.getFeatures().filter(function(f){ return f.get('drawId') === id; });
-                toRemove.forEach(function(f){ src.removeFeature(f); });
+            var features = drawSource.getFeatures().filter(function(f){ return f.get('drawId') === id; });
+            features.forEach(function(f){
+                if (d.visible) drawSource.addFeature(f);
+                else drawSource.removeFeature(f);
+            });
+
+            // Kalau hidden dan tidak ada di source, kita perlu re-add manual
+            if (d.visible && features.length === 0) {
+                var coords3857 = d.coords4326.map(function(c){ return ol.proj.fromLonLat(c); });
+                var feature = new ol.Feature({
+                    geometry: new ol.geom.LineString(coords3857),
+                    drawId: id, name: d.name, color: d.color,
+                    coords4326: d.coords4326
+                });
+                feature.set('popupHtml',
+                    '<div class="popup-title" style="color:' + d.color + ';">' +
+                        '<i class="fa-solid fa-pen"></i> ' + d.name +
+                    '</div>' +
+                    '<div class="popup-row"><b>Total titik:</b> ' + d.coords4326.length + '</div>' +
+                    '<span class="popup-badge" style="background:' + d.color + '22;color:' + d.color + ';border:1px solid ' + d.color + ';">MANUAL</span>'
+                );
+                drawSource.addFeature(feature);
             }
 
-            var li = document.querySelector('.li[data-draw-id="' + id + '"]');
-            if (li) li.classList.toggle('off', !d.visible);
+            saveDrawings();
+            renderLegendDrawings();
         }
 
-        function removeDrawing(e, id) {
-            e.stopPropagation();
+        function removeDrawing(id) {
             if (!confirm('Hapus garis ini?')) return;
 
             drawings = drawings.filter(function(d){ return d.id !== id; });
-
-            var src = drawSource;
-            var toRemove = src.getFeatures().filter(function(f){ return f.get('drawId') === id; });
-            toRemove.forEach(function(f){ src.removeFeature(f); });
+            var toRemove = drawSource.getFeatures().filter(function(f){ return f.get('drawId') === id; });
+            toRemove.forEach(function(f){ drawSource.removeFeature(f); });
 
             saveDrawings();
             renderLegendDrawings();
@@ -1215,14 +1248,16 @@
                 var raw = localStorage.getItem(DRAW_STORAGE_KEY);
                 if (!raw) return;
                 drawings = JSON.parse(raw);
+
                 drawings.forEach(function(d) {
                     if (!d.coords4326 || d.coords4326.length < 2) return;
                     if (!d.visible) return;
+
                     var coords3857 = d.coords4326.map(function(c){ return ol.proj.fromLonLat(c); });
                     var feature = new ol.Feature({
                         geometry: new ol.geom.LineString(coords3857),
                         drawId: d.id, name: d.name, color: d.color,
-                        coords4326: d.coords4326, isDraft: false
+                        coords4326: d.coords4326
                     });
                     feature.set('popupHtml',
                         '<div class="popup-title" style="color:' + d.color + ';">' +
@@ -1238,15 +1273,17 @@
         }
 
         /* ============================================================
-           KLIK PETA
+           MAP CLICK HANDLER
            ============================================================ */
         map.on('singleclick', function(evt) {
             if (isDrawing) {
                 currentDrawCoords.push(evt.coordinate);
                 updateDraft();
-                btnUndoPoint.disabled = false;
-                if (currentDrawCoords.length >= 2) btnFinishDraw.disabled = false;
-                drawInfo.textContent = 'Titik: ' + currentDrawCoords.length + ' (klik "Selesai" untuk menyimpan)';
+                document.getElementById('btnUndoPoint').disabled = false;
+                if (currentDrawCoords.length >= 2) {
+                    document.getElementById('btnFinishDraw').disabled = false;
+                }
+                document.getElementById('drawInfo').textContent = 'Titik: ' + currentDrawCoords.length + ' (klik "Selesai" untuk menyimpan)';
                 return;
             }
 
