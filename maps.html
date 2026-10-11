@@ -83,7 +83,8 @@ html, body { height: 100%; overflow: hidden; font-family: var(--app-font); backg
 .maplibregl-popup-content { background: var(--surface-map-legend) !important; color: var(--text-main) !important; border: 1px solid var(--border-glow) !important; border-radius: 8px !important; padding: 8px 10px !important; max-width: 240px !important; font-size: 10px !important; }
 .maplibregl-popup-tip { border-top-color: var(--surface-map-legend) !important; border-bottom-color: var(--surface-map-legend) !important; }
 .maplibregl-popup-close-button { color: var(--primary-cyan) !important; font-size: 14px !important; }
-.maplibregl-ctrl-top-right, .maplibregl-ctrl-top-left, .maplibregl-ctrl-bottom-right, .maplibregl-ctrl-bottom-left { display: none !important; }
+.maplibregl-ctrl-top-right, .maplibregl-ctrl-top-left, .maplibregl-ctrl-bottom-right { display: none !important; }
+.maplibregl-ctrl-bottom-left { display: block !important; }
 #map-container canvas { outline: none !important; }
 
 .custom-map-controls { position: absolute; top: 12px; right: 12px; z-index: 1000; display: flex; flex-direction: column; gap: 6px; }
@@ -103,7 +104,6 @@ html, body { height: 100%; overflow: hidden; font-family: var(--app-font); backg
 .field-control { width: 100%; min-height: 44px; border: 1px solid var(--border-subtle); border-radius: 10px; background: var(--surface-input); padding: 0 14px; color: var(--text-main); outline: none; font-family: inherit; font-size: 13px; }
 .field-control:focus { border-color: var(--primary-cyan); box-shadow: 0 0 0 3px rgba(0, 217, 255, 0.15); }
 select.field-control option { background: var(--surface-3); color: var(--text-main); }
-input[type="color"].field-control { padding: 4px; height: 44px; cursor: pointer; }
 
 .btn-primary { background: var(--tech-gradient); color: var(--text-on-accent); border: none; border-radius: 20px; font-weight: 800; padding: 10px 22px; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 6px; box-shadow: 0 4px 20px rgba(0, 217, 255, 0.35); min-height: 44px; font-size: 13px; font-family: inherit; }
 .btn-primary:hover { filter: brightness(1.1); }
@@ -387,6 +387,7 @@ function escapeHtml(s) {
 function escapeXml(s) { return String(s).replace(/[<>&'"]/g, c => ({'<':'&lt;','>':'&gt;','&':'&amp;',"'":'&apos;','"':'&quot;'}[c])); }
 function showToast(msg, type) {
   type = type || '';
+  console.log('[TOAST ' + type.toUpperCase() + ']', msg);
   const ex = document.querySelector('.toast'); if (ex) ex.remove();
   const t = document.createElement('div');
   t.className = 'toast show ' + type;
@@ -411,50 +412,82 @@ function getHybridStyle() {
 /* ============================================================ INIT MAP ============================================================ */
 function initMap() {
   if (map) return;
-  map = new maplibregl.Map({
-    container: 'map-container',
-    style: getSatelliteStyle(),
-    center: [124.8410, 1.4930],
-    zoom: 11, maxZoom: 22, minZoom: 2,
-    attributionControl: false, antialias: true
-  });
-  map.on('load', () => {
-    setTimeout(() => map.resize(), 100);
-    loadMarkersFromData();
-    if (kmlDataCache) applyLineFilters();
-    else if (db) db.ref('kmlData').once('value').then(s => { kmlDataCache = s.val() || {}; applyLineFilters(); });
-  });
-  map.on('click', e => { if (drawMode) handleDrawClick(e); });
+  try {
+    map = new maplibregl.Map({
+      container: 'map-container',
+      style: getSatelliteStyle(),
+      center: [124.8410, 1.4930],
+      zoom: 11, maxZoom: 22, minZoom: 2,
+      attributionControl: false, antialias: true
+    });
+    map.on('load', () => {
+      console.log('[MAP] Loaded');
+      setTimeout(() => { try { map.resize(); } catch(e){} }, 100);
+      loadMarkersFromData();
+      if (kmlDataCache) applyLineFilters();
+      else if (db) {
+        db.ref('kmlData').once('value').then(s => {
+          kmlDataCache = s.val() || {};
+          applyLineFilters();
+        }).catch(err => console.warn('[KML] load error:', err));
+      }
+    });
+    map.on('error', e => console.error('[MAP ERROR]', e));
+    map.on('click', e => {
+      console.log('[MAP CLICK] drawMode:', drawMode);
+      if (drawMode) handleDrawClick(e);
+    });
+  } catch (e) {
+    console.error('Map init:', e);
+    showToast('Gagal inisialisasi peta: ' + e.message, 'error');
+  }
 }
 
 /* ============================================================ MARKERS ============================================================ */
 function loadMarkersFromData() {
   if (!map || !db) return;
-  markers.forEach(m => { try { m.remove(); } catch(e) {} });
+  markers.forEach(m => { try { m.remove(); } catch(e){} });
   markers = [];
   db.ref('data').once('value').then(snap => {
     const appData = snap.val() || {};
+    let totalMarkers = 0;
+
     POINT_CATEGORIES.forEach(cat => {
       const items = appData[cat.key] || {};
       Object.keys(items).forEach(k => {
         const it = items[k];
         let lat = null, lng = null;
+
         if (it.coords) {
-          const p = String(it.coords).split(',');
-          if (p.length === 2) { lat = parseFloat(p[0]); lng = parseFloat(p[1]); }
+          const parts = String(it.coords).split(',').map(x => x.trim());
+          if (parts.length >= 2) {
+            lat = parseFloat(parts[0]);
+            lng = parseFloat(parts[1]);
+          }
         }
-        if (lat !== null && lng !== null && !isNaN(lat) && !isNaN(lng)) {
+        if (isNaN(lat) || isNaN(lng)) {
+          lat = parseFloat(it.lat || it.latitude || '');
+          lng = parseFloat(it.lng || it.lon || it.longitude || '');
+        }
+
+        if (lat !== null && lng !== null && !isNaN(lat) && !isNaN(lng) && lat !== 0 && lng !== 0) {
           const el = document.createElement('div');
           el.className = 'ml-marker';
           el.style.cssText = 'width:14px;height:14px;border-radius:50%;border:2px solid #fff;box-shadow:0 0 8px ' + cat.color + ',0 2px 4px rgba(0,0,0,0.4);cursor:pointer;background:' + cat.color + ';';
-          const popup = new maplibregl.Popup({ offset: 14, closeButton: true, maxWidth: '230px' }).setHTML(buildMarkerPopup(cat.key, it, cat.color));
-          const marker = new maplibregl.Marker({ element: el, anchor: 'center' }).setLngLat([lng, lat]).setPopup(popup).addTo(map);
+          const popup = new maplibregl.Popup({ offset: 14, closeButton: true, maxWidth: '230px' })
+            .setHTML(buildMarkerPopup(cat.key, it, cat.color));
+          const marker = new maplibregl.Marker({ element: el, anchor: 'center' })
+            .setLngLat([lng, lat])
+            .setPopup(popup)
+            .addTo(map);
           markers.push(marker);
+          totalMarkers++;
         }
       });
     });
+    console.log('[MAP] Total markers:', totalMarkers);
     updateMapLegendCounts(appData);
-  });
+  }).catch(err => console.error('[MAP] markers error:', err));
 }
 function buildMarkerPopup(cat, it, color) {
   const row = (label, val, c) => (val === undefined || val === null || val === '') ? '' : '<div style="color:#94A3B8;font-weight:700;font-size:9px;">' + label + '</div><div style="color:' + (c || '#E2E8F0') + ';font-weight:600;word-break:break-word;font-size:10px;">' + escapeHtml(String(val)) + '</div>';
@@ -494,6 +527,7 @@ window.toggleMapLayer = function(type, evt) {
 window.toggleUploadPanel = function() {
   const p = document.getElementById('upload-panel');
   const dp = document.getElementById('draw-panel');
+  if (!p || !dp) return;
   dp.classList.remove('show');
   p.classList.toggle('show');
   if (p.classList.contains('show')) updateKmlCustomLineOptions();
@@ -501,12 +535,12 @@ window.toggleUploadPanel = function() {
 window.toggleDrawPanel = function() {
   const p = document.getElementById('draw-panel');
   const up = document.getElementById('upload-panel');
+  if (!p || !up) return;
   up.classList.remove('show');
   p.classList.toggle('show');
   if (p.classList.contains('show')) updateDrawCustomLineOptions();
 };
 
-/* Toggle custom input */
 document.getElementById('kml-line').addEventListener('change', function() {
   document.getElementById('kml-custom-line-wrap').classList.toggle('hidden', this.value !== '__custom__');
 });
@@ -559,27 +593,55 @@ window.submitKmlUpload = function() {
 
 function processKmlAndSave(kmlText, lineName) {
   return new Promise((resolve, reject) => {
+    console.log('[KML] Proses line:', lineName, '| length:', kmlText.length);
     if (!kmlText || typeof kmlText !== 'string') return reject(new Error('KML tidak valid'));
+
     const xml = new DOMParser().parseFromString(kmlText, 'text/xml');
-    const pms = xml.getElementsByTagName('Placemark');
-    if (pms.length === 0) return reject(new Error('Tidak ada LineString'));
+    if (xml.querySelector('parsererror')) return reject(new Error('XML tidak valid'));
+
     let allCoords = [];
+
+    const pms = xml.getElementsByTagName('Placemark');
+    console.log('[KML] Placemark count:', pms.length);
+
     for (let i = 0; i < pms.length; i++) {
       const ls = pms[i].getElementsByTagName('LineString')[0];
       if (!ls) continue;
       const c = ls.getElementsByTagName('coordinates')[0];
       if (!c) continue;
-      const coords = c.textContent.trim().split(/\s+/).map(x => { const a = x.split(','); return [parseFloat(a[0]), parseFloat(a[1])]; }).filter(x => !isNaN(x[0]) && !isNaN(x[1]));
+      const coords = c.textContent.trim().split(/\s+/)
+        .map(x => {
+          const a = x.split(',');
+          return [parseFloat(a[0]), parseFloat(a[1])];
+        })
+        .filter(x => !isNaN(x[0]) && !isNaN(x[1]));
       allCoords = allCoords.concat(coords);
     }
-    if (allCoords.length < 2) return reject(new Error('Koordinat kurang'));
+
+    // Fallback: cari semua tag coordinates
+    if (allCoords.length < 2) {
+      const allCoordTags = xml.getElementsByTagName('coordinates');
+      for (let i = 0; i < allCoordTags.length; i++) {
+        const coords = allCoordTags[i].textContent.trim().split(/\s+/)
+          .map(x => {
+            const a = x.split(',');
+            return [parseFloat(a[0]), parseFloat(a[1])];
+          })
+          .filter(x => !isNaN(x[0]) && !isNaN(x[1]));
+        allCoords = allCoords.concat(coords);
+      }
+    }
+
+    console.log('[KML] Total coords ditemukan:', allCoords.length);
+    if (allCoords.length < 2) return reject(new Error('Koordinat kurang dari 2 titik'));
+
     const kmlForLine = generateKmlFromCoords(allCoords, lineName, '');
     db.ref('kmlData/' + lineName).set(kmlForLine).then(() => {
       showToast('✅ Line "' + lineName + '" tersimpan', 'success');
       document.getElementById('kml-info').textContent = '✓ Berhasil disimpan';
       document.getElementById('kml-info').className = 'info-count success';
       setTimeout(() => {
-        toggleUploadPanel();
+        document.getElementById('upload-panel').classList.remove('show');
         document.getElementById('kml-file').value = '';
         document.getElementById('btn-kml-submit').disabled = true;
         document.getElementById('kml-info').textContent = 'Pilih line & file dulu';
@@ -701,37 +763,55 @@ function renderMapLineLegend() {
 
 /* ============================================================ DRAW LINE ============================================================ */
 window.startDrawing = function() {
+  console.log('[DRAW] startDrawing dipanggil');
   if (!map) { showToast('Peta belum siap', 'error'); return; }
+
   let lineName = document.getElementById('draw-line-name').value;
   if (lineName === '__custom__') {
     lineName = (document.getElementById('draw-custom-line-name').value || '').trim().toUpperCase();
     if (!lineName) { showToast('Isi nama line', 'error'); return; }
   }
-  if (!lineName) { showToast('Pilih line', 'error'); return; }
+  if (!lineName) { showToast('Pilih line dulu', 'error'); return; }
+
   const color = document.getElementById('draw-line-color').value;
   const width = parseInt(document.getElementById('draw-line-width').value) || 4;
   const notes = (document.getElementById('draw-line-notes').value || '').trim().toUpperCase();
-  drawCurrentLine = { name: lineName, color, width, notes, isCustom: document.getElementById('draw-line-name').value === '__custom__' };
+
+  drawCurrentLine = {
+    name: lineName, color, width, notes,
+    isCustom: document.getElementById('draw-line-name').value === '__custom__'
+  };
   drawMode = true;
   drawPoints = [];
-  drawMarkers.forEach(m => m.remove());
+  drawMarkers.forEach(m => { try { m.remove(); } catch(e){} });
   drawMarkers = [];
-  toggleDrawPanel();
+
+  document.getElementById('draw-panel').classList.remove('show');
   document.getElementById('draw-controls').classList.add('show');
   document.getElementById('draw-point-count').textContent = '0 titik';
   document.body.classList.add('draw-cursor-active');
-  showToast('Mode menggambar aktif', 'success');
+
+  console.log('[DRAW] Mode AKTIF untuk line:', lineName);
+  showToast('Mode menggambar aktif — klik di peta', 'success');
 };
 
 function handleDrawClick(e) {
   if (!drawMode) return;
   const lng = e.lngLat.lng, lat = e.lngLat.lat;
   drawPoints.push([lng, lat]);
+  console.log('[DRAW] Titik ditambah:', drawPoints.length);
+
   const el = document.createElement('div');
   el.className = 'draw-point';
   if (drawPoints.length === 1) el.classList.add('first');
-  else { const prev = drawMarkers[drawMarkers.length - 1]; if (prev) prev.getElement().classList.remove('last'); el.classList.add('last'); }
-  const marker = new maplibregl.Marker({ element: el, anchor: 'center' }).setLngLat([lng, lat]).addTo(map);
+  else {
+    const prev = drawMarkers[drawMarkers.length - 1];
+    if (prev) prev.getElement().classList.remove('last');
+    el.classList.add('last');
+  }
+  const marker = new maplibregl.Marker({ element: el, anchor: 'center' })
+    .setLngLat([lng, lat])
+    .addTo(map);
   drawMarkers.push(marker);
   updateDrawPreview();
   document.getElementById('draw-point-count').textContent = drawPoints.length + ' titik';
@@ -909,16 +989,23 @@ function updateDrawCustomLineOptions() {
 
 /* ============================================================ INIT ============================================================ */
 document.addEventListener('DOMContentLoaded', () => {
+  console.log('[BUCIN] DOMContentLoaded');
   if (typeof lucide !== 'undefined') lucide.createIcons();
 
-  document.getElementById('btn-draw-line').addEventListener('click', toggleDrawPanel);
-  document.getElementById('btn-upload-kml').addEventListener('click', toggleUploadPanel);
-  document.getElementById('btn-manage-kml').addEventListener('click', openKmlManager);
+  const btnDraw = document.getElementById('btn-draw-line');
+  if (btnDraw) btnDraw.onclick = (e) => { e.preventDefault(); toggleDrawPanel(); };
+
+  const btnUpload = document.getElementById('btn-upload-kml');
+  if (btnUpload) btnUpload.onclick = (e) => { e.preventDefault(); toggleUploadPanel(); };
+
+  const btnManage = document.getElementById('btn-manage-kml');
+  if (btnManage) btnManage.onclick = (e) => { e.preventDefault(); openKmlManager(); };
 
   initMap();
   loadKmlFromFirebase();
 
   window.addEventListener('resize', () => { if (map) map.resize(); });
+  console.log('[BUCIN] Siap');
 });
 </script>
 </body>
