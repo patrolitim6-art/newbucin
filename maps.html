@@ -401,8 +401,10 @@
 
     <script>
         /* ============================================================
-           BUCIN MAP
+           BUCIN MAP — VERSI FINAL
            ============================================================ */
+
+        console.log('[BUCIN] Script start');
 
         var MANADO_CENTER = [124.8421, 1.4748];
         var MANADO_ZOOM   = 11;
@@ -462,7 +464,7 @@
         });
 
         /* ============================================================
-           DRAW LAYER (garis manual)
+           DRAW LAYER
            ============================================================ */
         var drawSource = new ol.source.Vector();
         var drawLayer = new ol.layer.Vector({
@@ -483,7 +485,6 @@
             }
         });
 
-        // Layer draft (saat menggambar)
         var draftSource = new ol.source.Vector();
         var draftLayer = new ol.layer.Vector({
             source: draftSource, zIndex: 25,
@@ -507,11 +508,12 @@
             controls: ol.control.defaults.defaults({ attribution: true, zoom: false, rotate: false })
         });
 
-        // Array of upload layers — setiap upload punya layer sendiri
         var uploadLayers = [];
 
         var attrControl = map.getControls().getArray().find(function(c) { return c instanceof ol.control.Attribution; });
         if (attrControl) attrControl.setPosition('bottom-right');
+
+        console.log('[BUCIN] Map initialized');
 
         /* ============================================================
            ZOOM
@@ -541,8 +543,8 @@
            STORAGE
            ============================================================ */
         var STORAGE_KEY = 'bucin_data';
-        var UPLOAD_STORAGE_KEY = 'bucin_uploads_v3';
-        var DRAW_STORAGE_KEY = 'bucin_drawings_v3';
+        var UPLOAD_STORAGE_KEY = 'bucin_uploads_v4';
+        var DRAW_STORAGE_KEY = 'bucin_drawings_v4';
 
         var markers = [];
         var markersByType = { focut: [], temuan: [], opm: [], joint: [], handhole: [] };
@@ -685,6 +687,7 @@
         document.getElementById('kmlFileInput').addEventListener('change', function(e){
             var file = e.target.files[0];
             if (!file) return;
+            console.log('[UPLOAD] File dipilih:', file.name);
             pickedFile = file;
 
             var picker = document.getElementById('filePicker');
@@ -738,6 +741,7 @@
             if (!lineName) lineName = pickedFile.name.replace(/\.(kml|kmz)$/i, '');
             var lineColor = document.getElementById('uploadLineColor').value || '#38bdf8';
 
+            console.log('[UPLOAD] Memproses:', lineName, lineColor);
             setUploadInfo('Memproses file...', '');
             document.getElementById('btnProcessUpload').disabled = true;
 
@@ -761,6 +765,7 @@
                         if (!text) throw new Error('KML kosong');
                         renderUploadedKML(text, lineName, lineColor);
                     }).catch(function(err){
+                        console.error('[UPLOAD] Error KMZ:', err);
                         showToast('Gagal baca KMZ: ' + err.message, 'error');
                         setUploadInfo('Gagal: ' + err.message, 'error');
                         document.getElementById('btnProcessUpload').disabled = false;
@@ -783,6 +788,8 @@
                 if (!lib) throw new Error('Library togeojson tidak tersedia');
 
                 var geojson = lib.kml(kmlDom);
+                console.log('[UPLOAD] GeoJSON:', geojson);
+
                 if (!geojson || !geojson.features || !geojson.features.length) {
                     throw new Error('KML tidak berisi fitur valid');
                 }
@@ -795,6 +802,7 @@
 
                 if (!features.length) throw new Error('Tidak ada fitur yang bisa dibaca');
 
+                console.log('[UPLOAD] Fitur:', features.length);
                 var uploadId = 'up_' + Date.now() + '_' + Math.random().toString(36).substr(2, 6);
 
                 features.forEach(function(f){
@@ -810,7 +818,6 @@
                     );
                 });
 
-                // Buat layer baru untuk upload ini
                 var source = new ol.source.Vector({ features: features });
                 var layer = new ol.layer.Vector({
                     source: source,
@@ -841,13 +848,9 @@
                 map.addLayer(layer);
 
                 var uploadMeta = {
-                    id: uploadId,
-                    name: lineName,
-                    color: lineColor,
-                    visible: true,
-                    fileName: pickedFile.name,
-                    featureCount: features.length,
-                    geojson: geojson
+                    id: uploadId, name: lineName, color: lineColor,
+                    visible: true, fileName: pickedFile.name,
+                    featureCount: features.length, geojson: geojson
                 };
                 uploads.push(uploadMeta);
                 uploadLayers.push({ meta: uploadMeta, layer: layer });
@@ -855,7 +858,6 @@
                 saveUploads();
                 renderLegendUploads();
 
-                // Zoom ke extent
                 try {
                     var ext = source.getExtent();
                     if (ext && isFinite(ext[0]) && (ext[0] !== ext[2])) {
@@ -872,7 +874,7 @@
                 }, 1200);
 
             } catch(err) {
-                console.error('KML parse error:', err);
+                console.error('[UPLOAD] Error:', err);
                 showToast('Gagal parse KML: ' + err.message, 'error');
                 setUploadInfo('Error: ' + err.message, 'error');
                 document.getElementById('btnProcessUpload').disabled = false;
@@ -946,9 +948,7 @@
                     };
                 });
                 localStorage.setItem(UPLOAD_STORAGE_KEY, JSON.stringify(data));
-            } catch(e) {
-                console.warn('Gagal simpan uploads:', e);
-            }
+            } catch(e) { console.warn('Gagal simpan uploads:', e); }
         }
 
         function loadUploads() {
@@ -1007,7 +1007,6 @@
                     });
 
                     map.addLayer(layer);
-
                     var meta = {
                         id: u.id, name: u.name, color: u.color,
                         visible: u.visible !== false, fileName: u.fileName,
@@ -1017,9 +1016,7 @@
                     uploadLayers.push({ meta: meta, layer: layer });
                 });
                 renderLegendUploads();
-            } catch(e) {
-                console.warn('Gagal load uploads:', e);
-            }
+            } catch(e) { console.warn('Gagal load uploads:', e); }
         }
 
         /* ============================================================
@@ -1029,6 +1026,7 @@
         var currentDrawCoords = [];
 
         function startDrawing() {
+            console.log('[DRAW] startDrawing');
             isDrawing = true;
             currentDrawCoords = [];
             draftSource.clear();
@@ -1056,10 +1054,7 @@
             var drawId = 'dr_' + Date.now() + '_' + Math.random().toString(36).substr(2, 6);
             var feature = new ol.Feature({
                 geometry: new ol.geom.LineString(currentDrawCoords),
-                drawId: drawId,
-                name: name,
-                color: color,
-                coords4326: coords4326
+                drawId: drawId, name: name, color: color, coords4326: coords4326
             });
             feature.set('popupHtml',
                 '<div class="popup-title" style="color:' + color + ';">' +
@@ -1232,6 +1227,7 @@
         map.on('singleclick', function(evt) {
             if (isDrawing) {
                 currentDrawCoords.push(evt.coordinate);
+                console.log('[DRAW] Titik ditambah:', currentDrawCoords.length);
                 updateDraft();
                 document.getElementById('btnUndoPoint').disabled = false;
                 if (currentDrawCoords.length >= 2) {
@@ -1282,6 +1278,7 @@
         /* ============================================================
            INIT
            ============================================================ */
+        console.log('[BUCIN] Init markers, uploads, drawings');
         renderMarkers();
         loadUploads();
         loadDrawings();
@@ -1289,6 +1286,8 @@
         setTimeout(function(){ map.updateSize(); }, 200);
         setTimeout(function(){ map.updateSize(); }, 800);
         window.addEventListener('resize', function(){ map.updateSize(); });
+
+        console.log('[BUCIN] Ready');
     </script>
 </body>
 </html>
