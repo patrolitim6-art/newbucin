@@ -23,20 +23,15 @@
 html {
     font-size: 13px;
     scroll-behavior: smooth;
-    /* JANGAN set background di sini — biarkan inline <style> yang atur */
 }
 
 body {
-    /* Background transparan agar #bgDynamic dari inline style terlihat */
     background-color: transparent;
     color: var(--text-main);
     min-height: 100vh;
     overflow-x: hidden;
     position: relative;
 }
-
-/* ==================== 2. BACKGROUND ==================== */
-/* JANGAN sembunyikan .bg-layer/.bg-overlay di sini — biarkan inline atur */
 
 /* Custom Scrollbar */
 ::-webkit-scrollbar { width: 5px; height: 5px; }
@@ -908,4 +903,165 @@ nav {
     .quick-summary-grid {
         grid-template-columns: 1fr 1fr;
     }
+}
+
+/* ============================================================
+   14. LIGHT MODE OVERRIDES — PAKSA TEKS TEBAL & KONTRAS
+   ============================================================ */
+body.light-mode {
+    --text-main: #0f172a;
+    --text-sub: #334155;
+}
+
+/* Semua teks utama: gelap, bold, shadow putih */
+body.light-mode .panel-header,
+body.light-mode .panel-header .title-left,
+body.light-mode .banner-title h2,
+body.light-mode .banner-title p,
+body.light-mode .feed-loc,
+body.light-mode .feed-time,
+body.light-mode .feed-desc,
+body.light-mode .qs-label,
+body.light-mode .qs-value,
+body.light-mode .stat-mini-box .lbl,
+body.light-mode .stat-mini-box .num,
+body.light-mode .total-badge-box span,
+body.light-mode .total-badge-box strong,
+body.light-mode .donut-item span,
+body.light-mode .map-header-title,
+body.light-mode .map-overlay-legend h4,
+body.light-mode .leg-item,
+body.light-mode .leg-item span,
+body.light-mode .dist-row .label,
+body.light-mode .dist-row,
+body.light-mode .stok-row,
+body.light-mode .p-box .p-title,
+body.light-mode .p-box .p-num,
+body.light-mode .home-hero h1,
+body.light-mode .home-hero p,
+body.light-mode .feature-card h3,
+body.light-mode .feature-card p,
+body.light-mode .logo,
+body.light-mode .nav-links a {
+    color: #0f172a !important;
+    font-weight: 700 !important;
+    text-shadow: 0 1px 2px rgba(255,255,255,0.95), 0 0 6px rgba(255,255,255,0.6) !important;
+}
+
+/* Nav link active tetap biru tua */
+body.light-mode .nav-links a.active,
+body.light-mode .nav-links a:hover {
+    color: #0369a1 !important;
+    font-weight: 800 !important;
+    text-shadow: 0 1px 2px rgba(255,255,255,0.95) !important;
+}
+
+/* Panel & card background terang */
+body.light-mode .panel-card,
+body.light-mode .map-section,
+body.light-mode .banner-header,
+body.light-mode .home-hero,
+body.light-mode .feature-card {
+    background: rgba(255, 255, 255, 0.78) !important;
+    border-color: rgba(15, 23, 42, 0.25) !important;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08) !important;
+}
+
+body.light-mode .panel-card:hover,
+body.light-mode .feature-card:hover {
+    background: rgba(255, 255, 255, 0.92) !important;
+    border-color: rgba(56, 189, 248, 0.6) !important;
+}
+
+/* Baris distribusi & feed */
+body.light-mode .dist-row,
+body.light-mode .stok-row,
+body.light-mode .qs-item,
+body.light-mode .p-box,
+body.light-mode .feed-item {
+    background: rgba(255, 255, 255, 0.7) !important;
+    border-color: rgba(15, 23, 42, 0.12) !important;
+}
+
+body.light-mode .dist-row:hover,
+body.light-mode .stok-row:hover,
+body.light-mode .qs-item:hover,
+body.light-mode .p-box:hover,
+body.light-mode .feed-item:hover {
+    background: rgba(255, 255, 255, 0.95) !important;
+}
+
+/* Count badge & stat box */
+body.light-mode .count-badge,
+body.light-mode .stat-mini-box,
+body.light-mode .total-badge-box {
+    background: rgba(255, 255, 255, 0.85) !important;
+    border-color: rgba(15, 23, 42, 0.2) !important;
+    color: #0f172a !important;
+}
+
+body.light-mode .count-badge {
+    color: #0369a1 !important;
+}
+
+/* Tombol map */
+body.light-mode .btn-map {
+    background: rgba(255, 255, 255, 0.85) !important;
+    color: #0f172a !important;
+    border-color: rgba(15, 23, 42, 0.25) !important;
+    font-weight: 700 !important;
+}
+
+body.light-mode .btn-map:hover,
+body.light-mode .btn-map.active {
+    background: #0369a1 !important;
+    color: #ffffff !important;
+    border-color: #0369a1 !important;
+}
+
+/* Map legend */
+body.light-mode .map-overlay-legend {
+    background: rgba(255, 255, 255, 0.92) !important;
+    border-color: rgba(15, 23, 42, 0.2) !important;
+}
+
+body.light-mode .map-overlay-legend h4 {
+    color: #be123c !important;
+}
+
+/* Popup leaflet */
+body.light-mode .leaflet-popup-content-wrapper {
+    background: rgba(255, 255, 255, 0.97) !important;
+    color: #0f172a !important;
+    border-color: #be123c !important;
+}
+body.light-mode .leaflet-popup-tip {
+    background: rgba(255, 255, 255, 0.97) !important;
+}
+body.light-mode .popup-content h3 {
+    color: #0369a1 !important;
+    font-weight: 700 !important;
+}
+body.light-mode .popup-content p {
+    color: #1e293b !important;
+}
+
+/* Scrollbar light */
+body.light-mode ::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.5);
+}
+body.light-mode ::-webkit-scrollbar-thumb {
+    background: rgba(15, 23, 42, 0.3);
+}
+body.light-mode ::-webkit-scrollbar-thumb:hover {
+    background: rgba(15, 23, 42, 0.5);
+}
+
+/* Toast light */
+body.light-mode .toast-msg {
+    background: rgba(255, 255, 255, 0.97) !important;
+    color: #0f172a !important;
+    border-color: #be123c !important;
+    border-left-color: #be123c !important;
+    font-weight: 600;
 }
