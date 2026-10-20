@@ -33,7 +33,6 @@ body {
     position: relative;
 }
 
-/* Custom Scrollbar */
 ::-webkit-scrollbar { width: 5px; height: 5px; }
 ::-webkit-scrollbar-track { background: rgba(15, 23, 42, 0.4); }
 ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.2); border-radius: 3px; }
@@ -70,7 +69,6 @@ nav {
 .logo i { color: var(--accent-rose); font-size: 1.1rem; }
 .logo img { height: 28px; width: auto; }
 
-/* === NAVBAR 7 MENU === */
 .nav-links {
     display: flex;
     list-style: none;
@@ -679,7 +677,6 @@ nav {
 .home-cta i { transition: transform 0.3s ease; }
 .home-cta:hover i { transform: translateX(4px); }
 
-/* ==== FEATURE CARDS ==== */
 .home-features {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -913,7 +910,6 @@ body.light-mode {
     --text-sub: #334155;
 }
 
-/* Semua teks utama: gelap, bold, shadow putih */
 body.light-mode .panel-header,
 body.light-mode .panel-header .title-left,
 body.light-mode .banner-title h2,
@@ -948,7 +944,6 @@ body.light-mode .nav-links a {
     text-shadow: 0 1px 2px rgba(255,255,255,0.95), 0 0 6px rgba(255,255,255,0.6) !important;
 }
 
-/* Nav link active tetap biru tua */
 body.light-mode .nav-links a.active,
 body.light-mode .nav-links a:hover {
     color: #0369a1 !important;
@@ -956,7 +951,6 @@ body.light-mode .nav-links a:hover {
     text-shadow: 0 1px 2px rgba(255,255,255,0.95) !important;
 }
 
-/* Panel & card background terang */
 body.light-mode .panel-card,
 body.light-mode .map-section,
 body.light-mode .banner-header,
@@ -973,7 +967,6 @@ body.light-mode .feature-card:hover {
     border-color: rgba(56, 189, 248, 0.6) !important;
 }
 
-/* Baris distribusi & feed */
 body.light-mode .dist-row,
 body.light-mode .stok-row,
 body.light-mode .qs-item,
@@ -991,7 +984,6 @@ body.light-mode .feed-item:hover {
     background: rgba(255, 255, 255, 0.95) !important;
 }
 
-/* Count badge & stat box */
 body.light-mode .count-badge,
 body.light-mode .stat-mini-box,
 body.light-mode .total-badge-box {
@@ -1004,7 +996,6 @@ body.light-mode .count-badge {
     color: #0369a1 !important;
 }
 
-/* Tombol map */
 body.light-mode .btn-map {
     background: rgba(255, 255, 255, 0.85) !important;
     color: #0f172a !important;
@@ -1019,7 +1010,6 @@ body.light-mode .btn-map.active {
     border-color: #0369a1 !important;
 }
 
-/* Map legend */
 body.light-mode .map-overlay-legend {
     background: rgba(255, 255, 255, 0.92) !important;
     border-color: rgba(15, 23, 42, 0.2) !important;
@@ -1029,7 +1019,6 @@ body.light-mode .map-overlay-legend h4 {
     color: #be123c !important;
 }
 
-/* Popup leaflet */
 body.light-mode .leaflet-popup-content-wrapper {
     background: rgba(255, 255, 255, 0.97) !important;
     color: #0f172a !important;
@@ -1046,7 +1035,6 @@ body.light-mode .popup-content p {
     color: #1e293b !important;
 }
 
-/* Scrollbar light */
 body.light-mode ::-webkit-scrollbar-track {
     background: rgba(255, 255, 255, 0.5);
 }
@@ -1057,11 +1045,306 @@ body.light-mode ::-webkit-scrollbar-thumb:hover {
     background: rgba(15, 23, 42, 0.5);
 }
 
-/* Toast light */
 body.light-mode .toast-msg {
     background: rgba(255, 255, 255, 0.97) !important;
     color: #0f172a !important;
     border-color: #be123c !important;
     border-left-color: #be123c !important;
     font-weight: 600;
+}
+
+/* ============================================================
+   15. MOBILE RESPONSIVE — PERBAIKAN TAMPILAN HP
+   ============================================================ */
+
+@media (max-width: 768px) {
+    html { font-size: 14px; }
+
+    nav {
+        padding: 0.6rem 0.8rem !important;
+        gap: 0.5rem !important;
+        flex-wrap: wrap !important;
+    }
+
+    .logo { font-size: 1.05rem !important; }
+
+    .nav-links {
+        order: 3;
+        width: 100%;
+        margin-left: 0 !important;
+        justify-content: flex-start !important;
+        overflow-x: auto !important;
+        flex-wrap: nowrap !important;
+        gap: 0.9rem !important;
+        padding: 0.5rem 0.2rem 0.3rem !important;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+    }
+    .nav-links::-webkit-scrollbar { display: none; }
+
+    .nav-links a {
+        font-size: 0.72rem !important;
+        white-space: nowrap !important;
+        padding: 0.35rem 0.2rem !important;
+    }
+
+    .header-actions {
+        margin-left: auto !important;
+        gap: 6px !important;
+    }
+
+    .dashboard-grid {
+        grid-template-columns: 1fr !important;
+        padding: 0.7rem 0.7rem !important;
+        padding-top: 130px !important;
+        gap: 0.7rem !important;
+    }
+
+    .panel-card { padding: 0.7rem !important; }
+
+    .banner-header {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        padding: 0.8rem 0.9rem !important;
+        gap: 0.6rem !important;
+    }
+    .banner-stats {
+        width: 100%;
+        flex-wrap: wrap;
+        gap: 0.5rem !important;
+    }
+    .stat-mini-box {
+        flex: 1;
+        min-width: 65px;
+    }
+    .total-badge-box {
+        width: 100%;
+        margin-top: 0.3rem;
+    }
+
+    .circle-badge {
+        width: 38px !important;
+        height: 38px !important;
+        font-size: 0.85rem !important;
+    }
+    .donut-item span { font-size: 0.55rem !important; }
+
+    #map { height: 300px !important; }
+    .map-toolbar {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 0.5rem !important;
+        padding: 0.6rem 0.7rem !important;
+    }
+    .map-tools-btn {
+        width: 100%;
+        overflow-x: auto;
+        flex-wrap: nowrap !important;
+        -webkit-overflow-scrolling: touch;
+        padding-bottom: 0.2rem;
+        scrollbar-width: none;
+    }
+    .map-tools-btn::-webkit-scrollbar { display: none; }
+    .btn-map {
+        white-space: nowrap;
+        flex-shrink: 0;
+        font-size: 0.62rem !important;
+        padding: 0.35rem 0.6rem !important;
+    }
+
+    .map-overlay-legend {
+        bottom: 8px !important;
+        left: 8px !important;
+        right: auto !important;
+        width: 140px !important;
+        padding: 0.45rem 0.55rem !important;
+        font-size: 0.55rem !important;
+    }
+    .map-overlay-legend h4 { font-size: 0.55rem !important; }
+    .leg-item { font-size: 0.55rem !important; }
+
+    .percent-grid { gap: 0.4rem !important; }
+    .p-box { padding: 0.45rem 0.3rem !important; }
+    .p-box .p-title { font-size: 0.55rem !important; }
+    .p-box .p-num { font-size: 0.85rem !important; }
+
+    .chart-wrapper { height: 130px !important; }
+
+    .feed-list { max-height: 260px !important; }
+
+    .quick-summary-grid {
+        grid-template-columns: 1fr 1fr !important;
+        gap: 0.5rem !important;
+    }
+    .qs-item {
+        padding: 0.55rem 0.6rem !important;
+        gap: 0.5rem !important;
+    }
+    .qs-item i { font-size: 0.95rem !important; width: 20px !important; }
+    .qs-label { font-size: 0.52rem !important; }
+    .qs-value { font-size: 0.75rem !important; }
+
+    .home-hero {
+        padding: 1.6rem 1.1rem !important;
+        border-radius: 14px !important;
+    }
+    .home-hero h1 { font-size: 1.55rem !important; }
+    .home-hero p { font-size: 0.8rem !important; line-height: 1.6 !important; }
+    .home-cta {
+        padding: 0.7rem 1.4rem !important;
+        font-size: 0.8rem !important;
+    }
+
+    .home-features {
+        grid-template-columns: 1fr 1fr !important;
+        gap: 0.7rem !important;
+        margin-top: 1.3rem !important;
+    }
+    .feature-card { padding: 1rem 0.7rem !important; }
+    .feature-card i { font-size: 1.5rem !important; margin-bottom: 0.5rem !important; }
+    .feature-card h3 { font-size: 0.78rem !important; }
+    .feature-card p { font-size: 0.65rem !important; }
+
+    #toastContainer {
+        bottom: 10px !important;
+        right: 10px !important;
+        left: 10px !important;
+    }
+    .toast-msg {
+        max-width: 100% !important;
+        font-size: 0.68rem !important;
+        padding: 0.55rem 0.75rem !important;
+    }
+
+    ::-webkit-scrollbar { width: 3px; height: 3px; }
+}
+
+@media (max-width: 480px) {
+    html { font-size: 13.5px; }
+
+    nav { padding: 0.5rem 0.6rem !important; }
+    .logo {
+        font-size: 0.95rem !important;
+        gap: 0.35rem !important;
+    }
+    .logo i { font-size: 0.95rem !important; }
+
+    .nav-links {
+        gap: 0.7rem !important;
+        padding: 0.4rem 0.1rem 0.25rem !important;
+    }
+    .nav-links a { font-size: 0.66rem !important; }
+
+    .dashboard-grid {
+        padding: 0.5rem !important;
+        padding-top: 125px !important;
+    }
+
+    .panel-header {
+        font-size: 0.62rem !important;
+        margin-bottom: 0.6rem !important;
+    }
+
+    .home-hero { padding: 1.3rem 0.9rem !important; }
+    .home-hero h1 { font-size: 1.3rem !important; }
+    .home-hero p { font-size: 0.75rem !important; }
+
+    .home-features {
+        grid-template-columns: 1fr !important;
+        gap: 0.6rem !important;
+    }
+
+    #map { height: 260px !important; }
+
+    .quick-summary-grid { grid-template-columns: 1fr !important; }
+
+    .chart-wrapper { height: 120px !important; }
+
+    .stat-mini-box {
+        padding: 0.35rem 0.5rem !important;
+        min-width: 60px !important;
+    }
+    .stat-mini-box .lbl { font-size: 0.5rem !important; }
+    .stat-mini-box .num { font-size: 0.85rem !important; }
+
+    .total-badge-box strong { font-size: 1.25rem !important; }
+
+    .feed-item { padding: 0.45rem 0.55rem !important; }
+    .feed-loc { font-size: 0.62rem !important; }
+    .feed-desc { font-size: 0.58rem !important; }
+    .feed-time { font-size: 0.52rem !important; }
+
+    .circle-badge {
+        width: 34px !important;
+        height: 34px !important;
+        font-size: 0.78rem !important;
+    }
+    .donut-item span { font-size: 0.5rem !important; }
+
+    .dist-row, .stok-row {
+        padding: 0.4rem 0.5rem !important;
+        font-size: 0.65rem !important;
+    }
+    .count-badge {
+        font-size: 0.62rem !important;
+        padding: 0.12rem 0.4rem !important;
+    }
+}
+
+@media (max-width: 360px) {
+    html { font-size: 13px; }
+
+    .nav-links a { font-size: 0.6rem !important; }
+    .logo { font-size: 0.88rem !important; }
+
+    .home-hero h1 { font-size: 1.15rem !important; }
+    .home-hero p { font-size: 0.7rem !important; }
+
+    #map { height: 230px !important; }
+
+    .stat-mini-box { min-width: 55px !important; }
+}
+
+@media (hover: none) and (pointer: coarse) {
+    .nav-links a,
+    .login-btn,
+    .theme-toggle,
+    .btn-map,
+    .user-icon,
+    .login-submit,
+    .u-logout,
+    .home-cta,
+    .feature-card {
+        min-height: 40px;
+        display: inline-flex;
+        align-items: center;
+    }
+    .nav-links a {
+        min-height: 36px;
+        padding-top: 0.5rem !important;
+        padding-bottom: 0.5rem !important;
+    }
+    .dist-row:hover,
+    .stok-row:hover,
+    .qs-item:hover,
+    .feed-item:hover,
+    .p-box:hover,
+    .feature-card:hover,
+    .home-cta:hover {
+        transform: none !important;
+    }
+    .nav-links a:active,
+    .btn-map:active,
+    .login-btn:active,
+    .theme-toggle:active,
+    .feature-card:active {
+        opacity: 0.7;
+        transform: scale(0.97) !important;
+    }
+}
+
+@media (max-height: 500px) and (orientation: landscape) {
+    .dashboard-grid { padding-top: 80px !important; }
+    .hero-top-left { top: 70px !important; }
+    #map { height: 220px !important; }
 }
