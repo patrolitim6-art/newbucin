@@ -34,15 +34,15 @@
         body.light-mode {
             --theme-bg-overlay: transparent;
             --theme-text: #0f172a;
-            --theme-text-shadow: 0 2px 10px rgba(255,255,255,0.9), 0 1px 3px rgba(0,0,0,0.2);
+            --theme-text-shadow: 0 1px 2px rgba(255,255,255,0.95), 0 0 8px rgba(255,255,255,0.7);
             --theme-title-glow: 0 0 30px rgba(0,0,0,0.15);
             --theme-badge-border: rgba(15, 23, 42, 0.6);
             --theme-nav-link: #334155;
-            --theme-nav-link-active: #0284c7;
+            --theme-nav-link-active: #0369a1;
             --theme-nav-link-hover: #0f172a;
             --theme-bg-filter: none;
-            --theme-panel-bg: transparent;
-            --theme-panel-border: rgba(15, 23, 42, 0.5);
+            --theme-panel-bg: rgba(255, 255, 255, 0.92);
+            --theme-panel-border: rgba(15, 23, 42, 0.35);
             --theme-bg-image: url('gedung_telin1.jpeg');
             --theme-page-bg: #e2e8f0;
         }
@@ -76,7 +76,7 @@
             transition: opacity 0.35s ease, transform 0.35s ease;
         }
 
-        /* BACKGROUND DINAMIS — pakai !important agar tidak tertimpa style.css */
+        /* BACKGROUND DINAMIS */
         #bgDynamic {
             position: fixed !important;
             top: -5% !important;
@@ -108,7 +108,7 @@
             display: block !important;
         }
 
-        /* Paksa bg-layer & bg-overlay tetap hidden (kalau ada di HTML lain) */
+        /* Paksa bg-layer & bg-overlay tetap hidden */
         .bg-layer, .bg-overlay {
             display: none !important;
         }
@@ -382,7 +382,7 @@
             position: absolute;
             top: calc(100% + 12px);
             right: 0;
-            background: transparent;
+            background: var(--theme-panel-bg);
             border: 1.5px solid var(--theme-panel-border);
             border-radius: 14px;
             padding: 18px 20px;
@@ -591,6 +591,104 @@
 
         body.light-mode .hero-desc {
             font-weight: 500;
+        }
+
+        /* ============================================================
+           LIGHT MODE OVERRIDES — PAKSA TEBAL & KONTRAS
+           ============================================================ */
+        body.light-mode nav .logo span,
+        body.light-mode .nav-links a,
+        body.light-mode .login-btn,
+        body.light-mode .hero-title,
+        body.light-mode .hero-desc,
+        body.light-mode .hero-badge,
+        body.light-mode .login-panel h4,
+        body.light-mode .login-form-group label,
+        body.light-mode .login-form-group input,
+        body.light-mode .login-submit,
+        body.light-mode .user-dropdown .u-name,
+        body.light-mode .user-dropdown .u-role {
+            color: #0f172a !important;
+            font-weight: 700 !important;
+            text-shadow: 0 1px 2px rgba(255,255,255,0.95), 0 0 6px rgba(255,255,255,0.6) !important;
+        }
+
+        body.light-mode .hero-title {
+            font-weight: 700 !important;
+            color: #0f172a !important;
+        }
+        body.light-mode .hero-desc {
+            font-weight: 600 !important;
+            color: #1e293b !important;
+        }
+
+        body.light-mode .hero-badge {
+            border-color: rgba(15, 23, 42, 0.7) !important;
+            color: #0f172a !important;
+            background: rgba(255,255,255,0.55) !important;
+            backdrop-filter: blur(4px);
+        }
+        body.light-mode .hero-badge i {
+            color: #0f172a !important;
+        }
+
+        body.light-mode .nav-links a.active,
+        body.light-mode .nav-links a:hover {
+            color: #0369a1 !important;
+            font-weight: 800 !important;
+        }
+
+        body.light-mode .login-btn,
+        body.light-mode .theme-toggle {
+            border-color: rgba(15, 23, 42, 0.6) !important;
+            color: #0f172a !important;
+            background: rgba(255,255,255,0.5) !important;
+        }
+        body.light-mode .login-btn:hover,
+        body.light-mode .theme-toggle:hover {
+            color: #0369a1 !important;
+            border-color: #0369a1 !important;
+        }
+
+        body.light-mode .login-panel,
+        body.light-mode .user-dropdown {
+            background: rgba(255, 255, 255, 0.92) !important;
+            border-color: rgba(15, 23, 42, 0.35) !important;
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.15) !important;
+        }
+        body.light-mode .login-panel h4 {
+            border-bottom-color: rgba(15, 23, 42, 0.2) !important;
+        }
+        body.light-mode .login-form-group input {
+            background: rgba(255,255,255,0.85) !important;
+            border-color: rgba(15, 23, 42, 0.4) !important;
+            color: #0f172a !important;
+        }
+        body.light-mode .login-form-group input::placeholder {
+            color: #475569 !important;
+            opacity: 1 !important;
+        }
+        body.light-mode .login-submit {
+            border-color: #0369a1 !important;
+            color: #0369a1 !important;
+            background: rgba(255,255,255,0.7) !important;
+        }
+        body.light-mode .login-submit:hover {
+            background: rgba(3, 105, 161, 0.15) !important;
+        }
+
+        body.light-mode .user-icon {
+            border-color: #0369a1 !important;
+            color: #0369a1 !important;
+            background: rgba(255,255,255,0.5) !important;
+        }
+
+        body.light-mode .user-dropdown .u-logout {
+            color: #be123c !important;
+            border-color: rgba(190, 18, 60, 0.6) !important;
+        }
+        body.light-mode .user-dropdown .u-logout:hover {
+            background: rgba(190, 18, 60, 0.12) !important;
         }
 
         @media (max-width: 900px) {
